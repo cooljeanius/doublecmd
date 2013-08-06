@@ -1,0 +1,222 @@
+object frmFileOp: TfrmFileOp
+  Left = 287
+  Height = 212
+  Top = 244
+  Width = 522
+  ClientHeight = 212
+  ClientWidth = 522
+  Constraints.MinWidth = 500
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  ShowInTaskBar = stAlways
+  LCLVersion = '1.0.1.3'
+  object pnlClient: TPanel
+    Left = 3
+    Height = 167
+    Top = 3
+    Width = 516
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 3
+    BevelOuter = bvNone
+    ClientHeight = 167
+    ClientWidth = 516
+    TabOrder = 0
+    object pnlQueue: TPanel
+      Left = 0
+      Height = 28
+      Top = 0
+      Width = 516
+      Align = alTop
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 28
+      ClientWidth = 516
+      TabOrder = 0
+      object lblCurrentOperation: TLabel
+        Left = 0
+        Height = 22
+        Top = 0
+        Width = 516
+        Align = alTop
+        BorderSpacing.Bottom = 5
+        Caption = 'Current operation:'
+        ParentColor = False
+      end
+      object lblCurrentOperationText: TLabel
+        Left = 0
+        Height = 1
+        Top = 27
+        Width = 516
+        Align = alTop
+        ParentColor = False
+      end
+    end
+    object pnlFrom: TPanel
+      Left = 0
+      Height = 22
+      Top = 28
+      Width = 516
+      Align = alTop
+      AutoSize = True
+      BorderSpacing.Bottom = 3
+      BevelOuter = bvNone
+      ClientHeight = 22
+      ClientWidth = 516
+      TabOrder = 1
+      object lblFrom: TLabel
+        Left = 0
+        Height = 22
+        Top = 0
+        Width = 40
+        Align = alLeft
+        Caption = 'From:'
+        Constraints.MinWidth = 40
+        ParentColor = False
+      end
+      object lblFileNameFrom: TLabel
+        Left = 40
+        Height = 22
+        Top = 0
+        Width = 476
+        Align = alClient
+        ParentColor = False
+      end
+    end
+    object pnlTo: TPanel
+      Left = 0
+      Height = 22
+      Top = 53
+      Width = 516
+      Align = alTop
+      AutoSize = True
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 3
+      BevelOuter = bvNone
+      ClientHeight = 22
+      ClientWidth = 516
+      TabOrder = 2
+      object lblFileNameTo: TLabel
+        Left = 40
+        Height = 22
+        Top = 0
+        Width = 476
+        Align = alClient
+        ParentColor = False
+      end
+      object lblTo: TLabel
+        Left = 0
+        Height = 22
+        Top = 0
+        Width = 40
+        Align = alLeft
+        Caption = 'To:'
+        Constraints.MinWidth = 40
+        ParentColor = False
+      end
+    end
+    object lblEstimated: TLabel
+      Left = 0
+      Height = 1
+      Top = 78
+      Width = 516
+      Align = alTop
+      BorderSpacing.Top = 3
+      ParentColor = False
+    end
+    object pbFirst: TKASProgressBar
+      Left = 0
+      Height = 22
+      Top = 107
+      Width = 516
+      Align = alTop
+      BorderSpacing.Top = 3
+      Max = 516
+      Smooth = True
+      TabOrder = 3
+      BarShowText = True
+    end
+    object pbSecond: TKASProgressBar
+      Left = 0
+      Height = 22
+      Top = 82
+      Width = 516
+      Align = alTop
+      BorderSpacing.Top = 3
+      Max = 516
+      Smooth = True
+      TabOrder = 4
+      BarShowText = True
+    end
+    object pnlButtons: TPanel
+      Left = 0
+      Height = 35
+      Top = 132
+      Width = 516
+      Align = alTop
+      AutoSize = True
+      BorderSpacing.Top = 3
+      BevelOuter = bvNone
+      ClientHeight = 35
+      ClientWidth = 516
+      TabOrder = 5
+      object btnMinimizeToPanel: TBitBtn
+        Left = 0
+        Height = 35
+        Top = 0
+        Width = 84
+        Align = alLeft
+        AutoSize = True
+        BorderSpacing.Right = 3
+        Caption = '&To panel'
+        OnClick = btnMinimizeToPanelClick
+        TabOrder = 0
+      end
+      object btnViewOperations: TBitBtn
+        Left = 87
+        Height = 35
+        Top = 0
+        Width = 78
+        Align = alLeft
+        AutoSize = True
+        BorderSpacing.Right = 3
+        Caption = '&View all'
+        OnClick = btnViewOperationsClick
+        TabOrder = 1
+      end
+      object btnCancel: TBitBtn
+        Left = 369
+        Height = 35
+        Top = 0
+        Width = 94
+        Align = alRight
+        AutoSize = True
+        BorderSpacing.Left = 3
+        BorderSpacing.InnerBorder = 2
+        Cancel = True
+        Caption = '&Cancel'
+        Constraints.MinWidth = 50
+        Kind = bkCancel
+        ModalResult = 2
+        NumGlyphs = 0
+        OnClick = btnCancelClick
+        TabOrder = 2
+      end
+      object btnPauseStart: TBitBtn
+        Left = 466
+        Height = 35
+        Top = 0
+        Width = 50
+        Align = alRight
+        AutoSize = True
+        BorderSpacing.Left = 3
+        Constraints.MinWidth = 50
+        NumGlyphs = 0
+        OnClick = btnPauseStartClick
+        Spacing = 0
+        TabOrder = 3
+      end
+    end
+  end
+end

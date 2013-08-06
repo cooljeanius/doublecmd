@@ -1,0 +1,164 @@
+inherited frmOptionsLog: TfrmOptionsLog
+  Height = 369
+  Width = 394
+  ChildSizing.LeftRightSpacing = 6
+  ChildSizing.TopBottomSpacing = 6
+  ClientHeight = 369
+  ClientWidth = 394
+  DesignTop = 27
+  object gbLogFile: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 59
+    Top = 6
+    Width = 382
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    Caption = 'File operation log file'
+    ClientHeight = 36
+    ClientWidth = 378
+    TabOrder = 0
+    object cbLogFile: TCheckBox
+      AnchorSideTop.Control = fneLogFileName
+      AnchorSideTop.Side = asrCenter
+      Left = 10
+      Height = 23
+      Top = 7
+      Width = 132
+      Caption = 'C&reate a log file:'
+      TabOrder = 0
+    end
+    object fneLogFileName: TFileNameEdit
+      AnchorSideLeft.Control = cbLogFile
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = gbLogFile
+      Left = 148
+      Height = 28
+      Top = 4
+      Width = 204
+      DialogOptions = []
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 4
+      BorderSpacing.Bottom = 4
+      MaxLength = 0
+      TabOrder = 1
+    end
+  end
+  object gbLogFileOp: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbLogFile
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 154
+    Top = 69
+    Width = 382
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 4
+    Caption = 'Log operations'
+    ChildSizing.LeftRightSpacing = 10
+    ChildSizing.TopBottomSpacing = 4
+    ChildSizing.VerticalSpacing = 2
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 131
+    ClientWidth = 378
+    TabOrder = 1
+    object cbLogCpMvLn: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 4
+      Width = 226
+      Caption = 'Cop&y/Move/Create link/symlink'
+      TabOrder = 0
+    end
+    object cbLogDelete: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 29
+      Width = 226
+      Caption = '&Delete'
+      TabOrder = 1
+    end
+    object cbLogDirOp: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 54
+      Width = 226
+      Caption = 'Crea&te/Delete directories'
+      TabOrder = 2
+    end
+    object cbLogArcOp: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 79
+      Width = 226
+      Caption = '&Pack/Unpack'
+      TabOrder = 3
+    end
+    object cbLogVFS: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 104
+      Width = 226
+      Caption = '&File system plugins'
+      TabOrder = 4
+    end
+  end
+  object gbLogFileStatus: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbLogFileOp
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 104
+    Top = 227
+    Width = 382
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 4
+    Caption = 'Operation status'
+    ChildSizing.LeftRightSpacing = 10
+    ChildSizing.TopBottomSpacing = 4
+    ChildSizing.VerticalSpacing = 2
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ClientHeight = 81
+    ClientWidth = 378
+    TabOrder = 2
+    object cbLogSuccess: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 4
+      Width = 192
+      Caption = 'Log &successful operations'
+      TabOrder = 0
+    end
+    object cbLogErrors: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 29
+      Width = 192
+      Caption = 'Log &errors'
+      TabOrder = 1
+    end
+    object cbLogInfo: TCheckBox
+      Left = 10
+      Height = 23
+      Top = 54
+      Width = 192
+      Caption = 'Log &information messages'
+      TabOrder = 2
+    end
+  end
+end

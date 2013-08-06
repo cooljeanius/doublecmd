@@ -1,0 +1,104 @@
+inherited frmOptionsToolBase: TfrmOptionsToolBase
+  Height = 265
+  Width = 589
+  ClientHeight = 265
+  ClientWidth = 589
+  object edtToolsParameters: TEdit[0]
+    AnchorSideLeft.Control = lblToolsParameters
+    AnchorSideTop.Control = lblToolsParameters
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = fneToolsPath
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 21
+    Top = 105
+    Width = 554
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 4
+    OnChange = edtToolsParametersChange
+    TabOrder = 2
+  end
+  object fneToolsPath: TFileNameEdit[1]
+    AnchorSideLeft.Control = lblToolsPath
+    AnchorSideTop.Control = lblToolsPath
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 21
+    Top = 57
+    Width = 554
+    OnAcceptFileName = fneToolsPathAcceptFileName
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 4
+    MaxLength = 0
+    TabOrder = 1
+    OnChange = fneToolsPathChange
+  end
+  object lblToolsPath: TLabel[2]
+    AnchorSideLeft.Control = cbToolsUseExternalProgram
+    AnchorSideTop.Control = cbToolsUseExternalProgram
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 13
+    Top = 40
+    Width = 133
+    BorderSpacing.Top = 15
+    Caption = '&Path to program to execute'
+    FocusControl = fneToolsPath
+    ParentColor = False
+  end
+  object lblToolsParameters: TLabel[3]
+    AnchorSideLeft.Control = cbToolsUseExternalProgram
+    AnchorSideTop.Control = fneToolsPath
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 13
+    Top = 88
+    Width = 105
+    BorderSpacing.Top = 10
+    Caption = 'A&dditional parameters'
+    FocusControl = edtToolsParameters
+    ParentColor = False
+  end
+  object cbToolsKeepTerminalOpen: TCheckBox[4]
+    AnchorSideLeft.Control = cbToolsRunInTerminal
+    AnchorSideTop.Control = cbToolsRunInTerminal
+    AnchorSideTop.Side = asrBottom
+    Left = 23
+    Height = 17
+    Top = 157
+    Width = 269
+    BorderSpacing.Left = 15
+    BorderSpacing.Top = 2
+    Caption = '&Keep terminal window open after executing program'
+    OnChange = cbToolsKeepTerminalOpenChange
+    TabOrder = 4
+  end
+  object cbToolsRunInTerminal: TCheckBox[5]
+    AnchorSideLeft.Control = edtToolsParameters
+    AnchorSideTop.Control = edtToolsParameters
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 17
+    Top = 138
+    Width = 109
+    BorderSpacing.Top = 12
+    Caption = '&Execute in terminal'
+    OnChange = cbToolsRunInTerminalChange
+    TabOrder = 3
+  end
+  object cbToolsUseExternalProgram: TCheckBox[6]
+    Left = 8
+    Height = 17
+    Top = 8
+    Width = 122
+    BorderSpacing.Top = 12
+    Caption = '&Use external program'
+    OnChange = cbToolsUseExternalProgramChange
+    TabOrder = 0
+  end
+end

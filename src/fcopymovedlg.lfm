@@ -1,0 +1,282 @@
+object frmCopyDlg: TfrmCopyDlg
+  Left = 45
+  Height = 263
+  Top = 85
+  Width = 612
+  HorzScrollBar.Page = 349
+  HorzScrollBar.Range = 337
+  VertScrollBar.Page = 205
+  VertScrollBar.Range = 186
+  ActiveControl = edtDst
+  BorderIcons = [biSystemMenu, biMaximize]
+  Caption = 'Copy file(s)'
+  ClientHeight = 263
+  ClientWidth = 612
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  OnShow = frmCopyDlgShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object lblCopySrc: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 20
+    Top = 8
+    Width = 596
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
+    ParentColor = False
+  end
+  object edtDst: TKASPathEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblCopySrc
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 28
+    Top = 34
+    Width = 596
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 8
+    TabOrder = 0
+    ObjectTypes = [otFolders, otNonFolders]
+    FileSortType = fstFoldersFirst
+  end
+  object pnlSelector: TPanel
+    AnchorSideLeft.Control = edtDst
+    AnchorSideTop.Control = edtDst
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = edtDst
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 38
+    Top = 70
+    Width = 596
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    BevelOuter = bvNone
+    TabOrder = 1
+  end
+  object pnlButtons: TPanel
+    AnchorSideLeft.Control = edtDst
+    AnchorSideTop.Control = pnlSelector
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = edtDst
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 36
+    Top = 112
+    Width = 596
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 4
+    BevelOuter = bvNone
+    ClientHeight = 36
+    ClientWidth = 596
+    TabOrder = 2
+    object btnOptions: TButton
+      Left = 0
+      Height = 36
+      Top = 0
+      Width = 100
+      Align = alLeft
+      AutoSize = True
+      Caption = 'O&ptions'
+      Constraints.MinWidth = 100
+      OnClick = btnOptionsClick
+      OnMouseUp = btnOptionsMouseUp
+      TabOrder = 0
+    end
+    object btnAddToQueue: TBitBtn
+      Left = 251
+      Height = 36
+      Top = 0
+      Width = 128
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.InnerBorder = 2
+      Caption = 'A&dd To Queue'
+      Constraints.MinHeight = 34
+      Constraints.MinWidth = 88
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        000004733AFF21824FFF638272FF000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF7ACFA4FF2C8C5AFF3D7659FFAEAEAEFF00000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF82D8ACFF76D6A6FF3C9D6AFF27744CFFACAEADFF000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000009773FFF83DBAEFF1FC671FF72DEA7FF4BB27FFF177445FFA8ADAAFF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF83DCAFFF11C369FF1ACC73FF69DFA3FF5AC28DFF137643FF9EA7
+        A3FF000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF10BD65FF11C167FF13C269FF59D395FF67C998FF167C
+        47FF889C92FF0000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF0DB35EFF0EB660FF0EB660FF0DB45FFF47C484FF70CA
+        9CFF1D824DFF678C79FF00000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF0CAA58FF12AE5EFF15AF60FF16AD61FF13AA5DFF3AB6
+        77FF75C79DFF288957FF4E8367FF000000000000000000000000000000000000
+        000004733AFFA9DCC1FF2EAD6BFF2BAD6AFF27AB68FF22A964FF1CA55FFF41B2
+        78FF78C69FFF298858FF678C79FF000000000000000000000000000000000000
+        000004733AFFA9DCC1FF36AD70FF32AC6DFF2DAA6AFF28A866FF58BC89FF78C5
+        9DFF1F804EFF839A8EFF00000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF3EB176FF3AAF73FF36AE70FF6FC598FF71BF97FF187B
+        49FFA6B0ABFF0000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF45B47BFF47B47CFF82CCA6FF67B68CFF177745FFC1C5
+        C3FF000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA5DABFFF57BB87FF90D2B0FF5BAB82FF23774CFFD4D5D4FF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF9BD5B7FF4C9F73FF3D7D5CFF00000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA4D9BEFF3D9366FF5F8873FF0000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF2D8859FF859C90FF000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000
+      }
+      ModalResult = 1
+      OnClick = btnAddToQueueClick
+      OnMouseUp = btnAddToQueueMouseUp
+      TabOrder = 1
+    end
+    object btnCreateSpecialQueue: TButton
+      Left = 379
+      Height = 36
+      Top = 0
+      Width = 25
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Right = 12
+      Caption = '...'
+      TabOrder = 2
+      Visible = False
+    end
+    object btnCancel: TBitBtn
+      Left = 416
+      Height = 36
+      Top = 0
+      Width = 84
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Left = 12
+      BorderSpacing.Right = 8
+      BorderSpacing.InnerBorder = 2
+      Cancel = True
+      Caption = '&Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      OnMouseUp = btnCancelMouseUp
+      TabOrder = 3
+    end
+    object btnOK: TBitBtn
+      Left = 508
+      Height = 36
+      Top = 0
+      Width = 88
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.InnerBorder = 2
+      Constraints.MinHeight = 34
+      Constraints.MinWidth = 88
+      Default = True
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        000004733AFF21824FFF638272FF000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF7ACFA4FF2C8C5AFF3D7659FFAEAEAEFF00000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF82D8ACFF76D6A6FF3C9D6AFF27744CFFACAEADFF000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000009773FFF83DBAEFF1FC671FF72DEA7FF4BB27FFF177445FFA8ADAAFF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF83DCAFFF11C369FF1ACC73FF69DFA3FF5AC28DFF137643FF9EA7
+        A3FF000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF10BD65FF11C167FF13C269FF59D395FF67C998FF167C
+        47FF889C92FF0000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF0DB35EFF0EB660FF0EB660FF0DB45FFF47C484FF70CA
+        9CFF1D824DFF678C79FF00000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF0CAA58FF12AE5EFF15AF60FF16AD61FF13AA5DFF3AB6
+        77FF75C79DFF288957FF4E8367FF000000000000000000000000000000000000
+        000004733AFFA9DCC1FF2EAD6BFF2BAD6AFF27AB68FF22A964FF1CA55FFF41B2
+        78FF78C69FFF298858FF678C79FF000000000000000000000000000000000000
+        000004733AFFA9DCC1FF36AD70FF32AC6DFF2DAA6AFF28A866FF58BC89FF78C5
+        9DFF1F804EFF839A8EFF00000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF3EB176FF3AAF73FF36AE70FF6FC598FF71BF97FF187B
+        49FFA6B0ABFF0000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF45B47BFF47B47CFF82CCA6FF67B68CFF177745FFC1C5
+        C3FF000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA5DABFFF57BB87FF90D2B0FF5BAB82FF23774CFFD4D5D4FF0000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA9DCC1FF9BD5B7FF4C9F73FF3D7D5CFF00000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFFA4D9BEFF3D9366FF5F8873FF0000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        000004733AFF2D8859FF859C90FF000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000
+      }
+      ModalResult = 1
+      OnClick = btnOKClick
+      OnMouseUp = btnOKMouseUp
+      TabOrder = 4
+    end
+  end
+  object pnlOptions: TPanel
+    AnchorSideLeft.Control = edtDst
+    AnchorSideTop.Control = pnlButtons
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = edtDst
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 43
+    Top = 152
+    Width = 596
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 4
+    BevelOuter = bvNone
+    ClientHeight = 43
+    ClientWidth = 596
+    TabOrder = 3
+    OnResize = pnlOptionsResize
+    object grpOptions: TGroupBox
+      AnchorSideLeft.Control = pnlOptions
+      AnchorSideTop.Control = pnlOptions
+      AnchorSideRight.Control = pnlOptions
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 4
+      Top = 0
+      Width = 596
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      TabOrder = 0
+    end
+    object btnSaveOptions: TButton
+      AnchorSideLeft.Control = grpOptions
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = grpOptions
+      AnchorSideTop.Side = asrBottom
+      Left = 197
+      Height = 31
+      Top = 12
+      Width = 203
+      AutoSize = True
+      BorderSpacing.Top = 8
+      Caption = 'Sa&ve these options as default'
+      OnClick = btnSaveOptionsClick
+      TabOrder = 1
+    end
+  end
+end

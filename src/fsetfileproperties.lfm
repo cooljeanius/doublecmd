@@ -1,0 +1,802 @@
+object frmSetFileProperties: TfrmSetFileProperties
+  Left = 734
+  Height = 593
+  Top = 80
+  Width = 309
+  AutoSize = True
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Change attributes'
+  ClientHeight = 593
+  ClientWidth = 309
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object btnOK: TBitBtn
+    AnchorSideTop.Control = chkRecursive
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnCancel
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 95
+    Height = 31
+    Top = 552
+    Width = 100
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 10
+    Caption = '&OK'
+    Constraints.MinWidth = 100
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = btnOKClick
+    TabOrder = 4
+  end
+  object btnCancel: TBitBtn
+    AnchorSideTop.Control = btnOK
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 201
+    Height = 32
+    Top = 552
+    Width = 100
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 10
+    Cancel = True
+    Caption = '&Cancel'
+    Constraints.MinWidth = 100
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 5
+  end
+  object chkRecursive: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbUnixAttributes
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 23
+    Top = 523
+    Width = 156
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 8
+    Caption = 'Including subfolders'
+    TabOrder = 3
+  end
+  object gbTimeSamp: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 125
+    Top = 6
+    Width = 395
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Timestamp properties'
+    ClientHeight = 102
+    ClientWidth = 391
+    TabOrder = 0
+    object DatesPanel: TPanel
+      AnchorSideLeft.Control = ChecksPanel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = gbTimeSamp
+      AnchorSideRight.Control = gbTimeSamp
+      AnchorSideRight.Side = asrBottom
+      Left = 112
+      Height = 90
+      Top = 6
+      Width = 279
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Around = 6
+      BevelOuter = bvNone
+      ClientHeight = 90
+      ClientWidth = 279
+      TabOrder = 1
+      object ZVCreationDateTime: TZVDateTimePicker
+        AnchorSideLeft.Control = DatesPanel
+        AnchorSideTop.Control = DatesPanel
+        AnchorSideRight.Control = DatesPanel
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 26
+        Top = 0
+        Width = 240
+        CenturyFrom = 1941
+        MaxDate = 2958465
+        MinDate = -53780
+        TabOrder = 0
+        Enabled = False
+        TrailingSeparator = False
+        TextForNullDate = 'NULL'
+        LeadingZeros = True
+        Kind = dtkDateTime
+        TimeFormat = tf24
+        TimeDisplay = tdHMSMs
+        DateMode = dmComboBox
+        Date = 40608
+        Time = 0.0684693287039408
+        UseDefaultSeparators = True
+        OnChange = ZVCreationDateTimeChange
+      end
+      object ZVLastWriteDateTime: TZVDateTimePicker
+        AnchorSideLeft.Control = DatesPanel
+        AnchorSideTop.Control = ZVCreationDateTime
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 26
+        Top = 32
+        Width = 240
+        CenturyFrom = 1941
+        MaxDate = 2958465
+        MinDate = -53780
+        TabOrder = 1
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Enabled = False
+        TrailingSeparator = False
+        TextForNullDate = 'NULL'
+        LeadingZeros = True
+        Kind = dtkDateTime
+        TimeFormat = tf24
+        TimeDisplay = tdHMSMs
+        DateMode = dmComboBox
+        Date = 40608
+        Time = 0.0684693287039408
+        UseDefaultSeparators = True
+        OnChange = ZVLastWriteDateTimeChange
+      end
+      object ZVLastAccessDateTime: TZVDateTimePicker
+        AnchorSideLeft.Control = DatesPanel
+        AnchorSideTop.Control = ZVLastWriteDateTime
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 26
+        Top = 64
+        Width = 240
+        CenturyFrom = 1941
+        MaxDate = 2958465
+        MinDate = -53780
+        TabOrder = 2
+        BorderSpacing.Top = 6
+        Enabled = False
+        TrailingSeparator = False
+        TextForNullDate = 'NULL'
+        LeadingZeros = True
+        Kind = dtkDateTime
+        TimeFormat = tf24
+        TimeDisplay = tdHMSMs
+        DateMode = dmComboBox
+        Date = 40608
+        Time = 0.0684693287039408
+        UseDefaultSeparators = True
+        OnChange = ZVLastAccessDateTimeChange
+      end
+      object btnLastWriteTime: TSpeedButton
+        AnchorSideLeft.Control = ZVLastWriteDateTime
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ZVLastWriteDateTime
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 246
+        Height = 21
+        Top = 35
+        Width = 23
+        BorderSpacing.Left = 6
+        BorderSpacing.Right = 10
+        Enabled = False
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000D5D5D40000000000FFFFFF00D1D5D4D7B2B2B3FFB3B4B4FFB3B4B4FFCACE
+          CDFFC7C4C51900000000D4D4D400000000000000000000000000000000000000
+          000000000000E2E2E19D898B89D7A6A9A7FFCCCCCCFFD5DCDEFFCFD0CFFFB5B8
+          B7FE8E9291F9CCCCCDD900000000C0C1C1000000000000000000000000000000
+          0000CACAC964909392FFC2C5C3FFF4F6F6FFFAFEFEFFC27443FFFBFFFFFFF5F8
+          F9FFDDDFDEFF8B8E8CFDBBBCBCE6FFFFFF050000000000000000C3C3C3000000
+          0000A1A2A1FFCACCCCFEFCFEFFFFC98C64FFFDFFFFFFF3E5DCFFF8FCFEFFCB8E
+          67FFF0F8FAFFEAEAEAFF989A9AFF91939325C3C3C30100000000FFFFFF05BFBF
+          BFE6A3A7A6FDFDFFFFFFD7CABEFFEDF6F7FFEDEFEEFFF1F3F2FFEDEFEEFFF4FC
+          FEFFE7E6E1FFF7F4F1FFD0D1D0FEB1B2B1FFFFFFFF1900000000D0D1D1359395
+          94FFDDE0DFFFF0F4F3FFD3C7BBFFCDD1D0FFC9CECCFFE7EBE9FFECF0EEFFEBF0
+          EDFFEBEBE6FFE2E2DEFFF0F2F0FF949795FECECFCFD000000000CAC9C9338C90
+          8FFFEDEAE6FFD2C0B2FFC5CACAFFBFC4C2FFC4C8C8FFC3C6C5FF767778FF7677
+          78FFB6B9BAFFD4C9BDFFEADCD1FF969B99FFC8C7C8CB00000000CAC9C9338C90
+          8EFFECE9E6FFCABAACFFC1C7C6FFC5CBC9FFD2D8D6FF1C1D1DFF929495FF9C9F
+          9EFFCFD4D3FFD2C6BCFFECDED4FF959A98FFC8C8C8CB00000000D0D1D1359395
+          94FFE0E1E0FFE0E4E4FFC4B7ACFFBEC3C2FFCBCFCEFF1F1F1FFFB8BBBCFFCFD4
+          D3FFE5E3DFFFDFDEDAFFE6E9E9FF959796FECECFCFD000000000FFFFFF05BFBF
+          BFE6A1A6A4FDF6F9FAFFCBBFB2FFC9D4D5FFC3C8C6FF1B1B1BFFBABCBDFFD6E0
+          E1FFDFDEDAFFF7F4F0FFD2D3D2FEB1B2B2FFFFFFFF1900000000C3C3C3000000
+          00009FA2A1FFD0D2D2FEF5F8F8FFCA8D66FFD8E3E4FF1A1D1EFFC4C8CAFFC68A
+          62FFEDF5F7FFE9EAEAFF979999FF92949325C3C3C30100000000000000000000
+          0000C9C9C964909392FFC0C2C1FFEFF3F3FFFCFEFFFFA0633BFFFAFFFFFFF2F5
+          F5FFDEDFDEFF919492FDBABBBAE6FFFFFF050000000000000000000000000000
+          000000000000E2E1E19D8E9090D7AAACABFFC6C9C8FFD2DADCFFCED0CEFFB6B9
+          B8FE909492F9CCCCCCD900000000C0C1C0000000000000000000000000000000
+          0000D5D4D40000000000FFFFFF00CFD2D1D7C0C5C3FFBFC4C2FF8D9390FFD2D5
+          D4FFC7C3C41900000000D4D4D400000000000000000000000000000000000000
+          0000000000000000000000000000E8ECEBCF777D7AFFC2C7C5FF7C827FFFCDD1
+          D0FF000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000E8EBEB297E8481337B827E3383898633CED3
+          D137000000000000000000000000000000000000000000000000
+        }
+        OnClick = btnLastWriteTimeClick
+      end
+      object btnCreationTime: TSpeedButton
+        AnchorSideLeft.Control = ZVCreationDateTime
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ZVCreationDateTime
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 246
+        Height = 20
+        Top = 3
+        Width = 23
+        BorderSpacing.Left = 6
+        BorderSpacing.Right = 10
+        Enabled = False
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000D5D5D40000000000FFFFFF00D1D5D4D7B2B2B3FFB3B4B4FFB3B4B4FFCACE
+          CDFFC7C4C51900000000D4D4D400000000000000000000000000000000000000
+          000000000000E2E2E19D898B89D7A6A9A7FFCCCCCCFFD5DCDEFFCFD0CFFFB5B8
+          B7FE8E9291F9CCCCCDD900000000C0C1C1000000000000000000000000000000
+          0000CACAC964909392FFC2C5C3FFF4F6F6FFFAFEFEFFC27443FFFBFFFFFFF5F8
+          F9FFDDDFDEFF8B8E8CFDBBBCBCE6FFFFFF050000000000000000C3C3C3000000
+          0000A1A2A1FFCACCCCFEFCFEFFFFC98C64FFFDFFFFFFF3E5DCFFF8FCFEFFCB8E
+          67FFF0F8FAFFEAEAEAFF989A9AFF91939325C3C3C30100000000FFFFFF05BFBF
+          BFE6A3A7A6FDFDFFFFFFD7CABEFFEDF6F7FFEDEFEEFFF1F3F2FFEDEFEEFFF4FC
+          FEFFE7E6E1FFF7F4F1FFD0D1D0FEB1B2B1FFFFFFFF1900000000D0D1D1359395
+          94FFDDE0DFFFF0F4F3FFD3C7BBFFCDD1D0FFC9CECCFFE7EBE9FFECF0EEFFEBF0
+          EDFFEBEBE6FFE2E2DEFFF0F2F0FF949795FECECFCFD000000000CAC9C9338C90
+          8FFFEDEAE6FFD2C0B2FFC5CACAFFBFC4C2FFC4C8C8FFC3C6C5FF767778FF7677
+          78FFB6B9BAFFD4C9BDFFEADCD1FF969B99FFC8C7C8CB00000000CAC9C9338C90
+          8EFFECE9E6FFCABAACFFC1C7C6FFC5CBC9FFD2D8D6FF1C1D1DFF929495FF9C9F
+          9EFFCFD4D3FFD2C6BCFFECDED4FF959A98FFC8C8C8CB00000000D0D1D1359395
+          94FFE0E1E0FFE0E4E4FFC4B7ACFFBEC3C2FFCBCFCEFF1F1F1FFFB8BBBCFFCFD4
+          D3FFE5E3DFFFDFDEDAFFE6E9E9FF959796FECECFCFD000000000FFFFFF05BFBF
+          BFE6A1A6A4FDF6F9FAFFCBBFB2FFC9D4D5FFC3C8C6FF1B1B1BFFBABCBDFFD6E0
+          E1FFDFDEDAFFF7F4F0FFD2D3D2FEB1B2B2FFFFFFFF1900000000C3C3C3000000
+          00009FA2A1FFD0D2D2FEF5F8F8FFCA8D66FFD8E3E4FF1A1D1EFFC4C8CAFFC68A
+          62FFEDF5F7FFE9EAEAFF979999FF92949325C3C3C30100000000000000000000
+          0000C9C9C964909392FFC0C2C1FFEFF3F3FFFCFEFFFFA0633BFFFAFFFFFFF2F5
+          F5FFDEDFDEFF919492FDBABBBAE6FFFFFF050000000000000000000000000000
+          000000000000E2E1E19D8E9090D7AAACABFFC6C9C8FFD2DADCFFCED0CEFFB6B9
+          B8FE909492F9CCCCCCD900000000C0C1C0000000000000000000000000000000
+          0000D5D4D40000000000FFFFFF00CFD2D1D7C0C5C3FFBFC4C2FF8D9390FFD2D5
+          D4FFC7C3C41900000000D4D4D400000000000000000000000000000000000000
+          0000000000000000000000000000E8ECEBCF777D7AFFC2C7C5FF7C827FFFCDD1
+          D0FF000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000E8EBEB297E8481337B827E3383898633CED3
+          D137000000000000000000000000000000000000000000000000
+        }
+        OnClick = btnCreationTimeClick
+      end
+      object btnLastAccessTime: TSpeedButton
+        AnchorSideLeft.Control = ZVLastAccessDateTime
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ZVLastAccessDateTime
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 246
+        Height = 21
+        Top = 67
+        Width = 23
+        BorderSpacing.Left = 6
+        BorderSpacing.Right = 10
+        Enabled = False
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000D5D5D40000000000FFFFFF00D1D5D4D7B2B2B3FFB3B4B4FFB3B4B4FFCACE
+          CDFFC7C4C51900000000D4D4D400000000000000000000000000000000000000
+          000000000000E2E2E19D898B89D7A6A9A7FFCCCCCCFFD5DCDEFFCFD0CFFFB5B8
+          B7FE8E9291F9CCCCCDD900000000C0C1C1000000000000000000000000000000
+          0000CACAC964909392FFC2C5C3FFF4F6F6FFFAFEFEFFC27443FFFBFFFFFFF5F8
+          F9FFDDDFDEFF8B8E8CFDBBBCBCE6FFFFFF050000000000000000C3C3C3000000
+          0000A1A2A1FFCACCCCFEFCFEFFFFC98C64FFFDFFFFFFF3E5DCFFF8FCFEFFCB8E
+          67FFF0F8FAFFEAEAEAFF989A9AFF91939325C3C3C30100000000FFFFFF05BFBF
+          BFE6A3A7A6FDFDFFFFFFD7CABEFFEDF6F7FFEDEFEEFFF1F3F2FFEDEFEEFFF4FC
+          FEFFE7E6E1FFF7F4F1FFD0D1D0FEB1B2B1FFFFFFFF1900000000D0D1D1359395
+          94FFDDE0DFFFF0F4F3FFD3C7BBFFCDD1D0FFC9CECCFFE7EBE9FFECF0EEFFEBF0
+          EDFFEBEBE6FFE2E2DEFFF0F2F0FF949795FECECFCFD000000000CAC9C9338C90
+          8FFFEDEAE6FFD2C0B2FFC5CACAFFBFC4C2FFC4C8C8FFC3C6C5FF767778FF7677
+          78FFB6B9BAFFD4C9BDFFEADCD1FF969B99FFC8C7C8CB00000000CAC9C9338C90
+          8EFFECE9E6FFCABAACFFC1C7C6FFC5CBC9FFD2D8D6FF1C1D1DFF929495FF9C9F
+          9EFFCFD4D3FFD2C6BCFFECDED4FF959A98FFC8C8C8CB00000000D0D1D1359395
+          94FFE0E1E0FFE0E4E4FFC4B7ACFFBEC3C2FFCBCFCEFF1F1F1FFFB8BBBCFFCFD4
+          D3FFE5E3DFFFDFDEDAFFE6E9E9FF959796FECECFCFD000000000FFFFFF05BFBF
+          BFE6A1A6A4FDF6F9FAFFCBBFB2FFC9D4D5FFC3C8C6FF1B1B1BFFBABCBDFFD6E0
+          E1FFDFDEDAFFF7F4F0FFD2D3D2FEB1B2B2FFFFFFFF1900000000C3C3C3000000
+          00009FA2A1FFD0D2D2FEF5F8F8FFCA8D66FFD8E3E4FF1A1D1EFFC4C8CAFFC68A
+          62FFEDF5F7FFE9EAEAFF979999FF92949325C3C3C30100000000000000000000
+          0000C9C9C964909392FFC0C2C1FFEFF3F3FFFCFEFFFFA0633BFFFAFFFFFFF2F5
+          F5FFDEDFDEFF919492FDBABBBAE6FFFFFF050000000000000000000000000000
+          000000000000E2E1E19D8E9090D7AAACABFFC6C9C8FFD2DADCFFCED0CEFFB6B9
+          B8FE909492F9CCCCCCD900000000C0C1C0000000000000000000000000000000
+          0000D5D4D40000000000FFFFFF00CFD2D1D7C0C5C3FFBFC4C2FF8D9390FFD2D5
+          D4FFC7C3C41900000000D4D4D400000000000000000000000000000000000000
+          0000000000000000000000000000E8ECEBCF777D7AFFC2C7C5FF7C827FFFCDD1
+          D0FF000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000E8EBEB297E8481337B827E3383898633CED3
+          D137000000000000000000000000000000000000000000000000
+        }
+        OnClick = btnLastAccessTimeClick
+      end
+    end
+    object ChecksPanel: TPanel
+      AnchorSideTop.Control = DatesPanel
+      AnchorSideBottom.Control = DatesPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 90
+      Top = 6
+      Width = 94
+      Anchors = [akTop, akLeft, akBottom]
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 90
+      ClientWidth = 94
+      TabOrder = 0
+      object chkCreationTime: TCheckBox
+        AnchorSideLeft.Control = ChecksPanel
+        AnchorSideTop.Control = ChecksPanel
+        Left = 6
+        Height = 23
+        Top = 6
+        Width = 79
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        Caption = 'Created:'
+        Enabled = False
+        OnChange = chkCreationTimeChange
+        TabOrder = 0
+      end
+      object chkLastWriteTime: TCheckBox
+        AnchorSideLeft.Control = ChecksPanel
+        AnchorSideTop.Control = ChecksPanel
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 23
+        Top = 34
+        Width = 82
+        BorderSpacing.Left = 6
+        Caption = 'Modified:'
+        Enabled = False
+        OnChange = chkLastWriteTimeChange
+        TabOrder = 1
+      end
+      object chkLastAccessTime: TCheckBox
+        AnchorSideLeft.Control = ChecksPanel
+        AnchorSideTop.Side = asrCenter
+        AnchorSideBottom.Control = ChecksPanel
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 23
+        Top = 61
+        Width = 88
+        Anchors = [akLeft, akBottom]
+        BorderSpacing.Left = 6
+        BorderSpacing.Bottom = 6
+        Caption = 'Accessed:'
+        Enabled = False
+        OnChange = chkLastAccessTimeChange
+        TabOrder = 2
+      end
+    end
+  end
+  object gbWinAttributes: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbTimeSamp
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 111
+    Top = 137
+    Width = 297
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Attributes'
+    ClientHeight = 88
+    ClientWidth = 293
+    TabOrder = 1
+    Visible = False
+    object chkSystem: TCheckBox
+      AnchorSideLeft.Control = chkHidden
+      AnchorSideTop.Control = chkReadOnly
+      Left = 166
+      Height = 23
+      Top = 35
+      Width = 70
+      BorderSpacing.Bottom = 6
+      Caption = 'System'
+      OnClick = chkChangeAttrClick
+      TabOrder = 3
+    end
+    object chkHidden: TCheckBox
+      AnchorSideTop.Control = chkArchive
+      Left = 166
+      Height = 23
+      Top = 6
+      Width = 68
+      Anchors = [akTop]
+      Caption = 'Hidden'
+      OnClick = chkChangeAttrClick
+      TabOrder = 2
+    end
+    object chkArchive: TCheckBox
+      AnchorSideLeft.Control = gbWinAttributes
+      AnchorSideTop.Control = gbWinAttributes
+      Left = 6
+      Height = 23
+      Top = 6
+      Width = 71
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'Archive'
+      OnClick = chkChangeAttrClick
+      TabOrder = 0
+    end
+    object chkReadOnly: TCheckBox
+      AnchorSideLeft.Control = chkArchive
+      AnchorSideTop.Control = chkArchive
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 35
+      Width = 86
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Read only'
+      OnClick = chkChangeAttrClick
+      TabOrder = 1
+    end
+    object lblAttrInfo: TLabel
+      AnchorSideLeft.Control = chkReadOnly
+      AnchorSideTop.Control = chkReadOnly
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 64
+      Width = 229
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = '(gray field means unchanged value)'
+      ParentColor = False
+      Visible = False
+    end
+  end
+  object gbUnixAttributes: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbWinAttributes
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 261
+    Top = 254
+    Width = 297
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Attributes'
+    ClientHeight = 238
+    ClientWidth = 293
+    TabOrder = 2
+    Visible = False
+    object lblRead: TLabel
+      AnchorSideLeft.Control = cbReadOwner
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = gbUnixAttributes
+      Left = 91
+      Height = 18
+      Top = 0
+      Width = 32
+      Caption = 'Read'
+      ParentColor = False
+    end
+    object lblWrite: TLabel
+      AnchorSideLeft.Control = cbWriteOwner
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = lblRead
+      Left = 163
+      Height = 18
+      Top = 0
+      Width = 38
+      Caption = 'Write'
+      ParentColor = False
+    end
+    object lblExec: TLabel
+      AnchorSideLeft.Control = cbExecOwner
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = lblRead
+      Left = 229
+      Height = 18
+      Top = 0
+      Width = 53
+      Caption = 'Execute'
+      ParentColor = False
+    end
+    object cbExecOwner: TCheckBox
+      AnchorSideTop.Control = cbReadOwner
+      Left = 245
+      Height = 20
+      Top = 24
+      Width = 20
+      Anchors = [akTop]
+      OnClick = cbChangeModeClick
+      TabOrder = 2
+    end
+    object cbWriteOwner: TCheckBox
+      AnchorSideTop.Control = cbReadOwner
+      Left = 172
+      Height = 20
+      Top = 24
+      Width = 20
+      Anchors = [akTop]
+      OnClick = cbChangeModeClick
+      TabOrder = 1
+    end
+    object cbReadOwner: TCheckBox
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = lblRead
+      AnchorSideTop.Side = asrBottom
+      Left = 97
+      Height = 20
+      Top = 24
+      Width = 20
+      Anchors = [akTop]
+      BorderSpacing.Top = 6
+      OnClick = cbChangeModeClick
+      TabOrder = 0
+    end
+    object lblAttrOwnerStr: TLabel
+      AnchorSideLeft.Control = gbUnixAttributes
+      AnchorSideTop.Control = cbReadOwner
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 18
+      Top = 25
+      Width = 46
+      BorderSpacing.Left = 7
+      Caption = 'Owner'
+      ParentColor = False
+    end
+    object lblAttrGroupStr: TLabel
+      AnchorSideLeft.Control = lblAttrOwnerStr
+      AnchorSideTop.Control = cbReadGroup
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 18
+      Top = 51
+      Width = 41
+      Caption = 'Group'
+      ParentColor = False
+    end
+    object cbReadGroup: TCheckBox
+      AnchorSideLeft.Control = cbReadOwner
+      AnchorSideTop.Control = cbReadOwner
+      AnchorSideTop.Side = asrBottom
+      Left = 97
+      Height = 20
+      Top = 50
+      Width = 20
+      BorderSpacing.Top = 6
+      OnClick = cbChangeModeClick
+      TabOrder = 3
+    end
+    object cbWriteGroup: TCheckBox
+      AnchorSideLeft.Control = cbWriteOwner
+      AnchorSideTop.Control = cbReadGroup
+      Left = 172
+      Height = 20
+      Top = 50
+      Width = 20
+      OnClick = cbChangeModeClick
+      TabOrder = 4
+    end
+    object cbExecGroup: TCheckBox
+      AnchorSideLeft.Control = cbExecOwner
+      AnchorSideTop.Control = cbReadGroup
+      Left = 245
+      Height = 20
+      Top = 50
+      Width = 20
+      OnClick = cbChangeModeClick
+      TabOrder = 5
+    end
+    object lblAttrOtherStr: TLabel
+      AnchorSideLeft.Control = lblAttrOwnerStr
+      AnchorSideTop.Control = cbReadOther
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 18
+      Top = 77
+      Width = 40
+      Caption = 'Other'
+      ParentColor = False
+    end
+    object cbReadOther: TCheckBox
+      AnchorSideLeft.Control = cbReadOwner
+      AnchorSideTop.Control = cbReadGroup
+      AnchorSideTop.Side = asrBottom
+      Left = 97
+      Height = 20
+      Top = 76
+      Width = 20
+      BorderSpacing.Top = 6
+      OnClick = cbChangeModeClick
+      TabOrder = 6
+    end
+    object cbWriteOther: TCheckBox
+      AnchorSideLeft.Control = cbWriteOwner
+      AnchorSideTop.Control = cbReadOther
+      Left = 172
+      Height = 20
+      Top = 76
+      Width = 20
+      OnClick = cbChangeModeClick
+      TabOrder = 7
+    end
+    object cbExecOther: TCheckBox
+      AnchorSideLeft.Control = cbExecOwner
+      AnchorSideTop.Control = cbReadOther
+      Left = 245
+      Height = 20
+      Top = 76
+      Width = 20
+      OnClick = cbChangeModeClick
+      TabOrder = 8
+    end
+    object Bevel1: TBevel
+      AnchorSideTop.Control = cbReadOther
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 4
+      Height = 4
+      Top = 102
+      Width = 289
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Shape = bsTopLine
+      Style = bsRaised
+    end
+    object cbSticky: TCheckBox
+      AnchorSideLeft.Control = cbSuid
+      AnchorSideTop.Control = cbSuid
+      AnchorSideTop.Side = asrBottom
+      Left = 97
+      Height = 23
+      Top = 141
+      Width = 61
+      BorderSpacing.Top = 6
+      Caption = 'Sticky'
+      OnClick = cbChangeModeClick
+      TabOrder = 11
+    end
+    object cbSgid: TCheckBox
+      AnchorSideLeft.Control = cbWriteOwner
+      AnchorSideTop.Control = Bevel1
+      AnchorSideTop.Side = asrBottom
+      Left = 172
+      Height = 23
+      Top = 112
+      Width = 58
+      BorderSpacing.Top = 6
+      Caption = 'SGID'
+      OnClick = cbChangeModeClick
+      TabOrder = 10
+    end
+    object cbSuid: TCheckBox
+      AnchorSideLeft.Control = cbReadOwner
+      AnchorSideTop.Control = Bevel1
+      AnchorSideTop.Side = asrBottom
+      Left = 97
+      Height = 23
+      Top = 112
+      Width = 57
+      BorderSpacing.Top = 6
+      Caption = 'SUID'
+      OnClick = cbChangeModeClick
+      TabOrder = 9
+    end
+    object lblAttrBitsStr: TLabel
+      AnchorSideLeft.Control = lblAttrOwnerStr
+      AnchorSideTop.Control = cbSuid
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 18
+      Top = 114
+      Width = 29
+      Caption = 'Bits:'
+      ParentColor = False
+    end
+    object Bevel2: TBevel
+      AnchorSideTop.Control = cbSticky
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 4
+      Height = 4
+      Top = 170
+      Width = 289
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Shape = bsTopLine
+      Style = bsRaised
+    end
+    object lblOctal: TLabel
+      AnchorSideLeft.Control = lblAttrOtherStr
+      AnchorSideTop.Control = edtOctal
+      AnchorSideTop.Side = asrCenter
+      Left = 7
+      Height = 18
+      Top = 185
+      Width = 41
+      Caption = 'Octal:'
+      FocusControl = edtOctal
+      ParentColor = False
+    end
+    object edtOctal: TEdit
+      AnchorSideLeft.Control = cbSuid
+      AnchorSideTop.Control = Bevel2
+      AnchorSideTop.Side = asrBottom
+      Left = 97
+      Height = 28
+      Top = 180
+      Width = 80
+      BorderSpacing.Top = 6
+      MaxLength = 4
+      OnKeyPress = edtOctalKeyPress
+      OnKeyUp = edtOctalKeyUp
+      TabOrder = 12
+    end
+    object lblAttrTextStr: TLabel
+      AnchorSideLeft.Control = lblAttrOtherStr
+      AnchorSideTop.Control = edtOctal
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 18
+      Top = 214
+      Width = 35
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Text:'
+      ParentColor = False
+    end
+    object lblAttrText: TLabel
+      AnchorSideLeft.Control = edtOctal
+      AnchorSideTop.Control = lblAttrTextStr
+      AnchorSideTop.Side = asrCenter
+      Left = 97
+      Height = 18
+      Top = 214
+      Width = 55
+      BorderSpacing.Bottom = 6
+      Caption = '-----------'
+      Font.Color = clBlack
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+end

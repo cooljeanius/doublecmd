@@ -1,0 +1,22 @@
+inherited frmMsg: TfrmMsg
+  Left = 270
+  Height = 254
+  Top = 149
+  Width = 426
+  HorzScrollBar.Page = 425
+  VertScrollBar.Page = 253
+  ClientHeight = 254
+  ClientWidth = 426
+  KeyPreview = True
+  OnCreate = FormCreate
+  OnKeyPress = FormKeyPress
+  OnKeyUp = FormKeyUp
+  OnShow = frmMsgShow
+  object lblMsg: TLabel[0]
+    Left = 32
+    Height = 1
+    Top = 16
+    Width = 1
+    ParentColor = False
+  end
+end

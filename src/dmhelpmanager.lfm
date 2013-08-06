@@ -1,0 +1,21 @@
+object dmHelpManager: TdmHelpManager
+  OnCreate = DataModuleCreate
+  OldCreateOrder = False
+  Height = 300
+  HorizontalOffset = 369
+  VerticalOffset = 200
+  Width = 400
+  object HTMLHelpDatabase: THTMLHelpDatabase
+    BaseURL = 'file://doc/en/'
+    AutoRegister = True
+    KeywordPrefix = 'en/'
+    left = 64
+    top = 48
+  end
+  object HTMLBrowserHelpViewer: THTMLBrowserHelpViewer
+    BrowserParams = '%s'
+    AutoRegister = True
+    left = 104
+    top = 48
+  end
+end

@@ -1,0 +1,4 @@
+doublecmd-gtk: shlib-with-non-pic-code
+doublecmd-gtk: shlib-with-executable-stack
+doublecmd-gtk: library-not-linked-against-libc
+doublecmd-gtk: shared-lib-without-dependency-information

@@ -1,0 +1,2502 @@
+Index: AbArcTyp.pas
+===================================================================
+--- AbArcTyp.pas	(revision 512)
++++ AbArcTyp.pas	(working copy)
+@@ -70,7 +70,14 @@
+     function GetIsEncrypted : Boolean; virtual;
+     function GetLastModFileDate : Word; virtual;
+     function GetLastModFileTime : Word; virtual;
++    { This depends on in what format the attributes are stored in the archive,
++      to which system they refer (MS-DOS, Unix, etc.) and what system
++      we're running on (compile time). }
+     function GetNativeFileAttributes : LongInt; virtual;
++    { This depends on in what format the date/time is stored in the archive
++      (Unix, MS-DOS, ...) and what system we're running on (compile time).
++      Returns MS-DOS local time on Windows, Unix UTC time on Unix. }
++    function GetNativeLastModFileTime : Longint; virtual;
+     function GetStoredPath : string;
+     function GetUncompressedSize : Int64; virtual;
+     procedure SetCompressedSize(const Value : Int64); virtual;
+@@ -126,6 +133,8 @@
+       write SetLastModFileTime;
+     property NativeFileAttributes : LongInt
+       read GetNativeFileAttributes;
++    property NativeLastModFileTime : Longint
++      read GetNativeLastModFileTime;
+     property StoredPath : string
+       read GetStoredPath;
+     property Tagged : Boolean
+@@ -316,6 +325,10 @@
+     procedure GetFreshenTarget(Item : TAbArchiveItem);
+     function  GetItemCount : Integer;
+     procedure MakeLogEntry(const FN: string; LT : TAbLogType);
++    procedure MakeFullNames(const SourceFileName: String;
++                            const ArchiveDirectory: String;
++                            out   FullSourceFileName: String;
++                            out   FullArchiveFileName: String);
+     procedure ReplaceAt(Index : Integer);
+     procedure SaveIfNeeded(aItem : TAbArchiveItem);
+     procedure SetBaseDirectory(Value : string);
+@@ -323,8 +336,19 @@
+     procedure SetLogging(Value : Boolean);
+ 
+   protected {abstract methods}
++    function CreateItem(const SourceFileName : string;
++                        const ArchiveDirectory : string): TAbArchiveItem;
++    {SourceFileName   - full or relative path to a file/dir on some file system
++                        If full path, BaseDirectory is used to determine relative path}
++    {ArchiveDirectory - path to a directory in the archive the file/dir will be in}
++    {Example:
++      FBaseDirectory      = /dir
++      SourceFileName      = /dir/subdir/file
++      ArchiveDirectory    = files/storage  (or files/storage/)
++      -> name in archive  = files/storage/subdir/file}
++      virtual; abstract; overload;
+     function CreateItem(const FileSpec : string): TAbArchiveItem;
+-      virtual; abstract;
++      overload;
+     procedure ExtractItemAt(Index : Integer; const UseName : string);
+       virtual; abstract;
+     procedure ExtractItemToStreamAt(Index : Integer; aStream : TStream);
+@@ -384,6 +408,7 @@
+       override;
+     procedure Add(aItem : TAbArchiveItem);
+       virtual;
++    procedure AddEntry(const Path : String; const ArchiveDirectory : String);
+     procedure AddFiles(const FileMask : string; SearchAttr : Integer);
+     procedure AddFilesEx(const FileMask, ExclusionMask : string;
+       SearchAttr : Integer);
+@@ -565,7 +590,9 @@
+   AbExcept,
+   AbDfBase,
+   AbConst,
+-  AbResString;
++  AbResString,
++  DCOSUtils,
++  DCClassesUtf8;
+ 
+ 
+ { TAbArchiveItem implementation ============================================ }
+@@ -647,6 +674,12 @@
+   {$ENDIF}
+ end;
+ { -------------------------------------------------------------------------- }
++function TAbArchiveItem.GetNativeLastModFileTime : Longint;
++begin
++  LongRec(Result).Hi := LastModFileDate;
++  LongRec(Result).Lo := LastModFileTime;
++end;
++{ -------------------------------------------------------------------------- }
+ function TAbArchiveItem.GetStoredPath : string;
+ begin
+   Result := ExtractFilePath(DiskFileName);
+@@ -980,7 +1013,7 @@
+   {create an archive by opening a filestream on filename with the given mode}
+ begin
+   FOwnsStream := True;
+-  CreateFromStream(TFileStream.Create(FileName, Mode), FileName);
++  CreateFromStream(TFileStreamEx.Create(FileName, Mode), FileName);
+   FMode := Mode;
+ end;
+ { -------------------------------------------------------------------------- }
+@@ -1032,6 +1065,19 @@
+   end;
+ end;
+ { -------------------------------------------------------------------------- }
++procedure TAbArchive.AddEntry(const Path : String; const ArchiveDirectory : String);
++var
++  Item : TAbArchiveItem;
++  FullSourceFileName, FullArchiveFileName : String;
++begin
++  MakeFullNames(Path, ArchiveDirectory, FullSourceFileName, FullArchiveFileName);
++
++  if (FullSourceFileName <> FArchiveName) then begin
++    Item := CreateItem(Path, ArchiveDirectory);
++    Add(Item);
++  end;
++end;
++{ -------------------------------------------------------------------------- }
+ procedure TAbArchive.AddFiles(const FileMask : string; SearchAttr : Integer);
+   {Add files to the archive where the disk filespec matches}
+ begin
+@@ -1196,14 +1242,14 @@
+     UseName := AbAddBackSlash(BaseDirectory) + UseName;
+ 
+   Path := ExtractFileDir(UseName);
+-  if (Path <> '') and not DirectoryExists(Path) then
++  if (Path <> '') and not mbDirectoryExists(Path) then
+     if (eoCreateDirs in ExtractOptions) then
+       AbCreateDirectory(Path)
+     else
+       raise EAbNoSuchDirectory.Create;
+ 
+   Result := True;
+-  if not Item.IsDirectory and FileExists(UseName) then
++  if not Item.IsDirectory and mbFileExists(UseName) then
+     DoConfirmOverwrite(UseName, Result);
+ end;
+ { -------------------------------------------------------------------------- }
+@@ -1560,11 +1606,12 @@
+ begin
+   CheckValid;
+   Index := FindItem(aItem);
+-  if Index <> -1 then begin
++  if Index <> -1 then
++  begin
++    FreshenAt(Index);
+     {point existing item at the new file}
+     if AbGetPathType(aItem.DiskFileName) = ptAbsolute then
+       FItemList[Index].DiskFileName := aItem.DiskFileName;
+-    FreshenAt(Index);
+   end;
+ end;
+ { -------------------------------------------------------------------------- }
+@@ -1625,7 +1672,7 @@
+ { -------------------------------------------------------------------------- }
+ function TAbArchive.FreshenRequired(Item : TAbArchiveItem) : Boolean;
+ var
+-  FS : TFileStream;
++  FS : TFileStreamEx;
+   DateTime : LongInt;
+   FileTime : Word;
+   FileDate : Word;
+@@ -1636,8 +1683,8 @@
+   if BaseDirectory <> '' then
+     ChDir(BaseDirectory);
+   try
+-    FS := TFileStream.Create(Item.DiskFileName,
+-                              fmOpenRead or fmShareDenyWrite);
++    FS := TFileStreamEx.Create(Item.DiskFileName,
++                               fmOpenRead or fmShareDenyWrite);
+     try
+       DateTime := FileGetDate(FS.Handle);
+       FileTime := LongRec(DateTime).Lo;
+@@ -1761,6 +1808,45 @@
+   end;
+ end;
+ { -------------------------------------------------------------------------- }
++procedure TAbArchive.MakeFullNames(const SourceFileName: String;
++                                   const ArchiveDirectory: String;
++                                   out   FullSourceFileName: String;
++                                   out   FullArchiveFileName: String);
++var
++  PathType : TAbPathType;
++  RelativeSourceFileName: String;
++begin
++  PathType := AbGetPathType(SourceFileName);
++  case PathType of
++    ptNone, ptRelative :
++      begin
++        if FBaseDirectory <> '' then
++          FullSourceFileName := AbAddBackSlash(FBaseDirectory) + SourceFileName
++        else
++          FullSourceFileName := SourceFileName;
++
++        RelativeSourceFileName := SourceFileName;
++      end;
++    ptAbsolute :
++      begin
++        FullSourceFileName := SourceFileName;
++
++        if FBaseDirectory <> '' then
++          RelativeSourceFileName := ExtractRelativepath(AbAddBackSlash(FBaseDirectory),
++                                                        SourceFileName)
++        else
++          RelativeSourceFileName := ExtractFileName(SourceFileName);
++      end;
++  end;
++
++  if ArchiveDirectory <> '' then
++    FullArchiveFileName := AbAddBackSlash(ArchiveDirectory) + RelativeSourceFileName
++  else
++    FullArchiveFileName := RelativeSourceFileName;
++
++  FullArchiveFileName := FixName(FullArchiveFileName);
++end;
++{ -------------------------------------------------------------------------- }
+ procedure TAbArchive.Move(aItem : TAbArchiveItem; const NewStoredPath : string);
+ var
+   Confirm : Boolean;
+@@ -1807,11 +1893,12 @@
+ begin
+   CheckValid;
+   Index := FindItem(aItem);
+-  if Index <> -1 then begin
++  if Index <> -1 then
++  begin
++    ReplaceAt(Index);
+     {point existing item at the new file}
+     if AbGetPathType(aItem.DiskFileName) = ptAbsolute then
+       FItemList[Index].DiskFileName := aItem.DiskFileName;
+-    ReplaceAt(Index);
+   end;
+ end;
+ { -------------------------------------------------------------------------- }
+@@ -1841,7 +1928,7 @@
+ begin
+   if Status = asInvalid then
+     Exit;
+-  if (not FIsDirty) and (Count > 0) then
++  if not FIsDirty then
+     Exit;
+ 
+   DoConfirmSave(Confirm);
+@@ -1865,7 +1952,7 @@
+     if Value[Length(Value)] = AbPathDelim then
+       if (Length(Value) > 1) and (Value[Length(Value) - 1] <> ':') then
+         System.Delete(Value, Length(Value), 1);
+-  if (Length(Value) = 0) or DirectoryExists(Value) then
++  if (Length(Value) = 0) or mbDirectoryExists(Value) then
+     FBaseDirectory := Value
+   else
+     raise EAbNoSuchDirectory.Create;
+@@ -1930,6 +2017,13 @@
+   raise EAbSpanningNotSupported.Create;
+ end;
+ { -------------------------------------------------------------------------- }
++function TAbArchive.CreateItem(const FileSpec : string): TAbArchiveItem;
++begin
++  // This function is used by Abbrevia. We don't use it but a dummy
++  // definition is needed for the code to compile successfully.
++  raise Exception.Create('');
++end;
++{ -------------------------------------------------------------------------- }
+ 
+ { TAbExtraField implementation ============================================= }
+ procedure TAbExtraField.Assign(aSource : TAbExtraField);
+@@ -1973,7 +2067,7 @@
+   Len, Offset : Integer;
+ begin
+   Len := SizeOf(TAbExtraSubField) + aSubField.Len;
+-  Offset := PtrInt(aSubField) - PtrInt(Pointer(FBuffer));
++  Offset := Pointer(aSubField) - Pointer(FBuffer);
+   if Offset + Len < Length(FBuffer) then
+     Move(FBuffer[Offset + Len], aSubField^, Length(FBuffer) - Offset - Len);
+   SetLength(FBuffer, Length(FBuffer) - Len);
+@@ -2001,9 +2095,9 @@
+   end
+   else begin
+     BytesLeft := Length(FBuffer) -
+-      Integer(PtrInt(aCurField) - PtrInt(Pointer(FBuffer))) -
++      (Pointer(aCurField) - Pointer(FBuffer)) -
+       SizeOf(TAbExtraSubField) - aCurField.Len;
+-    aCurField := Pointer(PtrInt(aCurField) + aCurField.Len + SizeOf(TAbExtraSubField));
++    Inc(Pointer(aCurField), aCurField.Len + SizeOf(TAbExtraSubField));
+   end;
+   Result := (BytesLeft >= SizeOf(TAbExtraSubField));
+   if Result and (BytesLeft < SizeOf(TAbExtraSubField) + aCurField.Len) then
+Index: AbBitBkt.pas
+===================================================================
+--- AbBitBkt.pas	(revision 512)
++++ AbBitBkt.pas	(working copy)
+@@ -47,7 +47,7 @@
+       FBufPosn : longint;
+       FPosn    : Int64;
+       FSize    : Int64;
+-      FTail    : longint;
++      FTail    : Int64;
+     protected
+     public
+       constructor Create(aBufSize : cardinal);
+@@ -108,8 +108,8 @@
+ {--------}
+ function TAbBitBucketStream.Read(var Buffer; Count : Longint) : Longint;
+ var
+-  Chunk2Size : longint;
+-  Chunk1Size : longint;
++  Chunk2Size : Int64;
++  Chunk1Size : Int64;
+   OutBuffer  : PByte;
+ begin
+   OutBuffer := @Buffer;
+@@ -146,7 +146,7 @@
+   end;
+   if (Chunk2Size > 0) then begin
+     {we've wrapped}
+-    Move(FBuffer[0], PByte(PtrInt(OutBuffer) + PtrInt(Chunk1Size))^, Chunk2Size);
++    Move(FBuffer[0], (OutBuffer + Chunk1Size)^, Chunk2Size);
+     FBufPosn := Chunk2Size;
+     inc(FPosn, Chunk2Size);
+   end;
+@@ -155,8 +155,8 @@
+ {--------}
+ function TAbBitBucketStream.Write(const Buffer; Count : Longint) : Longint;
+ var
+-  Chunk2Size : longint;
+-  Chunk1Size : longint;
++  Chunk2Size : Int64;
++  Chunk1Size : Int64;
+   InBuffer   : PByte;
+   Overage    : longint;
+ begin
+@@ -186,7 +186,7 @@
+   {if the second chunk size is not zero, write the second chunk; note
+    that we have wrapped}
+   if (Chunk2Size > 0) then begin
+-    Move(PByte(PtrInt(InBuffer) + PtrInt(Chunk1Size))^, FBuffer[0], Chunk2Size);
++    Move((InBuffer + Chunk1Size)^, FBuffer[0], Chunk2Size);
+     FTail := Chunk2Size;
+   end;
+   {the stream size and position have changed}
+Index: AbBrowse.pas
+===================================================================
+--- AbBrowse.pas	(revision 525)
++++ AbBrowse.pas	(working copy)
+@@ -220,13 +220,15 @@
+ uses
+   SysUtils,
+   AbExcept,
+-{$IFDEF MSWINDOWS}
++{$IF DEFINED(ExtractCabSupport)}
+   AbCabTyp,
+ {$ENDIF}
+   AbZipTyp,
+   AbTarTyp,
+   AbGzTyp,
+-  AbBzip2Typ;
++  AbBzip2Typ,
++  DCOSUtils,
++  DCClassesUtf8;
+ 
+ { TAbBaseBrowser implementation ======================================= }
+ 
+@@ -515,66 +517,70 @@
+ function AbDetermineArcType(const FN : string; AssertType : TAbArchiveType) : TAbArchiveType;
+ var
+   Ext : string;
+-  FS : TFileStream;
++  FS : TStream;
+ begin
+   Result := AssertType;
+   if Result = atUnknown then begin
+     { Guess archive type based on it's extension }
+     Ext := UpperCase(ExtractFileExt(FN));
+     if (Ext = '.ZIP') or (Ext = '.JAR') then
+-      Result := atZip;
+-    if (Ext = '.EXE') then
+-      Result := atSelfExtZip;
+-    if (Ext = '.TAR') then
+-      Result := atTar;
+-    if (Ext = '.GZ') then
+-      Result := atGzip;
+-    if (Ext = '.TGZ') then
+-      Result := atGzippedTar;
+-    if (Ext = '.CAB') then
+-      Result := atCab;
+-    if (Ext = '.BZ2') then
+-      Result := atBzip2;
+-    if (Ext = '.TBZ') then
++      Result := atZip
++    else if (Ext = '.EXE') then
++      Result := atSelfExtZip
++    else if (Ext = '.TAR') then
++      Result := atTar
++    else if (Ext = '.GZ') then
++      Result := atGzip
++    else if (Ext = '.TGZ') then
++      Result := atGzippedTar
++    else if (Ext = '.CAB') then
++      Result := atCab
++    else if (Ext = '.BZ2') then
++      Result := atBzip2
++    else if (Ext = '.TBZ') then
+       Result := atBzippedTar;
+   end;
+-  {$IFNDEF MSWINDOWS}
++  {$IF NOT DEFINED(ExtractCabSupport)}
+   if Result = atCab then
+     Result := atUnknown;
+   {$ENDIF}
+-  if FileExists(FN) and (AbFileGetSize(FN) > 0) then begin
++  if mbFileExists(FN) and (AbFileGetSize(FN) > 0) then begin
+     { If the file doesn't exist (or is empty) presume to make one, otherwise
+       guess or verify the contents }
+-    FS := TFileStream.Create(FN, fmOpenRead or fmShareDenyNone);
+-    try
+-      if Result = atUnknown then
+-        Result := AbDetermineArcType(FS)
+-      else begin
+-        case Result of
+-          atZip : begin
+-            Result := VerifyZip(FS);
++    try  
++      FS := TFileStreamEx.Create(FN, fmOpenRead or fmShareDenyNone);
++      try
++        if Result <> atUnknown then begin
++          case Result of
++            atZip : begin
++              Result := VerifyZip(FS);
++            end;
++            atSelfExtZip : begin
++              Result := VerifySelfExtracting(FS);
++            end;
++            atTar : begin
++              Result := VerifyTar(FS);
++            end;
++            atGzip, atGzippedTar: begin
++              Result := VerifyGzip(FS);
++            end;
++            {$IF DEFINED(ExtractCabSupport)}
++            atCab : begin
++              Result := VerifyCab(FS);
++            end;
++            {$ENDIF}
++            atBzip2, atBzippedTar: begin
++              Result := VerifyBzip2(FS);
++            end;
+           end;
+-          atSelfExtZip : begin
+-            Result := VerifySelfExtracting(FS);
+-          end;
+-          atTar : begin
+-            Result := VerifyTar(FS);
+-          end;
+-          atGzip, atGzippedTar: begin
+-            Result := VerifyGzip(FS);
+-          end;
+-          {$IFDEF MSWINDOWS}
+-          atCab : begin
+-            Result := VerifyCab(FS);
+-          end;
+-          {$ENDIF}
+-          atBzip2, atBzippedTar: begin
+-            Result := VerifyBzip2(FS);
+-          end;
+         end;
++        if Result = atUnknown then
++          Result := AbDetermineArcType(FS)
++      finally
++        FS.Free;
+       end;
+-    finally
+-      FS.Free;
++    except
++      // Skip
+     end;
+   end;
+ end;
+@@ -583,15 +589,16 @@
+ begin
+   { VerifyZip returns true for self-extracting zips too, so test those first }
+   Result := VerifySelfExtracting(aStream);
++  { VerifyZip returns true for example when ZIP file is stored in a TAR archive, so test it first }
+   if Result = atUnknown then
++    Result := VerifyTar(aStream);
++  if Result = atUnknown then
+     Result := VerifyZip(aStream);
+   if Result = atUnknown then
+-    Result := VerifyTar(aStream);
+-  if Result = atUnknown then
+     Result := VerifyGzip(aStream);
+   if Result = atUnknown then
+     Result := VerifyBzip2(aStream);
+-  {$IFDEF MSWINDOWS}
++  {$IF DEFINED(ExtractCabSupport)}
+   if Result = atUnknown then
+     Result := VerifyCab(aStream);
+   {$ENDIF}
+Index: AbBzip2.pas
+===================================================================
+--- AbBzip2.pas	(revision 512)
++++ AbBzip2.pas	(working copy)
+@@ -391,7 +391,7 @@
+ {$ENDIF}
+ 
+ const
+-  libbz2 = {$IF DEFINED(MSWINDOWS)}'libbz2.dll'
++  libbz2 = {$IF DEFINED(MSWINDOWS)}'bz2.dll'
+            {$ELSEIF DEFINED(DARWIN)}'libbz2.dylib'
+            {$ELSE}'libbz2.so.1'{$IFEND};
+ 
+@@ -527,8 +527,7 @@
+         P := OutBuf;
+         Inc(OutBytes, 256);
+         ReallocMem(OutBuf, OutBytes);
+-        strm.next_out := PByte(PtrInt(OutBuf)
+-             + (PtrInt(strm.next_out) - PtrInt(P)));
++        strm.next_out := OutBuf + (strm.next_out - P);
+         strm.avail_out := 256;
+       end;
+     finally
+@@ -571,7 +570,7 @@
+         P := OutBuf;
+         Inc(OutBytes, BufInc);
+         ReallocMem(OutBuf, OutBytes);
+-        strm.next_out := PByte(PtrInt(OutBuf) + (PtrInt(strm.next_out) - PtrInt(P)));
++        strm.next_out := OutBuf + (strm.next_out - P);
+         strm.avail_out := BufInc;
+       end;
+     finally
+Index: AbBzip2Typ.pas
+===================================================================
+--- AbBzip2Typ.pas	(revision 512)
++++ AbBzip2Typ.pas	(working copy)
+@@ -86,7 +86,8 @@
+ 
+   protected
+     { Inherited Abstract functions }
+-    function CreateItem(const FileSpec : string): TAbArchiveItem; override;
++    function CreateItem(const SourceFileName   : string;
++                        const ArchiveDirectory : string): TAbArchiveItem; override;
+     procedure ExtractItemAt(Index : Integer; const NewName : string); override;
+     procedure ExtractItemToStreamAt(Index : Integer; aStream : TStream); override;
+     procedure LoadArchive; override;
+@@ -118,7 +119,7 @@
+   Windows, // Fix inline warnings
+ {$ENDIF}
+   StrUtils, SysUtils,
+-  AbBzip2, AbExcept, AbVMStrm, AbBitBkt;
++  AbBzip2, AbExcept, AbVMStrm, AbBitBkt, DCOSUtils, DCClassesUtf8;
+ 
+ { ****************** Helper functions Not from Classes Above ***************** }
+ function VerifyHeader(const Header : TAbBzip2Header) : Boolean;
+@@ -193,20 +194,29 @@
+   FState    := gsBzip2;
+ end;
+ { -------------------------------------------------------------------------- }
+-function TAbBzip2Archive.CreateItem(const FileSpec: string): TAbArchiveItem;
++function TAbBzip2Archive.CreateItem(const SourceFileName   : string;
++                                    const ArchiveDirectory : string): TAbArchiveItem;
++var
++  Bz2Item : TAbBzip2Item;
++  FullSourceFileName, FullArchiveFileName: String;
+ begin
+   if IsBzippedTar and TarAutoHandle then begin
+     SwapToTar;
+-    Result := inherited CreateItem(FileSpec);
++    Result := inherited CreateItem(SourceFileName, ArchiveDirectory);
+   end
+   else begin
+     SwapToBzip2;
+-    Result := TAbBzip2Item.Create;
++    Bz2Item := TAbBzip2Item.Create;
+     try
+-      Result.DiskFileName := ExpandFileName(FileSpec);
+-      Result.FileName := FixName(FileSpec);
++      MakeFullNames(SourceFileName, ArchiveDirectory,
++                    FullSourceFileName, FullArchiveFileName);
++
++      Bz2Item.FileName := FullArchiveFileName;
++      Bz2Item.DiskFileName := FullSourceFileName;
++
++      Result := Bz2Item;
+     except
+-      Result.Free;
++      Result := nil;
+       raise;
+     end;
+   end;
+@@ -223,7 +233,7 @@
+ procedure TAbBzip2Archive.ExtractItemAt(Index: Integer;
+   const NewName: string);
+ var
+-  OutStream : TFileStream;
++  OutStream : TStream;
+ begin
+   if IsBzippedTar and TarAutoHandle then begin
+     SwapToTar;
+@@ -231,7 +241,7 @@
+   end
+   else begin
+     SwapToBzip2;
+-    OutStream := TFileStream.Create(NewName, fmCreate or fmShareDenyNone);
++    OutStream := TFileStreamEx.Create(NewName, fmCreate or fmShareDenyNone);
+     try
+       try
+         ExtractItemToStreamAt(Index, OutStream);
+@@ -242,12 +252,12 @@
+     except
+       on E : EAbUserAbort do begin
+         FStatus := asInvalid;
+-        if FileExists(NewName) then
+-          DeleteFile(NewName);
++        if mbFileExists(NewName) then
++          mbDeleteFile(NewName);
+         raise;
+       end else begin
+-        if FileExists(NewName) then
+-          DeleteFile(NewName);
++        if mbFileExists(NewName) then
++          mbDeleteFile(NewName);
+         raise;
+       end;
+     end;
+@@ -347,7 +357,7 @@
+             if CurItem.Action = aaStreamAdd then
+               CompStream.CopyFrom(InStream, 0){ Copy/compress entire Instream to FBzip2Stream }
+             else begin
+-              InputFileStream := TFileStream.Create(CurItem.DiskFileName, fmOpenRead or fmShareDenyWrite );
++              InputFileStream := TFileStreamEx.Create(CurItem.DiskFileName, fmOpenRead or fmShareDenyWrite );
+               try
+                 CompStream.CopyFrom(InputFileStream, 0);{ Copy/compress entire Instream to FBzip2Stream }
+               finally
+Index: AbDfInW.pas
+===================================================================
+--- AbDfInW.pas	(revision 512)
++++ AbDfInW.pas	(working copy)
+@@ -261,8 +261,7 @@
+     HashInx :=
+        ((HashInx shl c_HashShift) xor longint(CurPos[2])) and
+        c_HashMask;
+-    HashChains^[longint(CurPos) and FWinMask] :=
+-       HashHeads^[HashInx];
++    HashChains^[PtrUInt(CurPos) and FWinMask] := HashHeads^[HashInx];
+     HashHeads^[HashInx] := CurPos;
+     inc(CurPos);
+   end;
+@@ -367,7 +366,6 @@
+   {$ENDIF}
+ {$ENDIF}
+ type
+-  PLongint = ^longint;
+   PWord    = ^word;
+ var
+   MaxLen     : longint;
+@@ -406,7 +404,7 @@
+ 
+   {update the chain itself: set the entry for this position equal to
+    the previous string position}
+-  FHashChains^[longint(CurPos) and FWinMask] := PrevStrPos;
++  FHashChains^[PtrUInt(CurPos) and FWinMask] := PrevStrPos;
+ 
+   {calculate the maximum match we could do at this position}
+   MaxMatch := (FLookAheadEnd - CurPos);
+@@ -602,7 +600,7 @@
+       Break;
+ 
+     {otherwise move onto the next position}
+-    PrevStrPos := FHashChains^[longint(PrevStrPos) and FWinMask];
++    PrevStrPos := FHashChains^[PtrUInt(PrevStrPos) and FWinMask];
+   end;
+   {$ENDIF}
+ 
+@@ -700,13 +698,11 @@
+ end;
+ {--------}
+ procedure TAbDfInputWindow.iwSlide;
+-type
+-  PLongint = ^longint;
+ var
+   i : integer;
+-  ByteCount : integer;
+-  Buffer    : longint;
+-  ListItem  : PLongint;
++  ByteCount : PtrInt;
++  Buffer    : PAnsiChar;
++  ListItem  : PPointer;
+ begin
+   {move current valid data back to the start of the buffer}
+   ByteCount := FLookAheadEnd - FStart;
+@@ -719,22 +715,22 @@
+   dec(FLookAheadEnd, ByteCount);
+ 
+   {patch up the hash table: the head pointers}
+-  Buffer := longint(FBuffer);
+-  ListItem := PLongint(@FHashHeads^[0]);
++  Buffer := FBuffer;
++  ListItem := @FHashHeads^[0];
+   for i := 0 to pred(c_HashCount) do begin
+     dec(ListItem^, ByteCount);
+     if (ListItem^ < Buffer) then
+-      ListItem^ := 0;
+-    inc(PAnsiChar(ListItem), sizeof(pointer));
++      ListItem^ := nil;
++    inc(ListItem);
+   end;
+ 
+   {..the chain pointers}
+-  ListItem  := PLongint(@FHashChains^[0]);
++  ListItem  := @FHashChains^[0];
+   for i := 0 to pred(FWinSize) do begin
+     dec(ListItem^, ByteCount);
+     if (ListItem^ < Buffer) then
+-      ListItem^ := 0;
+-    inc(PAnsiChar(ListItem), sizeof(pointer));
++      ListItem^ := nil;
++    inc(ListItem);
+   end;
+ 
+   {now read some more data from the stream}
+Index: AbDfStrm.pas
+===================================================================
+--- AbDfStrm.pas	(revision 512)
++++ AbDfStrm.pas	(working copy)
+@@ -230,7 +230,8 @@
+   {save the on progress handler}
+   if Assigned(aOnProgress) and (aStreamSize > 0) then begin
+     FOnProgress := aOnProgress;
+-    FStreamSize := aStreamSize;
++    //FStreamSize := aStreamSize;
++    FStreamSize := aStream.Size - aStream.Position;
+   end;
+ end;
+ {--------}
+Index: AbGzTyp.pas
+===================================================================
+--- AbGzTyp.pas	(revision 512)
++++ AbGzTyp.pas	(working copy)
+@@ -140,6 +140,7 @@
+     function GetLastModFileDate : Word; override;
+     function GetLastModFileTime : Word; override;
+     function GetLastModTimeAsDateTime: TDateTime; override;
++    function GetNativeLastModFileTime: Longint; override;
+ 
+     procedure SetExternalFileAttributes( Value : LongWord ); override;
+     procedure SetFileName(const Value : string); override;
+@@ -242,7 +243,8 @@
+     procedure SwapToTar;
+ 
+   protected
+-    function CreateItem(const FileSpec : string): TAbArchiveItem;
++    function CreateItem(const SourceFileName   : string;
++                        const ArchiveDirectory : string): TAbArchiveItem;
+       override;
+     procedure ExtractItemAt(Index : Integer; const UseName : string);
+       override;
+@@ -291,7 +293,8 @@
+   Windows,
+   {$ENDIF}
+   SysUtils,
+-  AbBitBkt, AbCharset, AbDfBase, AbDfDec, AbDfEnc, AbExcept, AbResString, AbVMStrm;
++  AbBitBkt, AbDfBase, AbDfDec, AbDfEnc, AbExcept, AbResString,
++  AbVMStrm, DCOSUtils, DCClassesUtf8, DCConvertEncoding;
+ 
+ const
+   { Header Signature Values}
+@@ -708,6 +711,20 @@
+   Result := AbUnixTimeToLocalDateTime(FGZHeader.ModTime);
+ end;
+ 
++function TAbGzipItem.GetNativeLastModFileTime: Longint;
++{$IFDEF MSWINDOWS}
++var
++  DateTime: TDateTime;
++{$ENDIF}
++begin
++  Result   := FGZHeader.ModTime;
++
++{$IFDEF MSWINDOWS}
++  DateTime := AbUnixTimeToLocalDateTime(Result);
++  Result   := AbDateTimeToDosFileDate(DateTime);
++{$ENDIF}
++end;
++
+ procedure TAbGzipItem.LoadGzHeaderFromStream(AStream: TStream);
+ var
+   LenW : Word;
+@@ -731,7 +748,7 @@
+   { Get Filename, if any }
+   if HasFileName then begin
+     FRawFileName := ReadCStringInStream(AStream);
+-    FFileName := AbRawBytesToString(FRawFileName)
++    FFileName := CeRawToUtf8(FRawFileName)
+   end
+   else
+     FFileName := 'unknown';
+@@ -804,7 +821,7 @@
+ procedure TAbGzipItem.SetFileName(const Value: string);
+ begin
+   FFileName := Value;
+-  FRawFileName := AbStringToUnixBytes(Value);
++  FRawFileName := CeUtf8ToSys(Value);
+   if Value <> '' then
+     FGzHeader.Flags := FGzHeader.Flags or AB_GZ_FLAG_FNAME
+   else
+@@ -886,25 +903,30 @@
+   FState := gsGzip;
+ end;
+ 
+-function TAbGzipArchive.CreateItem(const FileSpec: string): TAbArchiveItem;
++function TAbGzipArchive.CreateItem(const SourceFileName   : string;
++                                   const ArchiveDirectory : string): TAbArchiveItem;
+ var
+   GzItem : TAbGzipItem;
++  FullSourceFileName, FullArchiveFileName: String;
+ begin
+   if IsGZippedTar and TarAutoHandle then begin
+     SwapToTar;
+-    Result := inherited CreateItem(FileSpec);
++    Result := inherited CreateItem(SourceFileName, ArchiveDirectory);
+   end
+   else begin
+     SwapToGzip;
+     GzItem := TAbGzipItem.Create;
+     try
+-      GzItem.CompressedSize := 0;
+-      GzItem.CRC32 := 0;
+-      GzItem.DiskFileName := ExpandFileName(FileSpec);
+-      GzItem.FileName := FixName(FileSpec);
++      MakeFullNames(SourceFileName, ArchiveDirectory,
++                    FullSourceFileName, FullArchiveFileName);
++
++      GzItem.FileName := FullArchiveFileName;
++      GzItem.DiskFileName := FullSourceFileName;
++
+       Result := GzItem;
+     except
+       Result := nil;
++      raise;
+     end;
+   end;
+ end;
+@@ -921,7 +943,7 @@
+ procedure TAbGzipArchive.ExtractItemAt(Index: Integer;
+   const UseName: string);
+ var
+-  OutStream : TFileStream;
++  OutStream : TStream;
+   CurItem : TAbGzipItem;
+ begin
+   if IsGZippedTar and TarAutoHandle then begin
+@@ -934,7 +956,7 @@
+ 
+     CurItem := TAbGzipItem(ItemList[Index]);
+ 
+-    OutStream := TFileStream.Create(UseName, fmCreate or fmShareDenyNone);
++    OutStream := TFileStreamEx.Create(UseName, fmCreate or fmShareDenyNone);
+     try
+       try {OutStream}
+         ExtractItemToStreamAt(Index, OutStream);
+@@ -946,12 +968,12 @@
+     except
+       on E : EAbUserAbort do begin
+         FStatus := asInvalid;
+-        if FileExists(UseName) then
+-          DeleteFile(UseName);
++        if mbFileExists(UseName) then
++          mbDeleteFile(UseName);
+         raise;
+       end else begin
+-        if FileExists(UseName) then
+-          DeleteFile(UseName);
++        if mbFileExists(UseName) then
++          mbDeleteFile(UseName);
+         raise;
+       end;
+     end;
+@@ -1089,7 +1111,6 @@
+   i                   : Integer;
+   NewStream           : TAbVirtualMemoryStream;
+   UncompressedStream  : TStream;
+-  SaveDir             : string;
+   CurItem             : TAbGzipItem;
+ begin
+   {prepare for the try..finally}
+@@ -1111,19 +1132,22 @@
+       if IsGzippedTar and TarAutoHandle then begin
+         SwapToTar;
+         inherited SaveArchive;
+-        if FGZItem.Count = 0 then begin
+-          CurItem := TAbGzipItem.Create;
+-          FGZItem.Add(CurItem);
++        if FTarStream.Size > 0 then
++        begin
++          if FGZItem.Count = 0 then begin
++            CurItem := TAbGzipItem.Create;
++            FGZItem.Add(CurItem);
++          end;
++          CurItem := FGZItem[0] as TAbGzipItem;
++          CurItem.Action := aaNone;
++          CurItem.LastModTimeAsDateTime := Now;
++          CurItem.SaveGzHeaderToStream(NewStream);
++          FTarStream.Position := 0;
++          OutGzHelp.WriteArchiveItem(FTarStream);
++          CurItem.CRC32 := OutGzHelp.CRC;
++          CurItem.UncompressedSize := OutGzHelp.FileSize;
++          OutGzHelp.WriteArchiveTail;
+         end;
+-        CurItem := FGZItem[0] as TAbGzipItem;
+-        CurItem.Action := aaNone;
+-        CurItem.LastModTimeAsDateTime := Now;
+-        CurItem.SaveGzHeaderToStream(NewStream);
+-        FTarStream.Position := 0;
+-        OutGzHelp.WriteArchiveItem(FTarStream);
+-        CurItem.CRC32 := OutGzHelp.CRC;
+-        CurItem.UncompressedSize := OutGzHelp.FileSize;
+-        OutGzHelp.WriteArchiveTail;
+       end
+       else begin
+         SwapToGzip;
+@@ -1154,17 +1178,9 @@
+                   OutGzHelp.WriteArchiveTail;
+                 end
+                 else begin
+-                { it's coming from a file }
+-                  GetDir(0, SaveDir);
+-                  try {SaveDir}
+-                    if (BaseDirectory <> '') then
+-                      ChDir(BaseDirectory);
+-                    CurItem.LastModTimeAsDateTime := AbGetFileTime(CurItem.DiskFileName);
+-                    UncompressedStream := TFileStream.Create(CurItem.DiskFileName,
++                  CurItem.LastModTimeAsDateTime := AbGetFileTime(CurItem.DiskFileName);
++                  UncompressedStream := TFileStreamEx.Create(CurItem.DiskFileName,
+                       fmOpenRead or fmShareDenyWrite );
+-                  finally {SaveDir}
+-                    ChDir( SaveDir );
+-                  end; {SaveDir}
+ 
+                   try
+                     CurItem.UncompressedSize := UncompressedStream.Size;
+@@ -1197,7 +1213,7 @@
+       { need new stream to write }
+       FreeAndNil(FStream);
+       FGZStream := nil;
+-      FStream := TFileStream.Create(FArchiveName, fmCreate or fmShareDenyWrite);
++      FStream := TFileStreamEx.Create(FArchiveName, fmCreate or fmShareDenyWrite);
+       FGZStream := FStream;
+       FStream.CopyFrom(NewStream, NewStream.Size);
+     end;
+Index: AbSelfEx.pas
+===================================================================
+--- AbSelfEx.pas	(revision 512)
++++ AbSelfEx.pas	(working copy)
+@@ -49,9 +49,9 @@
+     FStubExe      : string;
+     FZipFile      : string;
+     FSelfExe      : string;
+-    FStubStream   : TFileStream;
+-    FZipStream    : TFileStream;
+-    FSelfStream    : TFileStream;
++    FStubStream   : TStream;
++    FZipStream    : TStream;
++    FSelfStream    : TStream;
+     FOnGetStubExe : TAbGetFileEvent;
+     FOnGetZipFile : TAbGetFileEvent;
+ 
+@@ -88,7 +88,7 @@
+ {$IFDEF LibcAPI}
+   Libc,
+ {$ENDIF}
+-  AbExcept, AbZipTyp;
++  AbExcept, AbZipTyp, DCOSUtils, DCClassesUtf8;
+ 
+ { -------------------------------------------------------------------------- }
+ function TAbMakeSelfExe.Execute : Boolean;
+@@ -100,20 +100,20 @@
+     DoGetStubExe(Abort);
+   if Abort then
+     raise EAbUserAbort.Create;
+-  if not FileExists(FStubExe) then
++  if not mbFileExists(FStubExe) then
+     raise EAbFileNotFound.Create;
+   if (FZipFile = '') then
+     DoGetZipFile(Abort);
+   if Abort then
+     raise EAbUserAbort.Create;
+-  if not FileExists(FZipFile) then
++  if not mbFileExists(FZipFile) then
+     raise EAbFileNotFound.Create;
+ 
+-  FStubStream := TFileStream.Create(FStubExe, fmOpenRead or fmShareDenyWrite);
+-  FZipStream := TFileStream.Create(FZipFile, fmOpenRead or fmShareDenyWrite);
++  FStubStream := TFileStreamEx.Create(FStubExe, fmOpenRead or fmShareDenyWrite);
++  FZipStream := TFileStreamEx.Create(FZipFile, fmOpenRead or fmShareDenyWrite);
+   if (FSelfExe = '') then
+     FSelfExe := ChangeFileExt(FZipFile, '.exe');
+-  FSelfStream := TFileStream.Create(FSelfExe, fmCreate or fmShareExclusive);
++  FSelfStream := TFileStreamEx.Create(FSelfExe, fmCreate or fmShareExclusive);
+   try
+     MakeSelfExtracting(FStubStream, FZipStream, FSelfStream);
+     Result := True;
+Index: AbSpanSt.pas
+===================================================================
+--- AbSpanSt.pas	(revision 512)
++++ AbSpanSt.pas	(working copy)
+@@ -142,7 +142,7 @@
+ {$IFDEF MSWINDOWS}
+   Windows,
+ {$ENDIF}
+-  Math, RTLConsts, SysUtils, AbUtils, AbExcept;
++  Math, RTLConsts, SysUtils, AbUtils, AbExcept, DCOSUtils, DCClassesUtf8;
+ 
+ 
+ {============================================================================}
+@@ -181,7 +181,7 @@
+ begin
+   inherited Create(ArchiveName);
+   FCurrentImage := CurrentImage;
+-  FIsSplit := FileExists(GetImageName(1)) or not AbDriveIsRemovable(ArchiveName);
++  FIsSplit := mbFileExists(GetImageName(1)) or not AbDriveIsRemovable(ArchiveName);
+   FLastImage := CurrentImage;
+   FStream := Stream;
+ end;
+@@ -218,7 +218,7 @@
+   end
+   else
+     raise EAbUserAbort.Create;
+-  FStream := TFileStream.Create(ImageName, fmOpenRead or fmShareDenyWrite);
++  FStream := TFileStreamEx.Create(ImageName, fmOpenRead or fmShareDenyWrite);
+ end;
+ {------------------------------------------------------------------------------}
+ function TAbSpanReadStream.Read(var Buffer; Count: Longint): Longint;
+@@ -273,7 +273,7 @@
+ procedure TAbSpanReadStream.SetOnRequestImage(Value: TAbRequestImageEvent);
+ begin
+   FOnRequestImage := Value;
+-  FIsSplit := FileExists(GetImageName(1)) or not AbDriveIsRemovable(FArchiveName);
++  FIsSplit := mbFileExists(GetImageName(1)) or not AbDriveIsRemovable(FArchiveName);
+ end;
+ 
+ {============================================================================}
+@@ -302,7 +302,7 @@
+   FreeAndNil(FStream);
+   Inc(FCurrentImage);
+   if FThreshold > 0 then
+-    RenameFile(FArchiveName, GetImageName(FCurrentImage))
++    mbRenameFile(FArchiveName, GetImageName(FCurrentImage))
+   else begin
+     if Assigned(FOnRequestBlankDisk) then begin
+       Abort := False;
+@@ -316,7 +316,7 @@
+       raise EAbUserAbort.Create;
+     AbSetSpanVolumeLabel(AbDrive(FArchiveName), FCurrentImage);
+   end;
+-  FStream := TFileStream.Create(FArchiveName, fmCreate or fmShareDenyWrite);
++  FStream := TFileStreamEx.Create(FArchiveName, fmCreate or fmShareDenyWrite);
+   FImageSize := 0;
+ end;
+ {------------------------------------------------------------------------------}
+Index: AbTarTyp.pas
+===================================================================
+--- AbTarTyp.pas	(revision 512)
++++ AbTarTyp.pas	(working copy)
+@@ -320,6 +320,7 @@
+     function GetLastModFileTime : Word; override;
+     function GetLastModTimeAsDateTime: TDateTime; override;
+     function GetNativeFileAttributes : LongInt; override;
++    function GetNativeLastModFileTime: Longint; override;
+     function GetUncompressedSize : Int64; override;
+ 
+     procedure SetCompressedSize(const Value : Int64); override;       { Extended Headers }
+@@ -418,7 +419,8 @@
+     FArchReadOnly : Boolean;
+     FArchFormat: TAbTarHeaderFormat;
+   protected
+-    function CreateItem(const FileSpec : string): TAbArchiveItem;
++    function CreateItem(const SourceFileName   : string;
++                        const ArchiveDirectory : string): TAbArchiveItem;
+       override;
+     procedure ExtractItemAt(Index : Integer; const UseName : string);
+       override;
+@@ -448,6 +450,11 @@
+       write PutItem; default;
+   end;
+ 
++ procedure UnixAttrsToTarAttrs(const UnixAttrs: LongWord;
++                               out Permissions: LongWord; out LinkFlag: AnsiChar);
++ procedure TarAttrsToUnixAttrs(const Permissions: LongWord; const LinkFlag: AnsiChar;
++                               out UnixAttrs: LongWord);
++
+ function VerifyTar(Strm : TStream) : TAbArchiveType;
+ 
+ 
+@@ -457,7 +464,8 @@
+   {$IFDEF MSWINDOWS}
+   Windows, // Fix inline warnings
+   {$ENDIF MSWINDOWS}
+-  Math, RTLConsts, SysUtils, AbCharset, AbVMStrm, AbExcept;
++  Math, RTLConsts, SysUtils, AbVMStrm, AbExcept,
++  DCOSUtils, DCClassesUtf8, DCConvertEncoding;
+ 
+ { ****************** Helper functions Not from Classes Above ***************** }
+ function OctalToInt(const Oct : PAnsiChar; aLen : integer): Int64;
+@@ -566,7 +574,58 @@
+              not (AB_TAR_RECORDSIZE - 1);
+ end;
+ 
++procedure UnixAttrsToTarAttrs(const UnixAttrs: LongWord;
++                              out Permissions: LongWord; out LinkFlag: AnsiChar);
++begin
++  case (UnixAttrs and $F000) of
++    AB_FMODE_SOCKET:
++      ;
++    AB_FMODE_FILELINK:
++      LinkFlag := AB_TAR_LF_SYMLINK;
++    AB_FMODE_FILE2:
++      LinkFlag := AB_TAR_LF_NORMAL;
++    AB_FMODE_BLOCKSPECFILE:
++      LinkFlag := AB_TAR_LF_BLK;
++    AB_FMODE_DIR:
++      LinkFlag := AB_TAR_LF_DIR;
++    AB_FMODE_CHARSPECFILE:
++      LinkFlag := AB_TAR_LF_CHR;
++    AB_FMODE_FIFO:
++      LinkFlag := AB_TAR_LF_FIFO;
++    AB_FMODE_FILE:
++      LinkFlag := AB_TAR_LF_NORMAL;
++    else
++      LinkFlag := AB_TAR_LF_OLDNORMAL;
++  end;
+ 
++  Permissions := (UnixAttrs and $0FFF);
++end;
++{ -------------------------------------------------------------------------- }
++procedure TarAttrsToUnixAttrs(const Permissions: LongWord; const LinkFlag: AnsiChar;
++                              out UnixAttrs: LongWord);
++begin
++  case LinkFlag of
++    AB_TAR_LF_OLDNORMAL:
++      UnixAttrs := AB_FMODE_FILE;
++    AB_TAR_LF_NORMAL:
++      UnixAttrs := AB_FMODE_FILE2;
++    AB_TAR_LF_SYMLINK:
++      UnixAttrs := AB_FMODE_FILELINK;
++    AB_TAR_LF_BLK:
++      UnixAttrs := AB_FMODE_BLOCKSPECFILE;
++    AB_TAR_LF_DIR:
++      UnixAttrs := AB_FMODE_DIR;
++    AB_TAR_LF_CHR:
++      UnixAttrs := AB_FMODE_CHARSPECFILE;
++    AB_TAR_LF_FIFO:
++      UnixAttrs := AB_FMODE_FIFO;
++    else
++      UnixAttrs := AB_FMODE_FILE;
++  end;
++
++  UnixAttrs := UnixAttrs or (Permissions and $0FFF);
++end;
++
+ { ****************************** TAbTarItem ********************************** }
+ constructor TAbTarItem.Create;
+ begin
+@@ -632,7 +691,7 @@
+ 
+ function TAbTarItem.GetExternalFileAttributes: LongWord;
+ begin
+-  Result := FTarItem.Mode;
++  TarAttrsToUnixAttrs(FTarItem.Mode, FTarItem.LinkFlag, Result);
+ end;
+ 
+ function TAbTarItem.GetFileName: string;
+@@ -678,6 +737,19 @@
+   Result := AbUnixTimeToLocalDateTime(FTarItem.ModTime);
+ end;
+ 
++function TAbTarItem.GetNativeLastModFileTime: Longint;
++{$IFDEF MSWINDOWS}
++var
++  DateTime: TDateTime;
++{$ENDIF}
++begin
++  Result   := Self.ModTime;
++
++{$IFDEF MSWINDOWS}
++  DateTime := AbUnixTimeToLocalDateTime(Result);
++  Result   := AbDateTimeToDosFileDate(DateTime);
++{$ENDIF}
++end;
+ function TAbTarItem.GetLinkName: string;
+ begin
+   Result := FTarItem.LinkName;
+@@ -819,7 +891,7 @@
+       RawFileName := PTarHeader.Name;
+   end; { End not FoundName }
+ 
+-  FTarItem.Name := AbRawBytesToString(RawFileName);
++  FTarItem.Name := CeRawToUtf8(RawFileName);
+ end;
+ 
+ { Extract the file name from the headers }
+@@ -876,7 +948,7 @@
+   if not FoundName then
+     RawLinkName := PHeader.LinkName;
+ 
+-  FTarItem.LinkName := AbRawBytesToString(RawLinkName);
++  FTarItem.LinkName := CeRawToUtf8(RawLinkName);
+ end;
+ 
+ { Return True if CheckSum passes out. }
+@@ -1017,8 +1089,8 @@
+   begin
+     ParseTarHeaders; { Update FTarItem values }
+     FFileName := FTarItem.Name; {FTarHeader.Name;}
+-    FDiskFileName := FileName;
+-    AbUnfixName(FDiskFileName);
++//  FDiskFileName := FileName;
++//  AbUnfixName(FDiskFileName);
+   end;
+   Action := aaNone;
+   Tagged := False;
+@@ -1142,14 +1214,21 @@
+ var
+   S : AnsiString;
+   I: Integer;
++  Permissions: LongWord;
++  ALinkFlag: AnsiChar;
+ begin
+   if FTarItem.ItemReadOnly then { Read Only - Do Not Save }
+     Exit;
+-  FTarItem.Mode := Value;
+-  S := PadString(IntToOctal(Value), SizeOf(Arr8));
++
++  UnixAttrsToTarAttrs(Value, Permissions, ALinkFlag);
++
++  FTarItem.Mode := Permissions;
++  S := PadString(IntToOctal(Permissions), SizeOf(Arr8));
+   for I := 0 to FTarHeaderList.Count - 1 do
+     if TAbTarHeaderType(FTarHeaderTypeList.Items[I]) in [FILE_HEADER, META_DATA_HEADER] then
+       Move(S[1], PAbTarHeaderRec(FTarHeaderList.Items[I]).Mode, Length(S));
++
++  Self.LinkFlag := ALinkFlag;    // also updates headers
+   FTarItem.Dirty := True;
+ end;
+ 
+@@ -1297,9 +1376,9 @@
+   { Finally we need to stuff the file type Header. }
+   { Note: Value.length > AB_TAR_NAMESIZE(100) }
+   if LinkFlag = AB_TAR_LF_LONGNAME then
+-    Move(Value[1], PHeader.Name, AB_TAR_NAMESIZE)
++    Move(Value[1], PTarHeader.Name, AB_TAR_NAMESIZE)
+   else
+-    Move(Value[1], PHeader.LinkName, AB_TAR_NAMESIZE);
++    Move(Value[1], PTarHeader.LinkName, AB_TAR_NAMESIZE);
+ end;
+ 
+ procedure TAbTarItem.SetFileName(const Value: string);
+@@ -1333,7 +1412,7 @@
+          OLD_GNU & GNU: Add N Headers for name, Update name in MD header, update name field in File Headers, min 3 headers
+ 
+       Add headers to length of new Name Length, update name in file header, update name fields }
+-  RawFileName := AbStringToUnixBytes(Value);
++  RawFileName := CeUtf8ToSys(Value);
+   { In all cases zero out the name fields in the File Header. }
+   if Length(RawFileName) > AB_TAR_NAMESIZE then begin { Must be null terminated except at 100 char length }
+     { Look for long name meta-data headers already in the archive. }
+@@ -1431,8 +1510,8 @@
+ 
+   { Update the inherited file names. }
+   FFileName := FTarItem.Name;
+-  DiskFileName := FFileName;
+-  AbUnfixName(FDiskFileName);
++//DiskFileName := FFileName;
++//AbUnfixName(FDiskFileName); // Don't override DiskFileName
+   FTarItem.Dirty := True;
+ end;
+ 
+@@ -1527,7 +1606,7 @@
+       if old was Long,
+          OLD_GNU & GNU: Add N Headers for name, Update name in MD header, update name field in File Headers, min 3 headers
+       STAR & PAX: And should not yet get here.}
+-  RawLinkName := AbStringToUnixBytes(Value);
++  RawLinkName := CeUtf8ToSys(Value);
+   if Length(RawLinkName) > AB_TAR_NAMESIZE then { Must be null terminated except at 100 char length }
+   begin
+     { Look for long name meta-data headers already in the archive. }
+@@ -1838,16 +1917,19 @@
+   FArchFormat := V7_FORMAT;  // Default for new archives
+ end;
+ 
+-function TAbTarArchive.CreateItem(const FileSpec: string): TAbArchiveItem;
++function TAbTarArchive.CreateItem(const SourceFileName   : string;
++                                  const ArchiveDirectory : string): TAbArchiveItem;
+ var
+   Item : TAbTarItem;
+-  S : String;
+   I: Integer;
++  FullSourceFileName, FullArchiveFileName: String;
+ begin
+   if FArchReadOnly then
+     raise EAbTarBadOp.Create; { Create Item Unsupported in this Archive }
+ 
+-  S := FixName(FileSpec);
++  MakeFullNames(SourceFileName, ArchiveDirectory,
++                FullSourceFileName, FullArchiveFileName);
++
+   Item := TAbTarItem.Create;
+   try
+   //  HeaderFormat = (UNKNOWN_FORMAT, V7_FORMAT, OLDGNU_FORMAT, GNU_FORMAT, USTAR_FORMAT, STAR_FORMAT, POSIX_FORMAT);
+@@ -1863,7 +1945,7 @@
+       Item.LinkFlag := AB_TAR_LF_NORMAL;
+       Item.Magic := AB_TAR_MAGIC_VAL+AB_TAR_MAGIC_VER;
+     end
+-    else if (FArchFormat = V7_FORMAT) and (Length(S) > 100) then
++    else if (FArchFormat = V7_FORMAT) and (Length(FullArchiveFileName) > 100) then
+       begin { Switch the rep over to GNU so it can have long file names. }
+       FArchFormat := OLDGNU_FORMAT;
+       Item.ArchiveFormat := OLDGNU_FORMAT;
+@@ -1882,9 +1964,10 @@
+ 
+     { Most others are initialized in the .Create }
+     Item.CRC32 := 0;
++
+     { Note this can raise exceptions for file name lengths. }
+-    Item.FileName := FixName(FileSpec);
+-    Item.DiskFileName := ExpandFileName(FileSpec);
++    Item.FileName := FullArchiveFileName;
++    Item.DiskFileName := FullSourceFileName;
+     Item.Action := aaNone;
+   finally
+     Result := Item;
+@@ -1894,7 +1977,7 @@
+ 
+ procedure TAbTarArchive.ExtractItemAt(Index: Integer; const UseName: string);
+ var
+-  OutStream : TFileStream;
++  OutStream : TStream;
+   CurItem : TAbTarItem;
+ begin
+   { Check the index is not out of range. }
+@@ -1914,18 +1997,26 @@
+   if CurItem.IsDirectory then
+     AbCreateDirectory(UseName)
+   else begin
+-    OutStream := TFileStream.Create(UseName, fmCreate or fmShareDenyNone);
+-    try
+-      try {OutStream}
+-        ExtractItemToStreamAt(Index, OutStream);
+-      finally {OutStream}
+-        OutStream.Free;
+-      end; {OutStream}
+-    except
+-      if ExceptObject is EAbUserAbort then
+-        FStatus := asInvalid;
+-      DeleteFile(UseName);
+-      raise;
++    case (CurItem.Mode and $F000) of
++      AB_FMODE_FILE, AB_FMODE_FILE2: begin
++        OutStream := TFileStreamEx.Create(UseName, fmCreate or fmShareDenyNone);
++        try
++          try {OutStream}
++            ExtractItemToStreamAt(Index, OutStream);
++          finally {OutStream}
++            OutStream.Free;
++          end; {OutStream}
++        except
++          if ExceptObject is EAbUserAbort then
++            FStatus := asInvalid;
++          mbDeleteFile(UseName);
++          raise;
++        end;
++      end;
++
++      AB_FMODE_FILELINK: begin
++        AbCreateSymlink(CurItem.LinkName, UseName);
++      end;
+     end;
+   end;
+   AbSetFileTime(UseName, CurItem.LastModTimeAsDateTime);
+@@ -2060,7 +2151,7 @@
+     AbStripDrive( lValue );
+ 
+   { check for a leading slash }
+-  if lValue[1] = AbPathDelim then
++  if (Length(lValue) > 0) and (lValue[1] = AbPathDelim) then
+     System.Delete( lValue, 1, 1 );
+ 
+   if soStripPath in StoreOptions then
+@@ -2097,7 +2188,6 @@
+   i              : Integer;
+   NewStream      : TAbVirtualMemoryStream;
+   TempStream     : TStream;
+-  SaveDir        : string;
+   CurItem        : TAbTarItem;
+   AttrEx         : TAbAttrExRec;
+ begin
+@@ -2145,24 +2235,27 @@
+ 
+         aaAdd, aaFreshen, aaReplace: begin
+           try
+-            { it's coming from a file }
+-            GetDir(0, SaveDir);
+-            try {SaveDir}
+-              if (BaseDirectory <> '') then
+-                ChDir(BaseDirectory);
+-              { update metadata }
+-              AbFileGetAttrEx(CurItem.DiskFileName, AttrEx);
+-              CurItem.ExternalFileAttributes := AttrEx.Mode;
+-              CurItem.LastModTimeAsDateTime := AttrEx.Time;
+-              { TODO: uid, gid, uname, gname should be added here }
+-              { TODO: Add support for different types of files here }
+-              if (AttrEx.Mode and AB_FMODE_DIR) <> 0 then begin
+-                CurItem.LinkFlag := AB_TAR_LF_DIR;
++            { update metadata }
++            if not AbFileGetAttrEx(CurItem.DiskFileName, AttrEx, False) then
++              Raise EAbFileNotFound.Create;
++            CurItem.ExternalFileAttributes := AttrEx.Mode;
++            CurItem.LastModTimeAsDateTime := AttrEx.Time;
++            { TODO: uid, gid, uname, gname should be added here }
++            { TODO: Add support for different types of files here }
++            case (AttrEx.Mode and $F000) of
++              AB_FMODE_DIR: begin
+                 CurItem.UncompressedSize := 0;
+                 CurItem.SaveTarHeaderToStream(NewStream);
+-              end
+-              else begin
+-                TempStream := TFileStream.Create(CurItem.DiskFileName,
++              end;
++
++              AB_FMODE_FILELINK: begin
++                CurItem.UncompressedSize := 0;
++                CurItem.LinkName := AbReadSymlink(CurItem.DiskFileName);
++                CurItem.SaveTarHeaderToStream(NewStream);
++              end;
++
++              AB_FMODE_FILE, AB_FMODE_FILE2: begin
++                TempStream := TFileStreamEx.Create(CurItem.DiskFileName,
+                   fmOpenRead or fmShareDenyWrite );
+                 try { TempStream }
+                   CurItem.UncompressedSize := TempStream.Size;
+@@ -2173,9 +2266,13 @@
+                   TempStream.Free;
+                 end; { TempStream }
+               end;
+-            finally {SaveDir}
+-              ChDir( SaveDir );
+-            end; {SaveDir}
++
++              else begin
++                CurItem.UncompressedSize := AttrEx.Size;
++                CurItem.SaveTarHeaderToStream(NewStream);
++              end;
++            end;
++
+           except
+             ItemList[i].Action := aaDelete;
+             DoProcessItemFailure(ItemList[i], ptAdd, ecFileOpenError, 0);
+@@ -2200,7 +2297,7 @@
+     else begin
+       { need new stream to write }
+       FreeAndNil(FStream);
+-      FStream := TFileStream.Create(FArchiveName, fmCreate or fmShareDenyWrite);
++      FStream := TFileStreamEx.Create(FArchiveName, fmCreate or fmShareDenyWrite);
+       FStream.CopyFrom(NewStream, NewStream.Size);
+     end;
+ 
+Index: AbUnzPrc.pas
+===================================================================
+--- AbUnzPrc.pas	(revision 512)
++++ AbUnzPrc.pas	(working copy)
+@@ -153,7 +153,8 @@
+   AbSpanSt,
+   AbSWStm,
+   AbUnzOutStm,
+-  AbUtils;
++  AbUtils,
++  DCClassesUtf8;
+ 
+ { -------------------------------------------------------------------------- }
+ procedure AbReverseBits(var W : Word);
+@@ -1111,7 +1112,7 @@
+   else begin
+     InStream := ExtractPrep(ZipArchive, Item);
+     try
+-      OutStream := TFileStream.Create(UseName, fmCreate or fmShareDenyWrite);
++      OutStream := TFileStreamEx.Create(UseName, fmCreate or fmShareDenyWrite);
+       try
+         try    {OutStream}
+           DoExtract(ZipArchive, Item, InStream, OutStream);
+Index: AbUtils.pas
+===================================================================
+--- AbUtils.pas	(revision 512)
++++ AbUtils.pas	(working copy)
+@@ -60,10 +60,10 @@
+ {$ENDIF}
+ {$IFDEF UNIX}
+   DateUtils,
++  DCClassesUtf8,
+ {$ENDIF}
+   SysUtils,
+-  Classes,
+-  AbCharset;
++  Classes;
+ 
+ 
+ type
+@@ -114,6 +114,12 @@
+   {$ENDIF}
+ {$IFEND}
+ 
++{ Unicode backwards compatibility types }
++{$IF NOT DECLARED(RawByteString)}
++type
++  RawByteString = AnsiString;
++{$IFEND}
++
+ { System-encoded SBCS string (formerly AnsiString) }
+ type
+   AbSysString = {$IFDEF Posix}UTF8String{$ELSE}AnsiString{$ENDIF};
+@@ -198,8 +204,13 @@
+      because if you have a path x:\dir, and request x:\dir\sub1\sub2,
+      (/dir and /dir/sub1/sub2 on Unix) it fails.}
+ 
++  function AbCreateSymlink( const LinksPointsTo, LinkName : String ): Boolean;
++
+   function AbCreateTempFile(const Dir : string) : string;
+ 
++  function AbReadSymlink( const LinkFile : String ): String;
++    {Reads the name that a link points to.}
++
+   function AbGetTempDirectory : string;
+     {-Return the system temp directory}
+ 
+@@ -294,7 +305,7 @@
+     Mode: {$IFDEF UNIX}mode_t{$ELSE}Cardinal{$ENDIF};
+   end;
+ 
+-  function AbFileGetAttrEx(const aFileName: string; out aAttr: TAbAttrExRec) : Boolean;
++  function AbFileGetAttrEx(const aFileName: string; out aAttr: TAbAttrExRec; FollowLinks: Boolean = True) : Boolean;
+ 
+   function AbSwapLongEndianness(Value : LongInt): LongInt;
+ 
+@@ -364,8 +375,12 @@
+ uses
+   StrUtils,
+   AbConst,
+-  AbExcept;
++  AbExcept,
++  DCOSUtils,
++  DCStrUtils,
++  DCDateTimeUtils;
+ 
++(*
+ {$IF DEFINED(FPCUnixAPI)}
+ function mktemp(template: PAnsiChar): PAnsiChar; cdecl;
+   external clib name 'mktemp';
+@@ -387,6 +402,7 @@
+ function nl_langinfo(__item: nl_item): PAnsiChar; cdecl;
+   external clib name 'nl_langinfo';
+ {$IFEND}
++*)
+ 
+ {===platform independent routines for platform dependent stuff=======}
+ function ExtractShortName(const SR : TSearchRec) : string;
+@@ -410,16 +426,16 @@
+ function AbCopyFile(const Source, Destination: string; FailIfExists: Boolean): Boolean;
+ {$IFDEF UNIX}
+ var
+-  DesStream, SrcStream: TFileStream;
++  DesStream, SrcStream: TFileStreamEx;
+ {$ENDIF}
+ begin
+ {$IFDEF UNIX}
+   Result := False;
+-  if not FailIfExists or not FileExists(Destination) then
++  if not FailIfExists or not mbFileExists(Destination) then
+     try
+-      SrcStream := TFileStream.Create(Source, fmOpenRead or fmShareDenyWrite);
++      SrcStream := TFileStreamEx.Create(Source, fmOpenRead or fmShareDenyWrite);
+       try
+-        DesStream := TFileStream.Create(Destination, fmCreate);
++        DesStream := TFileStreamEx.Create(Destination, fmCreate);
+         try
+           DesStream.CopyFrom(SrcStream, 0);
+           Result := True;
+@@ -434,7 +450,7 @@
+     end;
+ {$ENDIF UNIX}
+ {$IFDEF MSWINDOWS}
+-  Result := CopyFile(PChar(Source), PChar(Destination), FailIfExists);
++  Result := CopyFileW(PWideChar(UTF8Decode(Source)), PWideChar(UTF8Decode(Destination)), FailIfExists);
+ {$ENDIF MSWINDOWS}
+ end;
+ { -------------------------------------------------------------------------- }
+@@ -447,7 +463,7 @@
+   i : Integer;
+   TempPath : string;
+ begin
+-  if DirectoryExists( Path ) then
++  if mbDirectoryExists( Path ) then
+     Exit;
+   {see how much of the path currently exists}
+   if Pos( '\\', Path ) > 0 then
+@@ -463,57 +479,66 @@
+     {get a temp path to try: drive:\path1}
+     TempPath := Copy( Path, 1, i );
+     {if it doesn't exist, create it}
+-    if not DirectoryExists( TempPath ) then
+-      MkDir( TempPath );
++    if not mbDirectoryExists( TempPath ) then
++      if mbCreateDir( TempPath ) = False then
++        Exit;
+     inc( iStartSlash );
+   until ( Length( TempPath ) = Length( Path ) );
+ end;
++
++function AbCreateSymlink(const LinksPointsTo, LinkName: String): Boolean;
++begin
++{$IF DEFINED(MSWINDOWS)}
++  // TODO: Implement using uNTFSLinks.
++  Result := False;
++{$ELSEIF DEFINED(FPCUnixAPI)}
++  Result := (fpsymlink(PChar(UTF8ToSys(LinksPointsTo)),PChar(UTF8ToSys(LinkName)))=0);
++{$ELSE}
++  Result := False;
++{$ENDIF}
++end;
++
+ { -------------------------------------------------------------------------- }
+ function AbCreateTempFile(const Dir : string) : string;
+ begin
+   Result := AbGetTempFile(Dir, True);
+ end;
++
++function AbReadSymlink(const LinkFile: String): String;
++begin
++{$IF DEFINED(MSWINDOWS)}
++  // TODO: Implement using uNTFSLinks.
++  Result := '';
++{$ELSEIF DEFINED(FPCUnixAPI)}
++  Result := SysToUTF8(fpReadlink(UTF8ToSys(LinkFile)));
++{$ELSE}
++  Result := '';
++{$ENDIF}
++end;
++
+ { -------------------------------------------------------------------------- }
+ function AbGetTempDirectory : string;
+ begin
+-{$IFDEF MSWiNDOWS}
+-  SetLength(Result, MAX_PATH);
+-  SetLength(Result, GetTempPath(Length(Result),  PChar(Result)));
+-{$ENDIF}
+-{$IFDEF UNIX}
+-  Result := '/tmp/';
+-{$ENDIF}
++  Result:= SysToUTF8(GetTempDir);
+ end;
+ { -------------------------------------------------------------------------- }
+ function AbGetTempFile(const Dir : string; CreateIt : Boolean) : string;
+ var
+-  TempPath : string;
+-{$IFDEF MSWINDOWS}
+-  FileNameZ : array [0..259] of char;
+-{$ENDIF}
+-{$IFDEF UNIX}
+-  hFile: Integer;
+-  FileName: AbSysString;
+-{$ENDIF}
++  hFile: System.THandle;
++  TempPath : UTF8String;
+ begin
+-  if DirectoryExists(Dir) then
+-    TempPath := Dir
++  if mbDirectoryExists(Dir) then
++    TempPath := IncludeTrailingPathDelimiter(Dir)
+   else
+     TempPath := AbGetTempDirectory;
+-{$IFDEF MSWINDOWS}
+-  GetTempFileName(PChar(TempPath), 'VMS', Word(not CreateIt), FileNameZ);
+-  Result := string(FileNameZ);
+-{$ENDIF}
+-{$IFDEF UNIX}
+-  FileName := AbSysString(TempPath) + 'VMSXXXXXX';
+-  mktemp(PAnsiChar(AbSysString(FileName)));
+-  Result := string(FileName);
++
++  Result := GetTempName(TempPath + 'VMS');
++
+   if CreateIt then begin
+-    hFile := FileCreate(Result);
+-    if hFile <> -1 then
++    hFile := mbFileCreate(Result);
++    if hFile <> feInvalidHandle then
+       FileClose(hFile);
+   end;
+-{$ENDIF}
+ end;
+ { -------------------------------------------------------------------------- }
+ function AbDrive(const ArchiveName : string) : Char;
+@@ -560,8 +585,8 @@
+ var
+   FreeAvailable, TotalSpace: Int64;
+ begin
+-  if GetDiskFreeSpaceEx(PChar(ExtractFilePath(ExpandFileName(ArchiveName))),
+-                        FreeAvailable, TotalSpace, nil) then
++  if GetDiskFreeSpaceExW(PWideChar(UTF8Decode(ExtractFilePath(ExpandFileName(ArchiveName)))),
++                         FreeAvailable, TotalSpace, nil) then
+     Result := FreeAvailable
+   else
+     Result := -1;
+@@ -574,7 +599,7 @@
+   if statfs(PAnsiChar(ExtractFilePath(ArchiveName)), FStats) = 0 then
+     Result := Int64(FStats.f_bAvail) * Int64(FStats.f_bsize)
+   {$ELSEIF DEFINED(FPCUnixAPI)}
+-  if fpStatFS(PAnsiChar(ExtractFilePath(ArchiveName)), @FStats) = 0 then
++  if fpStatFS(PAnsiChar(UTF8ToSys(ExtractFilePath(ArchiveName))), @FStats) = 0 then
+     Result := Int64(FStats.bAvail) * Int64(FStats.bsize)
+   {$ELSEIF DEFINED(PosixAPI)}
+   if statvfs(PAnsiChar(AbSysString(ExtractFilePath(ArchiveName))), FStats) = 0 then
+@@ -591,8 +616,8 @@
+   DirMatch : Boolean;
+   MaskDir : string;
+ begin
+-  FileName := UpperCase( FileName );
+-  FileMask := UpperCase( FileMask );
++//FileName := UpperCase( FileName );
++//FileMask := UpperCase( FileMask );
+   MaskDir := ExtractFilePath( FileMask );
+   if MaskDir = '' then
+     DirMatch := True
+@@ -614,12 +639,12 @@
+   Found := FindFirst( FileMask, SearchAttr, SR );
+   if Found = 0 then begin
+     try
+-      NameMask := UpperCase(ExtractFileName(FileMask));
++      NameMask := ExtractFileName(FileMask);
+       while Found = 0 do begin
+         NewFile := ExtractFilePath( FileMask ) + SR.Name;
+         if (SR.Name <> AbThisDir) and
+            (SR.Name <> AbParentDir) and
+-           AbPatternMatch(UpperCase(SR.Name), 1, NameMask, 1) then
++           AbPatternMatch(SR.Name, 1, NameMask, 1) then
+           if (SR.Attr and faDirectory) <> 0 then
+             FileList.Add( NewFile + PathDelim )
+           else
+@@ -1002,18 +1027,18 @@
+ function AbWriteVolumeLabel(const VolName : string;
+                                 Drive : Char) : Cardinal;
+ var
+-  Temp : string;
+-  Vol : array[0..11] of Char;
+-  Root : array[0..3] of Char;
++  Temp : WideString;
++  Vol : array[0..11] of WideChar;
++  Root : array[0..3] of WideChar;
+ begin
+-  Temp := VolName;
+-  StrCopy(Root, '%:' + AbPathDelim);
++  Temp := UTF8Decode(VolName);
++  StrPCopyW(Root, '%:' + AbPathDelim);
+   Root[0] := Drive;
+   if Length(Temp) > 11 then
+     SetLength(Temp, 11);
+-  StrPCopy(Vol, Temp);
++  StrPCopyW(Vol, Temp);
+ {$IFDEF MSWINDOWS}
+-  if Windows.SetVolumeLabel(Root, Vol) then
++  if Windows.SetVolumeLabelW(Root, Vol) then
+     Result := 0
+   else Result := GetLastError;
+ {$ENDIF MSWINDOWS}
+@@ -1166,12 +1191,7 @@
+ 
+ function AbSetFileTime(const aFileName: string; aValue: TDateTime): Boolean;
+ begin
+-  {$IFDEF MSWINDOWS}
+-  Result := FileSetDate(aFileName, AbDateTimeToDosFileDate(aValue)) = 0;
+-  {$ENDIF}
+-  {$IFDEF UNIX}
+-  Result := FileSetDate(aFileName, AbLocalDateTimeToUnixTime(aValue)) = 0;
+-  {$ENDIF}
++  Result:= mbFileSetTime(aFileName, DateTimeToFileTime(aValue));
+ end;
+ 
+ { -------------------------------------------------------------------------- }
+@@ -1188,7 +1208,8 @@
+ { -------------------------------------------------------------------------- }
+ function AbDOS2UnixFileAttributes(Attr: LongInt): LongInt;
+ begin
+-  {$WARN SYMBOL_PLATFORM OFF}
++  {$IFDEF LINUX} {$IF NOT ((FPC_VERSION = 2) and (FPC_RELEASE = 6) and (FPC_PATCH = 0))} {$WARN SYMBOL_PLATFORM OFF} {$ENDIF}
++  {$ELSE} {$WARN SYMBOL_PLATFORM OFF} {$ENDIF}
+   Result := { default permissions }
+     AB_FPERMISSION_OWNERREAD or
+     AB_FPERMISSION_GROUPREAD or
+@@ -1201,12 +1222,14 @@
+     Result := Result or AB_FMODE_DIR or AB_FPERMISSION_OWNEREXECUTE
+   else
+     Result := Result or AB_FMODE_FILE;
+-  {$WARN SYMBOL_PLATFORM ON}
++  {$IFDEF LINUX} {$IF NOT ((FPC_VERSION = 2) and (FPC_RELEASE = 6) and (FPC_PATCH = 0))} {$WARN SYMBOL_PLATFORM ON} {$ENDIF}
++  {$ELSE} {$WARN SYMBOL_PLATFORM ON} {$ENDIF}
+ end;
+ { -------------------------------------------------------------------------- }
+ function AbUnix2DosFileAttributes(Attr: LongInt): LongInt;
+ begin
+-  {$WARN SYMBOL_PLATFORM OFF}
++  {$IFDEF LINUX} {$IF NOT ((FPC_VERSION = 2) and (FPC_RELEASE = 6) and (FPC_PATCH = 0))} {$WARN SYMBOL_PLATFORM OFF} {$ENDIF}
++  {$ELSE} {$WARN SYMBOL_PLATFORM OFF} {$ENDIF}
+   Result := 0;
+   case (Attr and $F000) of
+     AB_FMODE_FILE, AB_FMODE_FILE2: { standard file }
+@@ -1225,21 +1248,20 @@
+ 
+   if (Attr and AB_FPERMISSION_OWNERWRITE) <> AB_FPERMISSION_OWNERWRITE then
+     Result := Result or faReadOnly;
+-  {$WARN SYMBOL_PLATFORM ON}
++  {$IFDEF LINUX} {$IF NOT ((FPC_VERSION = 2) and (FPC_RELEASE = 6) and (FPC_PATCH = 0))} {$WARN SYMBOL_PLATFORM ON} {$ENDIF}
++  {$ELSE} {$WARN SYMBOL_PLATFORM ON} {$ENDIF}
+ end;
+ { -------------------------------------------------------------------------- }
+ procedure AbSetFileAttr(const aFileName : string; aAttr: Integer);
+ begin
+-  {$WARN SYMBOL_PLATFORM OFF}
+   {$IFDEF MSWINDOWS}
+-  FileSetAttr(aFileName, aAttr);
++  mbFileSetAttr(aFileName, aAttr);
+   {$ENDIF}
+   {$IF DEFINED(LibcAPI) OR DEFINED(PosixAPI)}
+   chmod(PAnsiChar(AbSysString(aFileName)), aAttr);
+   {$ELSEIF DEFINED(FPCUnixAPI)}
+-  fpchmod(aFileName, aAttr);
++  mbFileSetAttr(aFileName, aAttr);
+   {$IFEND}
+-  {$WARN SYMBOL_PLATFORM ON}
+ end;
+ { -------------------------------------------------------------------------- }
+ function AbFileGetSize(const aFileName : string) : Int64;
+@@ -1252,12 +1274,12 @@
+     Result := -1;
+ end;
+ { -------------------------------------------------------------------------- }
+-function AbFileGetAttrEx(const aFileName: string; out aAttr: TAbAttrExRec) : Boolean;
++function AbFileGetAttrEx(const aFileName: string; out aAttr: TAbAttrExRec; FollowLinks: Boolean = True) : Boolean;
+ var
+ {$IFDEF MSWINDOWS}
+   FileDate: LongRec;
+-  FindData: TWin32FindData;
+-  LocalFileTime: TFileTime;
++  FindData: TWin32FindDataW;
++  LocalFileTime: Windows.TFileTime;
+ {$ENDIF}
+ {$IFDEF FPCUnixAPI}
+   StatBuf: stat;
+@@ -1274,9 +1296,9 @@
+   aAttr.Attr := -1;
+   aAttr.Mode := 0;
+ {$IFDEF MSWINDOWS}
+-  Result := GetFileAttributesEx(PChar(aFileName), GetFileExInfoStandard, @FindData);
++  Result := GetFileAttributesExW(PWideChar(UTF8Decode(aFileName)), GetFileExInfoStandard, @FindData);
+   if Result then begin
+-    if FileTimeToLocalFileTime(FindData.ftLastWriteTime, LocalFileTime) and
++    if Windows.FileTimeToLocalFileTime(FindData.ftLastWriteTime, LocalFileTime) and
+        FileTimeToDosDateTime(LocalFileTime, FileDate.Hi, FileDate.Lo) then
+       aAttr.Time := FileDateToDateTime(Integer(FileDate));
+     LARGE_INTEGER(aAttr.Size).LowPart := FindData.nFileSizeLow;
+@@ -1287,7 +1309,10 @@
+ {$ENDIF}
+ {$IFDEF UNIX}
+   {$IFDEF FPCUnixAPI}
+-  Result := (FpStat(aFileName, StatBuf) = 0);
++  if FollowLinks then
++    Result := (FpStat(UTF8ToSys(aFileName), StatBuf) = 0)
++  else
++    Result := (FpLStat(UTF8ToSys(aFileName), StatBuf) = 0);
+   {$ENDIF}
+   {$IFDEF LibcAPI}
+   // Work around Kylix QC#2761: Stat64, et al., are defined incorrectly
+@@ -1313,10 +1338,10 @@
+ {-Get the volume label for the specified drive.}
+ {$IFDEF MSWINDOWS}
+ var
+-  Root : string;
++  Root : WideString;
+   Flags, MaxLength : DWORD;
+   NameSize : Integer;
+-  VolName : string;
++  VolName : WideString;
+ {$ENDIF}
+ begin
+ {$IFDEF MSWINDOWS}
+@@ -1326,10 +1351,10 @@
+ 
+   Result := '';
+ 
+-  if GetVolumeInformation(PChar(Root), PChar(VolName), Length(VolName),
++  if GetVolumeInformationW(PWideChar(Root), PWideChar(VolName), Length(VolName),
+     nil, MaxLength, Flags, nil, NameSize)
+   then
+-    Result := VolName;
++    Result := UTF8Encode(VolName);
+ {$ELSE}
+   Result := ''; //Stop Gap, spanning support needs to be rethought for Unix
+ {$ENDIF}
+Index: AbVMStrm.pas
+===================================================================
+--- AbVMStrm.pas	(revision 512)
++++ AbVMStrm.pas	(working copy)
+@@ -109,7 +109,8 @@
+   {$ENDIF}
+   SysUtils,
+   AbExcept,
+-  AbUtils;
++  AbUtils,
++  DCOSUtils;
+ 
+ const
+   LastLRUValue = $7FFFFFFF;
+@@ -429,10 +430,10 @@
+ begin
+   if (vmsSwapHandle = 0) then begin
+     vmsSwapFileName := AbCreateTempFile(vmsSwapFileDir);
+-    vmsSwapHandle := FileOpen(vmsSwapFileName, fmOpenReadWrite);
++    vmsSwapHandle := mbFileOpen(vmsSwapFileName, fmOpenReadWrite);
+     if (vmsSwapHandle <= 0) then begin
+       vmsSwapHandle := 0;
+-      DeleteFile(vmsSwapFileName);
++      mbDeleteFile(vmsSwapFileName);
+       raise EAbVMSErrorOpenSwap.Create( vmsSwapFileName );             
+     end;
+     vmsSwapFileSize := 0;
+@@ -443,7 +444,7 @@
+ begin
+   if (vmsSwapHandle <> 0) then begin
+     FileClose(vmsSwapHandle);
+-    DeleteFile(vmsSwapFileName);
++    mbDeleteFile(vmsSwapFileName);
+     vmsSwapHandle := 0;
+   end;
+ end;
+Index: AbZBrows.pas
+===================================================================
+--- AbZBrows.pas	(revision 512)
++++ AbZBrows.pas	(working copy)
+@@ -129,7 +129,7 @@
+ implementation
+ 
+ uses
+-  SysUtils, AbBzip2Typ, AbExcept, AbGzTyp, AbTarTyp, AbUtils;
++  SysUtils, AbBzip2Typ, AbExcept, AbGzTyp, AbTarTyp, AbUtils, DCOSUtils;
+ 
+ { TAbCustomZipBrowser implementation ======================================= }
+ 
+@@ -205,7 +205,7 @@
+   FArchive := nil;
+ 
+   if FileName <> '' then begin
+-    if FileExists(FileName) then begin { open it }
++    if mbFileExists(FileName) then begin { open it }
+       ArcType := ArchiveType;
+       if not ForceType then
+          ArcType := AbDetermineArcType(FileName, atUnknown);
+Index: AbZipper.pas
+===================================================================
+--- AbZipper.pas	(revision 512)
++++ AbZipper.pas	(working copy)
+@@ -173,7 +173,7 @@
+ implementation
+ 
+ uses
+-  SysUtils, AbUtils, AbTarTyp, AbGzTyp, AbBzip2Typ, AbExcept, AbZipPrc;
++  SysUtils, AbUtils, AbTarTyp, AbGzTyp, AbBzip2Typ, AbExcept, AbZipPrc, DCOSUtils;
+ 
+ { -------------------------------------------------------------------------- }
+ constructor TAbCustomZipper.Create( AOwner : TComponent );
+@@ -399,7 +399,7 @@
+   ArcType := ArchiveType;
+ 
+   if (FileName <> '') then
+-    if FileExists(FileName) then begin { open it }
++    if mbFileExists(FileName) then begin { open it }
+ 
+     if not ForceType then
+       ArcType := AbDetermineArcType(FileName, atUnknown);
+@@ -411,33 +411,33 @@
+         end;
+ 
+         atTar : begin
+-          FArchive := TAbTarArchive.Create(FileName, fmOpenReadWrite or fmShareDenyNone);
++          FArchive := TAbTarArchive.Create(FileName, fmOpenRead or fmShareDenyNone);
+           inherited InitArchive;
+         end;
+ 
+         atGZip : begin
+-          FArchive := TAbGzipArchive.Create(FileName, fmOpenReadWrite or fmShareDenyNone);
++          FArchive := TAbGzipArchive.Create(FileName, fmOpenRead or fmShareDenyNone);
+           TAbGzipArchive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbGzipArchive(FArchive).IsGzippedTar := False;
+           inherited InitArchive;
+         end;
+ 
+         atGZippedTar : begin
+-          FArchive := TAbGzipArchive.Create(FileName, fmOpenReadWrite or fmShareDenyNone);
++          FArchive := TAbGzipArchive.Create(FileName, fmOpenRead or fmShareDenyNone);
+           TAbGzipArchive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbGzipArchive(FArchive).IsGzippedTar := True;
+           inherited InitArchive;
+         end;
+ 
+         atBzip2 : begin
+-          FArchive := TAbBzip2Archive.Create(FileName, fmOpenReadWrite or fmShareDenyNone);
++          FArchive := TAbBzip2Archive.Create(FileName, fmOpenRead or fmShareDenyNone);
+           TAbBzip2Archive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbBzip2Archive(FArchive).IsBzippedTar := False;
+           inherited InitArchive;
+         end;
+ 
+         atBzippedTar : begin
+-          FArchive := TAbBzip2Archive.Create(FileName, fmOpenReadWrite or fmShareDenyNone);
++          FArchive := TAbBzip2Archive.Create(FileName, fmOpenRead or fmShareDenyNone);
+           TAbBzip2Archive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbBzip2Archive(FArchive).IsBzippedTar := True;
+           inherited InitArchive;
+@@ -455,38 +455,38 @@
+ 
+       case ArcType of
+         atZip : begin                                                    
+-          FArchive := TAbZipArchive.Create(FileName, fmCreate);
++          FArchive := TAbZipArchive.Create(FileName, fmCreate or fmShareDenyWrite);
+           InitArchive;
+         end;
+ 
+         atTar : begin
+-          FArchive := TAbTarArchive.Create(FileName, fmCreate or fmShareDenyNone);
++          FArchive := TAbTarArchive.Create(FileName, fmCreate or fmShareDenyWrite);
+           inherited InitArchive;
+         end;
+ 
+         atGZip : begin
+-          FArchive := TAbGzipArchive.Create(FileName, fmCreate or fmShareDenyNone);
++          FArchive := TAbGzipArchive.Create(FileName, fmCreate or fmShareDenyWrite);
+           TAbGzipArchive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbGzipArchive(FArchive).IsGzippedTar := False;
+           inherited InitArchive;
+         end;
+ 
+         atGZippedTar : begin
+-          FArchive := TAbGzipArchive.Create(FileName, fmCreate or fmShareDenyNone);
++          FArchive := TAbGzipArchive.Create(FileName, fmCreate or fmShareDenyWrite);
+           TAbGzipArchive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbGzipArchive(FArchive).IsGzippedTar := True;
+           inherited InitArchive;
+         end;
+ 
+         atBzip2 : begin
+-          FArchive := TAbBzip2Archive.Create(FileName, fmCreate or fmShareDenyNone);
++          FArchive := TAbBzip2Archive.Create(FileName, fmCreate or fmShareDenyWrite);
+           TAbBzip2Archive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbBzip2Archive(FArchive).IsBzippedTar := False;
+           inherited InitArchive;
+         end;
+ 
+         atBzippedTar : begin
+-          FArchive := TAbBzip2Archive.Create(FileName, fmCreate or fmShareDenyNone);
++          FArchive := TAbBzip2Archive.Create(FileName, fmCreate or fmShareDenyWrite);
+           TAbBzip2Archive(FArchive).TarAutoHandle := FTarAutoHandle;
+           TAbBzip2Archive(FArchive).IsBzippedTar := True;
+           inherited InitArchive;
+Index: AbZipPrc.pas
+===================================================================
+--- AbZipPrc.pas	(revision 512)
++++ AbZipPrc.pas	(working copy)
+@@ -67,7 +67,8 @@
+   AbVMStrm,
+   AbDfBase,
+   AbDfEnc,
+-  AbSpanSt;
++  AbSpanSt,
++  DCClassesUtf8;
+ 
+ 
+ { ========================================================================== }
+@@ -294,22 +295,14 @@
+                  OutStream : TStream );
+ var
+   UncompressedStream : TStream;
+-  SaveDir : string;
+   AttrEx : TAbAttrExRec;
+ begin
+-  GetDir(0, SaveDir);
+-  try {SaveDir}
+-    if (Sender.BaseDirectory <> '') then
+-      ChDir(Sender.BaseDirectory);
+-    AbFileGetAttrEx(Item.DiskFileName, AttrEx);
+-    if ((AttrEx.Attr and faDirectory) <> 0) then
+-      UncompressedStream := TMemoryStream.Create
+-    else
+-      UncompressedStream :=
+-        TFileStream.Create(Item.DiskFileName, fmOpenRead or fmShareDenyWrite);
+-  finally {SaveDir}
+-    ChDir( SaveDir );
+-  end; {SaveDir}
++  if not AbFileGetAttrEx(Item.DiskFileName, AttrEx) then
++    Raise EAbFileNotFound.Create;
++  if ((AttrEx.Attr and faDirectory) <> 0) then
++    UncompressedStream := TMemoryStream.Create
++  else
++    UncompressedStream := TFileStreamEx.Create(Item.DiskFileName, fmOpenRead or fmShareDenyWrite);
+   try {UncompressedStream}
+     {$IFDEF UNIX}
+     Item.ExternalFileAttributes := LongWord(AttrEx.Mode) shl 16 + LongWord(AttrEx.Attr);
+Index: AbZipTyp.pas
+===================================================================
+--- AbZipTyp.pas	(revision 525)
++++ AbZipTyp.pas	(working copy)
+@@ -407,6 +407,7 @@
+     function  GetLastModFileDate : Word; override;
+     function  GetLastModFileTime : Word; override;
+     function  GetNativeFileAttributes : LongInt; override;
++    function  GetNativeLastModFileTime: Longint; override;
+     procedure SetCompressedSize( const Value : Int64 ); override;
+     procedure SetCRC32( const Value : Longint ); override;
+     procedure SetExternalFileAttributes( Value : LongWord ); override;
+@@ -530,8 +531,8 @@
+       override;
+     destructor Destroy;
+       override;
+-    function CreateItem(const FileName : string): TAbArchiveItem;
+-      override;
++    function CreateItem(const SourceFileName   : string;
++                        const ArchiveDirectory : string): TAbArchiveItem; override;
+ 
+   public {properties}
+     property CompressionMethodToUse : TAbZipSupportedMethod
+@@ -620,11 +621,13 @@
+   {$ENDIF}
+   {$ENDIF}
+   Math,
+-  AbCharset,
+   AbResString,
+   AbExcept,
+   AbVMStrm,
+-  SysUtils;
++  SysUtils,
++  DCOSUtils,
++  DCClassesUtf8,
++  DCConvertEncoding;
+ 
+ function VerifyZip(Strm : TStream) : TAbArchiveType;
+ { determine if stream appears to be in PkZip format }
+@@ -638,20 +641,31 @@
+   Result := atUnknown;
+   try
+     Strm.Position := 0;
+-    Strm.Read(Sig, SizeOf(Sig));
+-    if (Sig = Ab_ZipSpannedSetSignature) then
+-      Result := atSpannedZip
+-    else begin
+-      { attempt to find Central Directory Tail }
+-      TailPosition := FindCentralDirectoryTail( Strm );
+-      if TailPosition <> -1 then begin
+-        { check Central Directory Signature }
+-        Strm.ReadBuffer(Footer, SizeOf(Footer));
+-        if Footer.Signature = Ab_ZipEndCentralDirectorySignature then
+-          if Footer.DiskNumber = 0 then
+-            Result := atZip
+-          else
+-            Result := atSpannedZip;
++    if Strm.Read(Sig, SizeOf(Sig)) = SizeOf(Sig) then
++    begin
++      if (Sig = Ab_ZipSpannedSetSignature) then
++        Result := atSpannedZip
++      else begin
++        { attempt to find Central Directory Tail }
++        TailPosition := FindCentralDirectoryTail( Strm );
++        if TailPosition <> -1 then begin
++          { check Central Directory Signature }
++          if (Strm.Read(Footer, SizeOf(Footer)) = SizeOf(Footer)) and
++             (Footer.Signature = Ab_ZipEndCentralDirectorySignature) then
++          begin
++            { check Central Directory Offset }
++            if (Footer.DirectoryOffset = High(LongWord)) or
++               ((Strm.Seek(Footer.DirectoryOffset, soBeginning) = Footer.DirectoryOffset) and
++               (Strm.Read(Sig, SizeOf(Sig)) = SizeOf(Sig)) and
++               (Sig = Ab_ZipCentralDirectoryFileHeaderSignature)) then
++            begin
++              if Footer.DiskNumber = 0 then
++                Result := atZip
++              else
++                Result := atSpannedZip;
++            end;
++          end;
++        end;
+       end;
+     end;
+   except
+@@ -733,15 +747,13 @@
+   leaves stream positioned at start of structure or at original
+   position if not found }
+ const
+-  StartBufSize = 512;
+-  MaxBufSize = 64 * 1024;
++  MaxBufSize = 256 * 1024;
+ var
+   StartPos  : Int64;
+   TailRec   : TAbZipEndOfCentralDirectoryRecord;
+   Buffer    : PAnsiChar;
+   Offset    : Int64;
+   TestPos   : PAnsiChar;
+-  Done      : boolean;
+   BytesRead : Int64;
+   BufSize   : Int64;
+   CommentLen: integer;
+@@ -767,64 +779,48 @@
+    stream; we need to search for the tail signature}
+ 
+   {get a buffer}
+-  BufSize := StartBufSize;
++  BufSize := Min(MaxBufSize, aStream.Size);
+   GetMem(Buffer, BufSize);
+   try
+ 
+     {start out searching backwards}
+     Offset := -BufSize;
+ 
+-    {while there is still data to search ...}
+-    Done := false;
+-    while not Done do begin
++    {seek to the search position}
++    Result := aStream.Seek(Offset, soEnd);
++    if (Result < 0) then begin
++      Result := aStream.Seek(0, soBeginning);
++    end;
+ 
+-      {seek to the search position}
+-      Result := aStream.Seek(Offset, soEnd);
+-      if (Result <= 0) then begin
+-        Result := aStream.Seek(0, soBeginning);
+-        Done := true;
+-      end;
++    {read a buffer full}
++    BytesRead := aStream.Read(Buffer^, BufSize);
+ 
+-      {read a buffer full}
+-      BytesRead := aStream.Read(Buffer^, BufSize);
++    if BytesRead < sizeOf(TailRec) then begin
++      Result := -1;
++      Exit;
++    end;
+ 
+-      if BytesRead < sizeOf(TailRec) then begin
+-        Result := -1;
+-        Exit;
+-      end;
++    {search backwards through the buffer looking for the signature}
++    TestPos := Buffer + BytesRead - sizeof(TailRec);
++    while (TestPos <> Buffer) and
++          (PLongint(TestPos)^ <> Ab_ZipEndCentralDirectorySignature) do
++      dec(TestPos);
+ 
+-      {search backwards through the buffer looking for the signature}
+-      TestPos := Buffer + BytesRead - sizeof(TailRec);
+-      while (TestPos <> Buffer) and
+-            (PLongint(TestPos)^ <> Ab_ZipEndCentralDirectorySignature) do
+-        dec(TestPos);
++    {if we found the signature...}
++    if (PLongint(TestPos)^ = Ab_ZipEndCentralDirectorySignature) then begin
+ 
+-      {if we found the signature...}
+-      if (PLongint(TestPos)^ = Ab_ZipEndCentralDirectorySignature) then begin
++      {get the tail record at this position}
++      Move(TestPos^, TailRec, sizeof(TailRec));
+ 
+-        {get the tail record at this position}
+-        Move(TestPos^, TailRec, sizeof(TailRec));
++      {if it's as valid a tail as we can check here...}
++      CommentLen := -Offset - (TestPos - Buffer + sizeof(TailRec));
++      if (TailRec.CommentLength <= CommentLen) then begin
+ 
+-        {if it's as valid a tail as we can check here...}
+-        CommentLen := -Offset - (TestPos - Buffer + sizeof(TailRec));
+-        if (TailRec.CommentLength <= CommentLen) then begin
+-
+-          {calculate its position and exit}
+-          Result := Result + (TestPos - Buffer);
+-          aStream.Seek(Result, soBeginning);
+-          Exit;
+-        end;
++        {calculate its position and exit}
++        Result := Result + (TestPos - Buffer);
++        aStream.Seek(Result, soBeginning);
++        Exit;
+       end;
+-
+-      {otherwise move back one step, doubling the buffer}
+-      if (BufSize < MaxBufSize) then begin
+-        FreeMem(Buffer);
+-        BufSize := BufSize * 2;
+-        if BufSize > MaxBufSize then
+-          BufSize := MaxBufSize;
+-        GetMem(Buffer, BufSize);
+-      end;
+-      dec(Offset, BufSize - SizeOf(TailRec));
+     end;
+ 
+     {if we reach this point, the CD tail is not present}
+@@ -1407,6 +1403,22 @@
+   Result := FItemInfo.FileName;
+ end;
+ { -------------------------------------------------------------------------- }
++function TAbZipItem.GetNativeLastModFileTime: Longint;
++{$IFDEF UNIX}
++var
++  DateTime: TDateTime;
++{$ENDIF}
++begin
++  // Zip stores MS-DOS date/time.
++{$IFDEF UNIX}
++  DateTime := AbDosFileDateToDateTime(LastModFileDate, LastModFileTime);
++  Result   := AbLocalDateTimeToUnixTime(DateTime);
++{$ELSE}
++  LongRec(Result).Hi := LastModFileDate;
++  LongRec(Result).Lo := LastModFileTime;
++{$ENDIF}
++end;
++{ -------------------------------------------------------------------------- }
+ function TAbZipItem.GetShannonFanoTreeCount : Byte;
+ begin
+   Result := FItemInfo.ShannonFanoTreeCount;
+@@ -1428,37 +1440,50 @@
+   FieldStream: TStream;
+   InfoZipField: PInfoZipUnicodePathRec;
+   UnicodeName: UnicodeString;
+-  UTF8Name: AnsiString;
++  UTF8Name: UTF8String;
+   XceedField: PXceedUnicodePathRec;
++  SystemCode: TAbZipHostOs;
+ begin
+   FItemInfo.LoadFromStream( Stream );
+ 
+   { decode filename (ANSI/OEM/UTF-8) }
+-  if FItemInfo.IsUTF8 or (AbDetectCharSet(FItemInfo.FileName) = csUTF8) then
+-    FFileName := UTF8ToString(FItemInfo.FileName)
++  if FItemInfo.IsUTF8 then
++    FFileName := FItemInfo.FileName
+   else if FItemInfo.ExtraField.Get(Ab_InfoZipUnicodePathSubfieldID, Pointer(InfoZipField), FieldSize) and
+      (FieldSize > SizeOf(TInfoZipUnicodePathRec)) and
+      (InfoZipField.Version = 1) and
+      (InfoZipField.NameCRC32 = AbCRC32Of(FItemInfo.FileName)) then begin
+     SetString(UTF8Name, InfoZipField.UnicodeName,
+       FieldSize - SizeOf(TInfoZipUnicodePathRec) + 1);
+-    FFileName := UTF8ToString(UTF8Name);
++    FFileName := UTF8Name;
+   end
+   else if FItemInfo.ExtraField.Get(Ab_XceedUnicodePathSubfieldID, Pointer(XceedField), FieldSize) and
+      (FieldSize > SizeOf(TXceedUnicodePathRec)) and
+      (XceedField.Signature = Ab_XceedUnicodePathSignature) and
+      (XceedField.Length * SizeOf(WideChar) = FieldSize - SizeOf(TXceedUnicodePathRec) + SizeOf(WideChar)) then begin
+     SetString(UnicodeName, XceedField.UnicodeName, XceedField.Length);
+-    FFileName := string(UnicodeName);
++    FFileName := UTF8Encode(UnicodeName);
+   end
+-  {$IFDEF MSWINDOWS}
+-  else if (GetACP <> GetOEMCP) and ((HostOS = hosDOS) or AbIsOEM(FItemInfo.FileName)) then begin
+-    SetLength(FFileName, Length(FItemInfo.FileName));
+-    OemToCharBuff(PAnsiChar(FItemInfo.FileName), PChar(FFileName), Length(FFileName));
+-  end
+-  {$ENDIF}
+   else
+-    FFileName := string(FItemInfo.FileName);
++  begin
++    SystemCode := HostOS;
++    {$IF DEFINED(MSWINDOWS)}
++    if (GetACP <> GetOEMCP) and (SystemCode = hosDOS) then
++      FFileName := CeOemToUtf8(FItemInfo.FileName)
++    else if (GetACP <> GetOEMCP) and CeTryDecode(FItemInfo.FileName, CP_OEMCP, UnicodeName) then
++      FFileName := UTF8Encode(UnicodeName)
++    else if (SystemCode = hosNTFS) or (SystemCode = hosWinNT) then
++      FFileName := CeAnsiToUtf8(FItemInfo.FileName)
++    else
++    {$ELSEIF DEFINED(UNIX)}
++    if (SystemCode = hosDOS) then
++      FFileName := CeOemToUtf8(FItemInfo.FileName)
++    else if (SystemCode = hosNTFS) or (SystemCode = hosWinNT) then
++      FFileName := CeAnsiToUtf8(FItemInfo.FileName)
++    else
++    {$ENDIF}
++      FFileName := FItemInfo.FileName;
++  end;
+ 
+   { read ZIP64 extended header }
+   FUncompressedSize := FItemInfo.UncompressedSize;
+@@ -1586,7 +1611,7 @@
+   {$IFDEF MSWINDOWS}
+   AnsiName : AnsiString;
+   {$ENDIF}
+-  UTF8Name : AnsiString;
++  UTF8Name : UTF8String;
+   FieldSize : Word;
+   I : Integer;
+   InfoZipField : PInfoZipUnicodePathRec;
+@@ -1596,24 +1621,20 @@
+   {$IFDEF MSWINDOWS}
+   FItemInfo.IsUTF8 := False;
+   HostOS := hosDOS;
+-  if AbTryEncode(Value, CP_OEMCP, False, AnsiName) then
++  if CeTryEncode(UTF8Decode(Value), CP_OEMCP, False, AnsiName) then
+     {no-op}
+-  else if (GetACP <> GetOEMCP) and AbTryEncode(Value, CP_ACP, False, AnsiName) then
++  else if (GetACP <> GetOEMCP) and CeTryEncode(UTF8Decode(Value), CP_ACP, False, AnsiName) then
+     HostOS := hosWinNT
+-  else if AbTryEncode(Value, CP_OEMCP, True, AnsiName) then
+-    {no-op}
+-  else if (GetACP <> GetOEMCP) and AbTryEncode(Value, CP_ACP, True, AnsiName) then
+-    HostOS := hosWinNT
+   else
+     FItemInfo.IsUTF8 := True;
+   if FItemInfo.IsUTF8 then
+-    FItemInfo.FileName := Utf8Encode(Value)
++    FItemInfo.FileName := Value
+   else
+     FItemInfo.FileName := AnsiName;
+   {$ENDIF}
+   {$IFDEF UNIX}
+-  FItemInfo.FileName := AnsiString(Value);
+-  FItemInfo.IsUTF8 := AbSysCharSetIsUTF8;
++  FItemInfo.FileName := Value;
++  FItemInfo.IsUTF8 := SystemEncodingUtf8;
+   {$ENDIF}
+ 
+   UseExtraField := False;
+@@ -1626,7 +1647,7 @@
+     end;
+ 
+   if UseExtraField then begin
+-    UTF8Name := AnsiToUTF8(Value);
++    UTF8Name := Value;
+     FieldSize := SizeOf(TInfoZipUnicodePathRec) + Length(UTF8Name) - 1;
+     GetMem(InfoZipField, FieldSize);
+     try
+@@ -1762,20 +1783,28 @@
+   inherited Destroy;
+ end;
+ { -------------------------------------------------------------------------- }
+-function TAbZipArchive.CreateItem( const FileName : string ): TAbArchiveItem;
++function TAbZipArchive.CreateItem(const SourceFileName   : string;
++                                  const ArchiveDirectory : string): TAbArchiveItem;
+ var
+-  FileSpec : string;
++  FullSourceFileName, FullArchiveFileName: string;
+ begin
+-  FileSpec := FileName;
+   Result := TAbZipItem.Create;
+   with TAbZipItem( Result ) do begin
+     CompressionMethod := cmDeflated;
+     GeneralPurposeBitFlag := 0;
+     CompressedSize := 0;
+     CRC32 := 0;
+-    DiskFileName := ExpandFileName(FileSpec);
+-    FileName := FixName(FileSpec);
+     RelativeOffset := 0;
++
++    MakeFullNames(SourceFileName, ArchiveDirectory,
++                  FullSourceFileName, FullArchiveFileName);
++
++    if mbDirectoryExists(FullSourceFileName) then begin
++      FullSourceFileName := IncludeTrailingPathDelimiter(FullSourceFileName);
++    end;
++
++    Result.FileName     := FullArchiveFileName;
++    Result.DiskFileName := FullSourceFileName;
+   end;
+ end;
+ { -------------------------------------------------------------------------- }
+@@ -1930,8 +1959,8 @@
+     AbStripDots( lValue );
+ 
+   for i := 1 to Length( lValue ) do
+-    if lValue[i] = '\' then
+-      lValue[i] := '/';
++    if lValue[i] = AbDosPathDelim then
++      lValue[i] := AbUnixPathDelim;
+   Result := lValue;
+ end;
+ { -------------------------------------------------------------------------- }
+@@ -1983,7 +2012,7 @@
+         FStatus := asInvalid; //TODO: Status updates are extremely inconsistent
+         raise EAbUserAbort.Create;
+       end;
+-      FStream := TFileStream.Create( ArchiveName, Mode );
++      FStream := TFileStreamEx.Create( ArchiveName, Mode );
+       TailPosition := FindCentralDirectoryTail( FStream );
+     end;
+   end;
+@@ -2302,7 +2331,7 @@
+         if FOwnsStream then begin
+           {need new stream to write}
+           FreeAndNil(FStream);
+-          FStream := TFileStream.Create(FArchiveName,
++          FStream := TFileStreamEx.Create(FArchiveName,
+             fmOpenReadWrite or fmShareDenyWrite);
+         end;
+         FStream.Size := 0;

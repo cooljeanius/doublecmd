@@ -1,0 +1,5 @@
+libunrar-nonfree (4.0.7-0~lucid) lucid; urgency=low
+
+  * Initial release of library
+
+ -- Alexander Koblov <Alexx2000@mail.ru>  Sun, 23 Jan 2011 21:04:07 -0500

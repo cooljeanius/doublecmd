@@ -1,0 +1,987 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en-us">
+<head>
+  <meta name="GENERATOR" content="PasDoc 0.11.0">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Writing file system plugins for Double Commander</title>
+  <link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);"
+ alink="#ff0000" link="#0000ff" vlink="#800080">
+<h1 class="unit">Writing
+file system plugins for Double Commander</h1>
+<table class="sections wide_list">
+  <tbody>
+    <tr>
+      <td><a class="section" href="#%40Description">Description</a></td>
+      <td><span class="section">Structures</span></td>
+      <td><a class="section" href="#%40FuncsProcs">Functions
+and Procedures</a></td>
+      <td><span class="section">Types</span></td>
+      <td><a class="section" href="#%40Constants">Constants</a></td>
+    </tr>
+  </tbody>
+</table>
+<a name="@Description"></a>
+<h2 class="description">Description</h2>
+<p>This help file is about writing
+file system plugins for Double
+Commander.</p>
+<a name="@FuncsProcs"></a>
+<h3 class="summary">Functions
+and Procedures</h3>
+<table class="summary wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code>HANDLE
+__stdcall <a href="#FsOpen">VfsOpen</a>(char*
+Path);</code><code><br>
+      </code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>void
+__stdcall <a href="#FsClose">VfsClose</a>(HANDLE
+      </code><code>hInstance</code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>BOOL
+__stdcall <a href="#FsOpen">VfsFindFirst</a>(</code><code>HANDLE
+      </code><code>hInstance,
+      </code><code>char*
+Path,&nbsp;</code><code>VFS_FIND_DATA*</code><code>
+FindData);</code><code><br>
+      </code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>BOOL
+__stdcall <a href="#FsClose">VfsFindNext</a>(</code><code>HANDLE
+      </code><code>hInstance,
+      </code><code>VFS_FIND_DATA*
+FindData</code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>void
+__stdcall <a href="#FsOpen">VfsFindClose</a>(</code><code></code><code>HANDLE
+      </code><code>hInstance,
+      </code><code>VFS_FIND_DATA*
+FindData</code><code></code><code>);</code><code><br>
+      </code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsMoveFile">VfsMoveFile</a>(</code><code>HANDLE
+hInstance, char* OldName, char* NewName, int CopyFlags</code><code></code><code></code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsDeleteFile">VfsDeleteFile</a>(HANDLE
+hInstance,
+char*
+RemotePath);</code><code><br>
+      </code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsGetFile">VfsGetFile</a>(</code><code>HANDLE
+hInstance, char* RemoteName, char* LocalName, int CopyFlags</code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsPutFile">VfsPutFile</a>(HANDLE
+hInstance, char*
+LocalName, char* RemoteName, int CopyFlags);</code><code><br>
+      </code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsExecuteFile">VfsExecuteFile</a>(</code><code>HANDLE
+hInstance, HWND MainWin, char* RemoteName, char* Verb</code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsCreateFolder">VfsCreateFolder</a>(HANDLE
+hInstance,
+char* RemotePath);</code><code><br>
+      </code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsRemoveFolder">VfsRemoveFolder</a>(</code><code>HANDLE
+hInstance, char* RemotePath</code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>void
+__stdcall <a href="#VfsNetworkGetSupportedProtocols">VfsNetworkGetSupportedProtocols</a>(</code><code></code><code>char*
+Protocols, int MaxLen);</code><code><br>
+      </code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>int
+__stdcall <a href="#VfsNetworkGetConnection">VfsNetworkGetConnection</a>(</code><code>HANDLE
+hInstance, </code><code>int
+Index, </code><code>char*
+      </code><code>Connection,
+int MaxLen);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>int
+__stdcall</code><code>
+      <a href="#VfsNetworkManageConnection">VfsNetworkManageConnection</a>(</code><code>HANDLE
+hInstance, </code><code>HWND
+MainWin, </code><code>char*
+      </code><code>Connection,
+int Action, int MaxLen);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code>int
+__stdcall</code><code>
+      <a href="#VfsNetworkOpenConnection">VfsNetworkOpenConnection</a>(</code><code>HANDLE
+hInstance, </code><code>char*
+      </code><code>Connection,&nbsp;</code><code>char*</code><code>
+RootDir,</code><code>
+      </code><code>char*</code><code>
+RemotePath, int
+MaxLen);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code>int
+__stdcall</code><code>
+      <a href="#VfsNetworkCloseConnection">VfsNetworkCloseConnection</a>(</code><code>HANDLE
+hInstance, </code><code>char*
+      </code><code>Connection</code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+  </tbody>
+</table>
+<a name="@Constants"></a>
+<h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_ADD">VFS_NM_ACTION_ADD</a>&nbsp;&nbsp;&nbsp;&nbsp;
+= 0;</span></b></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_EDIT">VFS_NM_ACTION_EDIT</a>&nbsp;&nbsp;&nbsp;
+= 1;</span></b></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_DELETE">VFS_NM_ACTION_DELETE</a>&nbsp;
+= 2;</span></b></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_EDIT">VFS_RET_OK</a>
+&nbsp;&nbsp;
+= 0;</span></b></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_DELETE">VFS_RET_FAILED</a>&nbsp;
+= 1;</span></b></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_EDIT">VFS_RET_ABORTED</a>&nbsp;
+= 2;</span></b></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="000">VFS_RET_NOT_SUPPORTED</a>
+&nbsp;&nbsp;
+= 3;</span></b></code><code><b><span style="font-family: monospace;"></span></b></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><a href="dfxplugin.html#FS_NM_ACTION_DELETE"><code><b><span
+ style="font-family: monospace;"></span></b></code></a><code><b><span
+ style="font-family: monospace;"><a
+ href="dfxplugin.html#FS_NM_ACTION_DELETE">VFS_RET_FILE_NOT_FOUND</a>&nbsp;
+= 4;</span></b></code><code><b><span style="font-family: monospace;"></span></b></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_DELETE">VFS_RET_FILE_EXISTS</a>&nbsp;
+= 5;</span></b></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_EDIT">VFS_RET_READ_ERROR</a>
+&nbsp;&nbsp;
+= 6;</span></b></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_DELETE">VFS_RET_WRITE_ERROR</a>&nbsp;
+= 7;</span></b></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_EDIT">VFS_EXEC_OK</a>
+&nbsp;&nbsp;
+= 0;</span></b></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_DELETE">VFS_EXEC_ERROR</a>&nbsp;
+= 1;</span></b></code></td>
+    </tr>
+    <tr class="list2">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_EDIT">VFS_EXEC_YOURSELF</a>
+&nbsp;&nbsp;
+= 2;</span></b></code></td>
+    </tr>
+    <tr class="list">
+      <td class="itemcode"><code><b><span
+ style="font-family: monospace;"><a href="#FS_NM_ACTION_DELETE">VFS_EXEC_SYMLINK</a>&nbsp;
+= 3;</span></b></code></td>
+    </tr>
+  </tbody>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions
+and Procedures</h3>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsOpen"></a>HANDLE
+__stdcall VfsOpen(char* Path);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Initialize and open
+plugin file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt>Path</dt>
+        <dd>Path that must be
+opened by plugin<br>
+        </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns plugin instance handle if
+successful, <code>NULL</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsClose"></a>void
+__stdcall VfsClose(HANDLE&nbsp;</code><code>hInstance</code><code>);</code><code><br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Finalize and close plugin
+file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt>Handle</dt>
+        <dd>Plugin file system
+instance handle that have been returned by FsOpen<br>
+        </dd>
+      </dl>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsMoveFile"></a>BOOL
+__stdcall VfsMoveFile(</code><code>HANDLE
+hInstance, char* OldName, char* NewName, int CopyFlags</code><code>);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsMoveFile is called to
+transfer (copy or move) a file
+within the plugin's file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt><code>hInstance</code></dt>
+        <dd>Plugin file system
+instance handle<br>
+        </dd>
+        <dt><code>OldName</code></dt>
+        <dd>Name of the remote
+source file, with full path<br>
+        </dd>
+        <dt><code>NewName</code></dt>
+        <dd>Name of the remote
+destination file, with full path<br>
+        </dd>
+        <dt><code>CopyFlags</code><code></code></dt>
+        <dd>Can be a combination
+of the VFS_COPYFLAGS_XXX flags<br>
+        </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsGetFile"></a>BOOL
+__stdcall VfsGetFile(</code><code>HANDLE
+hInstance, char* RemoteName,char* LocalName,int CopyFlags</code><code>);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsGetFile is called to
+transfer a file from the plugin's file system to the normal file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt><code>hInstance</code></dt>
+        <dd>Plugin file system
+instance handle<br>
+        </dd>
+        <dt><code>RemoteName</code></dt>
+        <dd>Name of the file to be
+retrieved, with full path<br>
+        </dd>
+        <dt><code>LocalName</code></dt>
+        <dd>Local file name with
+full path<br>
+        </dd>
+        <dt><code>CopyFlags</code><code></code></dt>
+        <dd>Can be a combination
+of the VFS_COPYFLAGS_XXX flags<br>
+        </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsPutFile"></a>BOOL
+__stdcall VfsPutFile(</code><code>HANDLE
+hInstance, char* LocalName, char* RemoteName, int CopyFlags</code><code>);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsPutFile is called to
+transfer a file from the normal file system to the plugin's file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt><code>hInstance</code></dt>
+        <dd>Plugin file system
+instance handle<br>
+        </dd>
+        <dt><code>LocalName</code></dt>
+        <dd>Local file name with
+full path<br>
+        </dd>
+        <dt><code>RemoteName</code></dt>
+        <dd>Name of the remote
+file, with full path<br>
+        </dd>
+        <dt><code>CopyFlags</code><code></code></dt>
+        <dd>Can be a combination
+of the VFS_COPYFLAGS_XXX flags<br>
+        </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsDeleteFile"></a>BOOL
+__stdcall VfsDeleteFile(</code><code>HANDLE
+hInstance,
+char*
+RemotePath</code><code>);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsDeleteFile is called
+to delete a file from the
+plugin's file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt><code>hInstance</code></dt>
+        <dd>Plugin file system
+instance handle<br>
+        </dd>
+        <dt><code></code><code>RemotePath</code><code></code></dt>
+        <dd>Name of the file to be
+deleted, with full path<br>
+        </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsExecuteFile"></a>int
+__stdcall VfsExecuteFile(HANDLE&nbsp;</code><code>hInstance,
+HWND MainWin, </code><code>char*
+RemoteName, char* Verb</code><code>);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsExecuteFile is called
+to execute a file on the
+plugin's file system, or show its property sheet.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt><code>hInstance</code></dt>
+        <dd>Plugin file system
+instance handle </dd>
+        <dt><code>MainWin</code></dt>
+        <dd>Parent window which
+can be used for showing a
+property sheet<br>
+        </dd>
+        <dt><code>RemoteName</code></dt>
+        <dd>Name of the file to be
+executed, with full path </dd>
+        <dt><code>Verb</code></dt>
+        <dd>Plugin file system
+instance handle that have been returned by VfsOpen </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsCreateFolder"></a>int
+__stdcall VfsCreateFolder(HANDLE&nbsp;</code><code>hInstance,
+      </code><code>char*
+RemoteName</code><code>);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsCreateFolder is called
+to create a directory on the plugin's file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt><code>hInstance</code></dt>
+        <dd>Plugin file system
+instance handle </dd>
+        <dt><code>RemoteName</code></dt>
+        <dd>Name of the directory
+to be created, with full path </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsRemoveFolder"></a>int
+__stdcall VfsRemoveFolder(HANDLE&nbsp;</code><code>hInstance,
+char* RemoteName</code><code>);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsRemoveFolder is called
+to remove a directory from the plugin's file system.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt><code>hInstance</code></dt>
+        <dd>Plugin file system
+instance handle </dd>
+        <dt><code>RemoteName</code></dt>
+        <dd>Name of the directory
+to be removed, with full path </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a
+ name="VfsNetworkGetSupportedProtocols"></a>void
+__stdcall VfsNetworkGetSupportedProtocols(char*
+Protocols, int MaxLen);<br>
+      </code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsNetworkGetSupportedProtocols
+is called to retrieve&nbsp;protocols
+that supported by plugin.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt>Protocols</dt>
+        <dd>Pointer to a buffer
+(allocated by the calling program) which can receive the&nbsp;<span
+ id="result_box" class="short_text"><span style="" title="">semicolon</span></span>
+separated protocol list, e.g. "http://;ftp://"<br>
+        </dd>
+        <dt>MaxLen</dt>
+        <dd>Maximum number of
+characters (including the final 0) which fit in the buffer.</dd>
+      </dl>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsNetworkGetConnection"></a></code><code>BOOL
+__stdcall VfsNetworkGetConnection(</code><code>int
+Index, char* </code><code>Connection,
+int MaxLen);<br>
+      </code><code></code><code></code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsNetworkGetConnection
+is
+called to enumerate all connections that plugin has.&nbsp;Index is
+increased by 1
+starting from 0 until the plugin returns <code>False</code>.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt>Index</dt>
+        <dd>The index of the
+connection for which DC requests information. Starting with 0,
+the&nbsp;Index is increased until the plugin returns <code>False</code>.<br>
+        </dd>
+        <dt>Connection</dt>
+        <dd>Here the plugin has to
+return the name of the connection with
+index&nbsp;Index.&nbsp;You may return a maximum of maxlen
+characters, including the trailing 0. </dd>
+        <dt>MaxLen</dt>
+        <dd>The maximum number of
+characters, including the trailing 0, which may be returned in each of
+the connections.</dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsNetworkManageConnection"></a></code><code>BOOL
+__stdcall</code><code>
+VfsNetworkManageConnection(</code><code>HWND
+MainWin, char* </code><code>Connection,
+int Action, int MaxLen);<br>
+      </code><code></code><code></code><code></code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>VfsNetworkManageConnection
+is called from "Connection manager" dialog
+when user wants to add/edit/delete connection.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt>MainWin</dt>
+        <dd>Parent window which
+can be used for showing a connection
+configuration dialog.<br>
+        </dd>
+        <dt>Connection</dt>
+        <dd>In: Connection name
+for edit/delete action</dd>
+        <dd>Out: Connection name
+of new connection for add action</dd>
+        <dt>Action</dt>
+        <dd>Action type:&nbsp;<code><b><span
+ style="font-family: monospace;"><a
+ href="wfxplugin.html#FS_NM_ACTION_ADD">FS_NM_ACTION_ADD</a></span></b></code>
+or <code><b><span style="font-family: monospace;"><a
+ href="wfxplugin.html#FS_NM_ACTION_EDIT">FS_NM_ACTION_EDIT</a>&nbsp;</span></b></code>or
+          <code><b><span style="font-family: monospace;"><a
+ href="wfxplugin.html#FS_NM_ACTION_DELETE">FS_NM_ACTION_DELETE</a></span></b></code>
+        </dd>
+        <dt>MaxLen</dt>
+        <dd>Maximum number of
+characters that you can return in Connection, including the final 0.</dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsNetworkOpenConnection"></a></code><code>BOOL
+__stdcall</code><code>
+VfsNetworkOpenConnection(</code><code>char*
+      </code><code>Connection,&nbsp;</code><code>char*</code><code>
+RootDir,</code><code>
+      </code><code>char*</code><code>
+RemotePath, int
+MaxLen);<br>
+      </code><code></code><code></code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p><span id="result_box" class="short_text"><span style=""
+ title="">VfsNetworkOpenConnection is
+called when the user wants to open a connection to the
+network</span></span>.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt>Connection</dt>
+        <dd>In: Connection name</dd>
+        <dd>Out: Server
+address, e.g. "ftp://ftp.chg.ru"<br>
+        </dd>
+        <dt>RootDir</dt>
+        <dd>Here the plugin has to
+return the root directory of the opening connection, e.g. "/"</dd>
+        <dt>RemotePath</dt>
+        <dd>Here the plugin has to
+return the remote path of the opening connection, e.g. "/pub/Linux"</dd>
+        <dt>MaxLen</dt>
+        <dd>Maximum number of
+characters that you can return in Connection, RootDir and RemotePath,
+including
+the
+final 0. </dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><code><a name="VfsNetworkCloseConnection"></a></code><code>BOOL
+__stdcall</code><code>
+VfsNetworkCloseConnection(</code><code>char*
+      </code><code>Connection</code><code>);<br>
+      </code><code></code><code></code><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p><span id="result_box" class="short_text"><span style=""
+ title="">VfsNetworkOpenConnection is
+called when the user wants to close a connection to the
+network</span></span>.</p>
+      <h6 class="description_section">Parameters</h6>
+      <dl class="parameters">
+        <dt>Connection</dt>
+        <dd>Connection name</dd>
+      </dl>
+      <h6 class="description_section">Returns</h6>
+      <p class="return">The
+function returns <code>True</code>
+if
+successful, <code>False</code>
+otherwise</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_ADD"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_ADD&nbsp;&nbsp;&nbsp;&nbsp;
+= 0;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Add connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_EDIT"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_EDIT&nbsp;&nbsp;&nbsp;
+= 1;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Edit connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><code><b><span
+ style="font-family: monospace;">VFS_RET_OK</span></b></code><b><span
+ style="font-family: monospace;">&nbsp;
+= 0;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table class="detail wide_list">
+  <tbody>
+    <tr class="list">
+      <td class="itemcode"><a name="FS_NM_ACTION_DELETE"></a><code></code><b><span
+ style="font-family: monospace;">VFS_NM_ACTION_DELETE&nbsp;
+= 2;</span></b><code></code></td>
+    </tr>
+    <tr>
+      <td colspan="1">
+      <p>Delete connection action.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr noshade="noshade" size="1"><span class="appinfo"><em>Double
+Commander DFX plugin API</em>
+</span>
+</body>
+</html>

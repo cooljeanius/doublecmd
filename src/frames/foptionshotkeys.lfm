@@ -1,0 +1,242 @@
+inherited frmOptionsHotkeys: TfrmOptionsHotkeys
+  Height = 513
+  Width = 808
+  ClientHeight = 513
+  ClientWidth = 808
+  DesignTop = 20
+  object lblCategories: TLabel[0]
+    AnchorSideLeft.Control = lbxCategories
+    AnchorSideTop.Control = Owner
+    Left = 317
+    Height = 13
+    Top = 6
+    Width = 55
+    BorderSpacing.Top = 6
+    Caption = 'C&ategories:'
+    FocusControl = lbxCategories
+    ParentColor = False
+  end
+  object lblCommands: TLabel[1]
+    AnchorSideLeft.Control = lbSCFilesList
+    AnchorSideTop.Control = edtFilter
+    Left = 6
+    Height = 13
+    Top = 79
+    Width = 57
+    BorderSpacing.Top = 6
+    Caption = 'Co&mmands:'
+    FocusControl = stgCommands
+    ParentColor = False
+  end
+  object lbFilter: TLabel[2]
+    AnchorSideTop.Control = edtFilter
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = edtFilter
+    Left = 670
+    Height = 13
+    Top = 78
+    Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 4
+    Caption = '&Filter'
+    FocusControl = edtFilter
+    ParentColor = False
+  end
+  object lbxCategories: TListBox[3]
+    AnchorSideLeft.Control = lbSCFilesList
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblCategories
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 317
+    Height = 50
+    Top = 19
+    Width = 485
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    ItemHeight = 0
+    OnSelectionChange = lbxCategoriesSelectionChange
+    ScrollWidth = 483
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object edtFilter: TEdit[4]
+    AnchorSideTop.Control = lbxCategories
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = stgCommands
+    AnchorSideRight.Side = asrBottom
+    Left = 699
+    Height = 23
+    Top = 73
+    Width = 103
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 4
+    OnChange = edtFilterChange
+    TabOrder = 2
+  end
+  object stgCommands: TStringGrid[5]
+    AnchorSideLeft.Control = lblCommands
+    AnchorSideTop.Control = edtFilter
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 268
+    Top = 100
+    Width = 796
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 6
+    ColCount = 3
+    Constraints.MinHeight = 200
+    Constraints.MinWidth = 200
+    ExtendedSelect = False
+    FixedCols = 0
+    MouseWheelOption = mwGrid
+    Options = [goVertLine, goColSizing, goColMoving, goRowSelect, goThumbTracking, goDblClickAutoSize, goSmoothScroll]
+    RowCount = 1
+    TabOrder = 3
+    TitleStyle = tsNative
+    OnResize = stgCommandsResize
+    OnSelectCell = stgCommandsSelectCell
+  end
+  object stgHotkeys: TStringGrid[6]
+    AnchorSideLeft.Control = stgCommands
+    AnchorSideTop.Control = stgCommands
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = pnlHotkeyButtons
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 137
+    Top = 372
+    Width = 700
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 4
+    ColCount = 3
+    Columns = <    
+      item
+        Title.Caption = 'Hotkey'
+        Width = 119
+      end    
+      item
+        Title.Caption = 'Parameters'
+        Width = 119
+      end    
+      item
+        Title.Caption = 'Controls'
+        Width = 120
+      end>
+    Constraints.MinHeight = 100
+    Constraints.MinWidth = 100
+    FixedCols = 0
+    MouseWheelOption = mwGrid
+    Options = [goFixedVertLine, goFixedHorzLine, goColSizing, goColMoving, goRowSelect, goThumbTracking, goDblClickAutoSize, goSmoothScroll]
+    RowCount = 3
+    ScrollBars = ssAutoVertical
+    TabOrder = 4
+    TitleStyle = tsNative
+    OnDblClick = stgHotkeysDblClick
+    OnResize = stgHotkeysResize
+    OnSelectCell = stgHotkeysSelectCell
+    ColWidths = (
+      119
+      119
+      120
+    )
+  end
+  object pnlHotkeyButtons: TPanel[7]
+    AnchorSideTop.Control = stgHotkeys
+    AnchorSideRight.Control = stgCommands
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = stgHotkeys
+    AnchorSideBottom.Side = asrBottom
+    Left = 714
+    Height = 137
+    Top = 372
+    Width = 88
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+    ChildSizing.ShrinkVertical = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 137
+    ClientWidth = 88
+    TabOrder = 5
+    object btnAddHotKey: TButton
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 42
+      Top = 0
+      Width = 88
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Add &hotkey'
+      Enabled = False
+      OnClick = btnAddHotKeyClick
+      TabOrder = 0
+    end
+    object btnEditHotkey: TButton
+      Left = 0
+      Height = 42
+      Top = 48
+      Width = 88
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = '&Edit hotkey'
+      Enabled = False
+      OnClick = btnEditHotkeyClick
+      TabOrder = 1
+    end
+    object btnDeleteHotKey: TButton
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 41
+      Top = 96
+      Width = 88
+      AutoSize = True
+      BorderSpacing.InnerBorder = 4
+      Caption = '&Delete hotkey'
+      Enabled = False
+      OnClick = btnDeleteHotKeyClick
+      TabOrder = 2
+    end
+  end
+  object lbSCFilesList: TListBox[8]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblSCFiles
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 50
+    Top = 19
+    Width = 305
+    BorderSpacing.Left = 6
+    ItemHeight = 0
+    OnSelectionChange = lbSCFilesListSelectionChange
+    ScrollWidth = 303
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object lblSCFiles: TLabel[9]
+    AnchorSideLeft.Control = lbSCFilesList
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 13
+    Top = 6
+    Width = 68
+    BorderSpacing.Top = 6
+    Caption = '&Shortcut files:'
+    FocusControl = lbSCFilesList
+    ParentColor = False
+  end
+end

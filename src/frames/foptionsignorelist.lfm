@@ -1,0 +1,117 @@
+inherited frmOptionsIgnoreList: TfrmOptionsIgnoreList
+  Height = 325
+  Width = 644
+  ClientHeight = 325
+  ClientWidth = 644
+  DesignTop = 27
+  object lblSaveIn: TLabel[0]
+    Tag = 304
+    AnchorSideLeft.Control = memIgnoreList
+    AnchorSideTop.Control = fneSaveIn
+    AnchorSideTop.Side = asrCenter
+    Left = 10
+    Height = 13
+    Top = 258
+    Width = 39
+    Caption = '&Save in:'
+    FocusControl = fneSaveIn
+    ParentColor = False
+  end
+  object chkIgnoreEnable: TCheckBox[1]
+    Tag = 301
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 17
+    Top = 8
+    Width = 624
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 10
+    Caption = '&Ignore (don''t show) the following files and folders:'
+    OnChange = chkIgnoreEnableChange
+    TabOrder = 0
+  end
+  object memIgnoreList: TMemo[2]
+    AnchorSideLeft.Control = chkIgnoreEnable
+    AnchorSideTop.Control = chkIgnoreEnable
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = chkIgnoreEnable
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = fneSaveIn
+    Left = 10
+    Height = 213
+    Top = 31
+    Width = 624
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 10
+    Lines.Strings = (
+      ''
+    )
+    ParentFont = False
+    ScrollBars = ssBoth
+    TabOrder = 1
+  end
+  object btnAddSel: TButton[3]
+    Tag = 303
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = memIgnoreList
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 512
+    Height = 30
+    Top = 285
+    Width = 122
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 10
+    Caption = 'A&dd selected names'
+    Constraints.MinHeight = 30
+    OnClick = btnAddSelClick
+    TabOrder = 4
+  end
+  object btnAddSelWithPath: TButton[4]
+    Tag = 302
+    AnchorSideLeft.Control = memIgnoreList
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 30
+    Top = 285
+    Width = 187
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 10
+    Caption = 'Add selected names with &full path'
+    Constraints.MinHeight = 30
+    OnClick = btnAddSelWithPathClick
+    TabOrder = 3
+  end
+  object fneSaveIn: TFileNameEdit[5]
+    AnchorSideLeft.Control = lblSaveIn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = btnAddSel
+    Left = 57
+    Height = 21
+    Top = 254
+    Width = 551
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
+    BorderSpacing.Bottom = 10
+    MaxLength = 0
+    TabOrder = 2
+  end
+end

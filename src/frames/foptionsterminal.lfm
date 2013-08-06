@@ -1,0 +1,54 @@
+inherited frmOptionsTerminal: TfrmOptionsTerminal
+  Height = 147
+  Width = 519
+  ClientHeight = 147
+  ClientWidth = 519
+  object lblRunInTerm: TLabel[0]
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 13
+    Top = 11
+    Width = 75
+    Caption = 'Run in &terminal:'
+    FocusControl = edtRunInTerm
+    ParentColor = False
+  end
+  object edtRunInTerm: TEdit[1]
+    AnchorSideLeft.Control = lblRunInTerm
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 89
+    Height = 21
+    Top = 8
+    Width = 420
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 10
+    TabOrder = 0
+  end
+  object lblRunTerm: TLabel[2]
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 13
+    Top = 40
+    Width = 64
+    Caption = 'Run t&erminal:'
+    FocusControl = edtRunTerm
+    ParentColor = False
+  end
+  object edtRunTerm: TEdit[3]
+    AnchorSideLeft.Control = edtRunInTerm
+    AnchorSideTop.Control = edtRunInTerm
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = edtRunInTerm
+    AnchorSideRight.Side = asrBottom
+    Left = 89
+    Height = 21
+    Top = 35
+    Width = 420
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    TabOrder = 1
+  end
+end

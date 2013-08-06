@@ -1,0 +1,62 @@
+object frmSelectTextRange: TfrmSelectTextRange
+  Left = 326
+  Height = 112
+  Top = 236
+  Width = 320
+  BorderStyle = bsDialog
+  ChildSizing.LeftRightSpacing = 10
+  ClientHeight = 112
+  ClientWidth = 320
+  Position = poOwnerFormCenter
+  LCLVersion = '1.1'
+  object edtSelectText: TEdit
+    AnchorSideLeft.Control = lblSelectText
+    AnchorSideTop.Control = lblSelectText
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 28
+    Top = 34
+    Width = 300
+    AutoSelect = False
+    BorderSpacing.Top = 6
+    Constraints.MinWidth = 300
+    OnExit = edtSelectTextExit
+    TabOrder = 0
+  end
+  object lblSelectText: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 18
+    Top = 10
+    Width = 206
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 10
+    Caption = '&Select the characters to insert:'
+    FocusControl = edtSelectText
+    ParentColor = False
+  end
+  object btpPanel: TButtonPanel
+    Left = 10
+    Height = 40
+    Top = 66
+    Width = 300
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.DefaultCaption = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.DefaultCaption = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.DefaultCaption = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.DefaultCaption = False
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

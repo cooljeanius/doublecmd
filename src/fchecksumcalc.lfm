@@ -1,0 +1,109 @@
+object frmCheckSumCalc: TfrmCheckSumCalc
+  Left = 290
+  Height = 136
+  Top = 175
+  Width = 460
+  BorderIcons = [biSystemMenu]
+  Caption = 'Calculate check sum...'
+  ClientHeight = 136
+  ClientWidth = 460
+  Constraints.MaxHeight = 200
+  Constraints.MaxWidth = 800
+  Constraints.MinHeight = 136
+  Constraints.MinWidth = 400
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  SessionProperties = 'cbSeparateFile.Checked;cmbHashAlgorithm.ItemIndex'
+  LCLVersion = '1.1'
+  object lblSaveTo: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 10
+    Height = 18
+    Top = 8
+    Width = 166
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 8
+    Caption = '&Save check sum file(s) to:'
+    FocusControl = edtSaveTo
+    ParentColor = False
+  end
+  object edtSaveTo: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblSaveTo
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 28
+    Top = 32
+    Width = 440
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 10
+    TabOrder = 0
+  end
+  object cbSeparateFile: TCheckBox
+    AnchorSideLeft.Control = edtSaveTo
+    AnchorSideTop.Control = edtSaveTo
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 23
+    Top = 66
+    Width = 302
+    BorderSpacing.Top = 6
+    Caption = 'C&reate separate checksum file for each file'
+    OnChange = cbSeparateFileChange
+    TabOrder = 1
+  end
+  object btnOK: TBitBtn
+    AnchorSideRight.Control = btnCancel
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 244
+    Height = 32
+    Top = 94
+    Width = 100
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 10
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 3
+  end
+  object btnCancel: TBitBtn
+    AnchorSideRight.Control = edtSaveTo
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 350
+    Height = 32
+    Top = 94
+    Width = 100
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 10
+    Cancel = True
+    Caption = '&Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 4
+  end
+  object cmbHashAlgorithm: TComboBox
+    AnchorSideLeft.Control = cbSeparateFile
+    AnchorSideTop.Control = cbSeparateFile
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 30
+    Top = 95
+    Width = 132
+    BorderSpacing.Top = 6
+    ItemHeight = 0
+    OnChange = cmbHashAlgorithmChange
+    Style = csDropDownList
+    TabOrder = 2
+  end
+end

@@ -1,0 +1,256 @@
+inherited frmOptionsIcons: TfrmOptionsIcons
+  Height = 389
+  Width = 478
+  ClientHeight = 389
+  ClientWidth = 478
+  DesignLeft = 244
+  DesignTop = 121
+  object gbIconsSize: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbDisableSpecialIcons
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 82
+    Top = 242
+    Width = 466
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = ' Icon size '
+    ChildSizing.TopBottomSpacing = 8
+    ClientHeight = 64
+    ClientWidth = 462
+    TabOrder = 2
+    object cbIconsSize: TComboBox
+      AnchorSideLeft.Control = gbIconsSize
+      AnchorSideTop.Control = pnlIconExample
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Side = asrBottom
+      Left = 10
+      Height = 21
+      Top = 22
+      Width = 131
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 10
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        '16x16'
+        '22x22'
+        '32x32'
+      )
+      OnChange = cbIconsSizeChange
+      Style = csDropDownList
+      TabOrder = 0
+      Text = '16x16'
+    end
+    object pnlIconExample: TPanel
+      AnchorSideTop.Control = gbIconsSize
+      AnchorSideRight.Control = gbIconsSize
+      AnchorSideRight.Side = asrBottom
+      Left = 404
+      Height = 48
+      Top = 8
+      Width = 48
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 10
+      BevelOuter = bvLowered
+      ClientHeight = 48
+      ClientWidth = 48
+      TabOrder = 1
+      object imgIconExample: TImage
+        Left = 1
+        Height = 46
+        Top = 1
+        Width = 46
+        Align = alClient
+        Center = True
+      end
+    end
+  end
+  object gbShowIconsMode: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 145
+    Top = 6
+    Width = 466
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = ' Show icons to the left of the filename '
+    ChildSizing.TopBottomSpacing = 8
+    ClientHeight = 127
+    ClientWidth = 462
+    TabOrder = 0
+    object rbIconsShowAll: TRadioButton
+      AnchorSideLeft.Control = gbShowIconsMode
+      AnchorSideTop.Control = rbIconsShowAllAndExe
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 17
+      Top = 31
+      Width = 31
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 6
+      Caption = 'A&ll'
+      Checked = True
+      TabOrder = 1
+      TabStop = True
+    end
+    object rbIconsShowStandard: TRadioButton
+      AnchorSideLeft.Control = gbShowIconsMode
+      AnchorSideTop.Control = rbIconsShowAll
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 17
+      Top = 54
+      Width = 115
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 6
+      Caption = 'Only &standard icons'
+      TabOrder = 2
+    end
+    object rbIconsShowNone: TRadioButton
+      AnchorSideLeft.Control = gbShowIconsMode
+      AnchorSideTop.Control = rbIconsShowStandard
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 17
+      Top = 77
+      Width = 60
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 6
+      Caption = '&No icons'
+      OnChange = rbIconsShowNoneChange
+      TabOrder = 3
+    end
+    object rbIconsShowAllAndExe: TRadioButton
+      AnchorSideLeft.Control = gbShowIconsMode
+      AnchorSideTop.Control = gbShowIconsMode
+      Left = 10
+      Height = 17
+      Top = 8
+      Width = 171
+      BorderSpacing.Left = 10
+      Caption = 'All associated + &EXE/LNK (slow)'
+      TabOrder = 0
+    end
+    object cbIconsShowOverlay: TCheckBox
+      AnchorSideLeft.Control = gbShowIconsMode
+      AnchorSideTop.Control = rbIconsShowNone
+      AnchorSideTop.Side = asrBottom
+      Left = 10
+      Height = 17
+      Top = 102
+      Width = 179
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 8
+      Caption = 'Show o&verlay icons, e.g. for links'
+      TabOrder = 4
+    end
+  end
+  object gbDisableSpecialIcons: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbShowIconsMode
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 79
+    Top = 157
+    Width = 466
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Disable special icons'
+    ChildSizing.TopBottomSpacing = 8
+    ClientHeight = 61
+    ClientWidth = 462
+    TabOrder = 1
+    object edtIconsExcludeDirs: TEdit
+      AnchorSideLeft.Control = cbIconsExclude
+      AnchorSideTop.Control = cbIconsExclude
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbDisableSpecialIcons
+      AnchorSideRight.Side = asrBottom
+      Left = 30
+      Height = 21
+      Top = 25
+      Width = 424
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 20
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 15
+      TabOrder = 1
+    end
+    object cbIconsExclude: TCheckBox
+      AnchorSideLeft.Control = gbDisableSpecialIcons
+      AnchorSideTop.Control = gbDisableSpecialIcons
+      Left = 10
+      Height = 17
+      Top = 8
+      Width = 250
+      BorderSpacing.Left = 10
+      Caption = 'For the following &paths and their subdirectories:'
+      OnChange = cbIconsExcludeChange
+      TabOrder = 0
+    end
+  end
+  object gbIconsInMenus: TGroupBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbIconsSize
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 55
+    Top = 330
+    Width = 466
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Icons in menus'
+    ChildSizing.LeftRightSpacing = 10
+    ChildSizing.TopBottomSpacing = 8
+    ClientHeight = 37
+    ClientWidth = 462
+    TabOrder = 3
+    object cbIconsInMenus: TCheckBox
+      AnchorSideLeft.Control = gbIconsInMenus
+      AnchorSideTop.Control = cbIconsInMenusSize
+      AnchorSideTop.Side = asrCenter
+      Left = 10
+      Height = 17
+      Top = 10
+      Width = 172
+      Caption = 'Show icons for actions in &menus'
+      TabOrder = 0
+    end
+    object cbIconsInMenusSize: TComboBox
+      AnchorSideTop.Control = gbIconsInMenus
+      AnchorSideRight.Control = gbIconsInMenus
+      AnchorSideRight.Side = asrBottom
+      Left = 321
+      Height = 21
+      Top = 8
+      Width = 131
+      Anchors = [akTop, akRight]
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        '16x16'
+        '22x22'
+        '32x32'
+      )
+      OnChange = cbIconsSizeChange
+      Style = csDropDownList
+      TabOrder = 1
+      Text = '16x16'
+    end
+  end
+end

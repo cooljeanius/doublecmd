@@ -1,0 +1,233 @@
+object frmViewOperations: TfrmViewOperations
+  Left = 18
+  Height = 353
+  Top = 117
+  Width = 507
+  ActiveControl = tvOperations
+  Caption = 'File operations'
+  ClientHeight = 353
+  ClientWidth = 507
+  Constraints.MinHeight = 100
+  Constraints.MinWidth = 300
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  SessionProperties = 'Height;Left;Top;Width;WindowState;cbAlwaysOnTop.Checked'
+  LCLVersion = '1.1'
+  object pnlHeader: TPanel
+    Left = 0
+    Height = 64
+    Top = 0
+    Width = 507
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 64
+    ClientWidth = 507
+    TabOrder = 0
+    object pnlTopHeader: TPanel
+      AnchorSideLeft.Control = pnlHeader
+      AnchorSideTop.Control = pnlHeader
+      AnchorSideRight.Control = pnlHeader
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 40
+      Top = 0
+      Width = 507
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 40
+      ClientWidth = 507
+      TabOrder = 0
+      object tbPauseAll: TToggleBox
+        AnchorSideLeft.Control = pnlTopHeader
+        AnchorSideTop.Control = pnlTopHeader
+        AnchorSideBottom.Control = pnlTopHeader
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 40
+        Top = 0
+        Width = 70
+        Anchors = [akTop, akLeft, akBottom]
+        AutoSize = True
+        BorderSpacing.Right = 40
+        Caption = '&Pause all'
+        OnChange = tbPauseAllChange
+        TabOrder = 0
+      end
+      object btnStop: TBitBtn
+        AnchorSideLeft.Control = tbPauseAll
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = pnlTopHeader
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 110
+        Height = 40
+        Top = 0
+        Width = 80
+        AutoSize = True
+        Caption = 'S&top'
+        Constraints.MinHeight = 40
+        Constraints.MinWidth = 80
+        Enabled = False
+        OnClick = btnStopClick
+        TabOrder = 1
+      end
+      object btnStartPause: TBitBtn
+        AnchorSideLeft.Control = btnStop
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = pnlTopHeader
+        AnchorSideBottom.Side = asrBottom
+        Left = 200
+        Height = 40
+        Top = 0
+        Width = 80
+        AutoSize = True
+        BorderSpacing.Left = 10
+        Caption = '&Start'
+        Constraints.MinHeight = 40
+        Constraints.MinWidth = 80
+        Enabled = False
+        OnClick = btnStartPauseClick
+        TabOrder = 2
+      end
+    end
+    object lblUseDragDrop: TLabel
+      AnchorSideLeft.Control = pnlHeader
+      AnchorSideTop.Control = pnlTopHeader
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnlHeader
+      AnchorSideRight.Side = asrBottom
+      Left = 10
+      Height = 18
+      Top = 43
+      Width = 487
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 10
+      BorderSpacing.Bottom = 3
+      Caption = '&Use "drag && drop" to move operations between queues'
+      FocusControl = tvOperations
+      ParentColor = False
+    end
+    object cbAlwaysOnTop: TCheckBox
+      AnchorSideTop.Control = pnlTopHeader
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = pnlTopHeader
+      AnchorSideRight.Side = asrBottom
+      Left = 391
+      Height = 23
+      Top = 9
+      Width = 116
+      Anchors = [akTop, akRight]
+      Caption = 'Always on top'
+      OnChange = cbAlwaysOnTopChange
+      TabOrder = 1
+    end
+  end
+  object tvOperations: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = pnlHeader
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 289
+    Top = 64
+    Width = 507
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoExpand = True
+    DefaultItemHeight = 24
+    DragMode = dmAutomatic
+    ExpandSignType = tvestArrow
+    MultiSelect = True
+    MultiSelectStyle = [msControlSelect, msShiftSelect]
+    ReadOnly = True
+    RowSelect = True
+    ScrollBars = ssAutoVertical
+    ShowLines = False
+    TabOrder = 1
+    OnCustomDrawItem = tvOperationsCustomDrawItem
+    OnDeletion = tvOperationsDeletion
+    OnDragDrop = tvOperationsDragDrop
+    OnDragOver = tvOperationsDragOver
+    OnKeyDown = tvOperationsKeyDown
+    OnMouseDown = tvOperationsMouseDown
+    OnSelectionChanged = tvOperationsSelectionChanged
+    Options = [tvoAllowMultiselect, tvoAutoExpand, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowRoot, tvoShowSeparators, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+  end
+  object UpdateTimer: TTimer
+    Interval = 100
+    OnTimer = OnUpdateTimer
+    left = 112
+    top = 136
+  end
+  object pmOperationPopup: TPopupMenu
+    left = 224
+    top = 136
+    object mnuQueue: TMenuItem
+      Caption = 'Queue'
+      object mnuQueue0: TMenuItem
+        Caption = 'Out of queue'
+        OnClick = mnuQueueNumberClick
+      end
+      object mnuQueue1: TMenuItem
+        Caption = 'Queue 1'
+        OnClick = mnuQueueNumberClick
+      end
+      object mnuQueue2: TMenuItem
+        Caption = 'Queue 2'
+        OnClick = mnuQueueNumberClick
+      end
+      object mnuQueue3: TMenuItem
+        Caption = 'Queue 3'
+        OnClick = mnuQueueNumberClick
+      end
+      object mnuQueue4: TMenuItem
+        Caption = 'Queue 4'
+        OnClick = mnuQueueNumberClick
+      end
+      object mnuQueue5: TMenuItem
+        Caption = 'Queue 5'
+        OnClick = mnuQueueNumberClick
+      end
+      object mnuNewQueue: TMenuItem
+        Caption = 'New queue'
+        OnClick = mnuNewQueueClick
+      end
+    end
+    object mnuOperationShowDetached: TMenuItem
+      Caption = 'Show in detached window'
+      OnClick = mnuOperationShowDetachedClick
+    end
+    object mnuPutFirstInQueue: TMenuItem
+      Caption = 'Put first in queue'
+      OnClick = mnuPutFirstInQueueClick
+    end
+    object mnuPutLastInQueue: TMenuItem
+      Caption = 'Put last in queue'
+      OnClick = mnuPutLastInQueueClick
+    end
+    object mnuCancelOperation: TMenuItem
+      Caption = 'Cancel'
+      OnClick = mnuCancelOperationClick
+    end
+  end
+  object pmQueuePopup: TPopupMenu
+    left = 224
+    top = 208
+    object mnuQueueShowDetached: TMenuItem
+      Caption = 'Show in detached window'
+      OnClick = mnuQueueShowDetachedClick
+    end
+    object mnuCancelQueue: TMenuItem
+      Caption = 'Cancel'
+      OnClick = mnuCancelQueueClick
+    end
+  end
+end

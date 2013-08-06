@@ -1,0 +1,120 @@
+object frmHotDir: TfrmHotDir
+  Left = 285
+  Height = 423
+  Top = 127
+  Width = 437
+  ActiveControl = btnOK
+  Caption = 'Directory Hotlist'
+  ClientHeight = 423
+  ClientWidth = 437
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object lsHotDir: TListBox
+    AnchorSideRight.Control = btnOK
+    Left = 12
+    Height = 409
+    Top = 8
+    Width = 265
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Right = 12
+    ItemHeight = 0
+    OnMouseMove = lsHotDirMouseMove
+    OnMouseDown = lsHotDirMouseDown
+    OnMouseUp = lsHotDirMouseUp
+    ScrollWidth = 263
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object btnOK: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 289
+    Height = 32
+    Top = 8
+    Width = 142
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = '&OK'
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = btnOKClick
+    TabOrder = 1
+  end
+  object btnCancel: TBitBtn
+    AnchorSideTop.Control = btnDelete
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 289
+    Height = 32
+    Top = 128
+    Width = 142
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 6
+    Cancel = True
+    Caption = '&Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 4
+  end
+  object btnADD: TBitBtn
+    AnchorSideTop.Control = btnOK
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 289
+    Height = 32
+    Top = 48
+    Width = 142
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 6
+    Caption = '&Add'
+    OnClick = btnADDClick
+    TabOrder = 2
+  end
+  object btnDelete: TBitBtn
+    AnchorSideTop.Control = btnADD
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 289
+    Height = 32
+    Top = 88
+    Width = 142
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 8
+    BorderSpacing.Right = 6
+    Caption = '&Delete'
+    OnClick = btnDeleteClick
+    TabOrder = 3
+  end
+  object btnAddMan: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 289
+    Height = 32
+    Top = 168
+    Width = 142
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = 'Add &manually'
+    OnClick = btnAddManClick
+    TabOrder = 5
+  end
+  object btnEdit: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 289
+    Height = 32
+    Top = 208
+    Width = 142
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = '&Edit'
+    OnClick = btnEditClick
+    TabOrder = 6
+  end
+end

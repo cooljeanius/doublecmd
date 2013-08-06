@@ -1,0 +1,1594 @@
+# Slovenian translations for double-commander lclstrconsts.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# This file is distributed under the same license as the double-commander package.
+#
+# Matej Urbančič <mateju@svn.gnome.org>, 2011 - 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: double-commander - lclstrconsts\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-03-24 14:34+0100\n"
+"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
+"Language: sl_SI\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: lclstrconsts.hhshelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr "Brskalnik %s%s%s ni izvedljiv."
+
+#: lclstrconsts.hhshelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr "Brskalnika %s%s%s ni mogoče najti."
+
+#: lclstrconsts.hhshelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr "Napaka med zaganjanjem %s%s%s:%s%s"
+
+#: lclstrconsts.hhshelpnohtmlbrowserfound
+msgid "Unable to find a HTML browser."
+msgstr "Ni mogoče najti brskalnika HTML."
+
+#: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid ""
+"No HTML Browser found.%sPlease define one in Environment -> Options -> Help -"
+"> Help Options"
+msgstr ""
+"Ni mogoče najti brskalnika HTML. %s Opredeliti je treba okoljske "
+"spremenljivke -> Možnosti -> Pomoč -> Možnosti pomoči"
+
+#: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr "Podatkovni zbirki %s%s%s manjka datoteka %s%s%s."
+
+#: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr "Makro %s v predmetu BrowserParams bo zamenjan z naslovom URL."
+
+#: lclstrconsts.ifsalt
+msgid "Alt"
+msgstr "Alt"
+
+#: lclstrconsts.ifsctrl
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: lclstrconsts.ifsvk_accept
+msgid "Accept"
+msgstr "Sprejmi"
+
+#: lclstrconsts.ifsvk_apps
+msgid "application key"
+msgstr "ključ programa"
+
+#: lclstrconsts.ifsvk_back
+msgid "Backspace"
+msgstr "Povratna tipka"
+
+#: lclstrconsts.ifsvk_cancel
+msgctxt "lclstrconsts.ifsvk_cancel"
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: lclstrconsts.ifsvk_capital
+#, fuzzy
+msgid "Capital"
+msgstr "Avstralski zvezni teritorij"
+
+#: lclstrconsts.ifsvk_clear
+msgid "Clear"
+msgstr "Počisti"
+
+#: lclstrconsts.ifsvk_control
+msgid "Control"
+msgstr "Tipka"
+
+#: lclstrconsts.ifsvk_convert
+msgid "Convert"
+msgstr "Pretvori"
+
+#: lclstrconsts.ifsvk_delete
+msgctxt "lclstrconsts.ifsvk_delete"
+msgid "Delete"
+msgstr "Izbriši"
+
+#: lclstrconsts.ifsvk_down
+msgctxt "lclstrconsts.ifsvk_down"
+msgid "Down"
+msgstr "Navzdol"
+
+#: lclstrconsts.ifsvk_end
+msgctxt "lclstrconsts.ifsvk_end"
+msgid "End"
+msgstr "Konec"
+
+#: lclstrconsts.ifsvk_escape
+msgid "Escape"
+msgstr "Ubežna tipka"
+
+#: lclstrconsts.ifsvk_execute
+msgid "Execute"
+msgstr "Izvedi"
+
+#: lclstrconsts.ifsvk_final
+msgid "Final"
+msgstr "Končna različica"
+
+#: lclstrconsts.ifsvk_hanja
+msgid "Hanja"
+msgstr "Hanja"
+
+#: lclstrconsts.ifsvk_help
+msgid "Help"
+msgstr "Pomoč"
+
+#: lclstrconsts.ifsvk_home
+msgctxt "lclstrconsts.ifsvk_home"
+msgid "Home"
+msgstr "Domov"
+
+#: lclstrconsts.ifsvk_insert
+msgctxt "lclstrconsts.ifsvk_insert"
+msgid "Insert"
+msgstr "Vstavi"
+
+#: lclstrconsts.ifsvk_junja
+msgid "Junja"
+msgstr "Junja"
+
+#: lclstrconsts.ifsvk_kana
+msgid "Kana"
+msgstr "Kana"
+
+#: lclstrconsts.ifsvk_lbutton
+msgid "Mouse Button Left"
+msgstr "Levi gumb miške"
+
+#: lclstrconsts.ifsvk_left
+msgctxt "lclstrconsts.ifsvk_left"
+msgid "Left"
+msgstr "Levo"
+
+#: lclstrconsts.ifsvk_lwin
+msgid "left windows key"
+msgstr "Leva tipka Win"
+
+#: lclstrconsts.ifsvk_mbutton
+msgid "Mouse Button Middle"
+msgstr "Srednji gumb miške"
+
+#: lclstrconsts.ifsvk_menu
+msgctxt "lclstrconsts.ifsvk_menu"
+msgid "Menu"
+msgstr "Meni"
+
+#: lclstrconsts.ifsvk_modechange
+msgid "Mode Change"
+msgstr "Sprememba načina"
+
+#: lclstrconsts.ifsvk_next
+msgctxt "lclstrconsts.ifsvk_next"
+msgid "Next"
+msgstr "Naslednji"
+
+#: lclstrconsts.ifsvk_nonconvert
+msgid "Nonconvert"
+msgstr "Nepretvorjeno"
+
+#: lclstrconsts.ifsvk_numlock
+msgid "Numlock"
+msgstr "Zaklep številčnice"
+
+#: lclstrconsts.ifsvk_numpad
+msgid "Numpad %d"
+msgstr "Številčnica %d"
+
+#: lclstrconsts.ifsvk_pause
+msgid "Pause key"
+msgstr "Tipka za premor"
+
+#: lclstrconsts.ifsvk_print
+msgid "Print"
+msgstr "Natisni"
+
+#: lclstrconsts.ifsvk_prior
+msgctxt "lclstrconsts.ifsvk_prior"
+msgid "Prior"
+msgstr "Predhodni"
+
+#: lclstrconsts.ifsvk_rbutton
+msgid "Mouse Button Right"
+msgstr "Desni gumb miške"
+
+#: lclstrconsts.ifsvk_return
+msgid "Return"
+msgstr "Vnosna tipka"
+
+#: lclstrconsts.ifsvk_right
+msgctxt "lclstrconsts.ifsvk_right"
+msgid "Right"
+msgstr "Desno"
+
+#: lclstrconsts.ifsvk_rwin
+msgid "right windows key"
+msgstr "Desna tipka Win"
+
+#: lclstrconsts.ifsvk_scroll
+msgid "Scroll"
+msgstr "Drsnik"
+
+#: lclstrconsts.ifsvk_select
+msgid "Select"
+msgstr "Izbor"
+
+#: lclstrconsts.ifsvk_shift
+msgid "Shift"
+msgstr "Dvigalka"
+
+#: lclstrconsts.ifsvk_snapshot
+msgid "Snapshot"
+msgstr "Zaslonske slike"
+
+#: lclstrconsts.ifsvk_space
+msgid "Space key"
+msgstr "Preslednica"
+
+#: lclstrconsts.ifsvk_tab
+msgctxt "lclstrconsts.ifsvk_tab"
+msgid "Tab"
+msgstr "Tabulator"
+
+#: lclstrconsts.ifsvk_unknown
+msgid "Unknown"
+msgstr "Neznano"
+
+#: lclstrconsts.ifsvk_up
+msgctxt "lclstrconsts.ifsvk_up"
+msgid "Up"
+msgstr "Navzgor"
+
+#: lclstrconsts.liscannotexecute
+msgid "can not execute %s"
+msgstr "ni mogoče izvesti ukaza %s"
+
+#: lclstrconsts.lislclresourcesnotfound
+msgctxt "lclstrconsts.lislclresourcesnotfound"
+msgid "Resource %s not found"
+msgstr "Vira %s ni mogoče najti"
+
+#: lclstrconsts.lisprogramfilenotfound
+msgid "program file not found %s"
+msgstr "datoteke programa ni mogoče najti %s"
+
+#: lclstrconsts.rs3ddkshadowcolorcaption
+msgid "3D Dark Shadow"
+msgstr "3D temna senca"
+
+#: lclstrconsts.rs3dlightcolorcaption
+msgid "3D Light"
+msgstr "3D svetla senca"
+
+#: lclstrconsts.rsacontrolcannothaveitselfasparent
+msgid "A control can't have itself as a parent"
+msgstr "Nadzorni predmet ne more biti sam sebi nadrejen"
+
+#: lclstrconsts.rsactivebordercolorcaption
+msgid "Active Border"
+msgstr "Dejavni okvir"
+
+#: lclstrconsts.rsactivecaptioncolorcaption
+msgid "Active Caption"
+msgstr "Dejavni naslov"
+
+#: lclstrconsts.rsallfiles
+msgid "All files (%s)|%s|%s"
+msgstr "Vse datoteke (%s)|%s|%s"
+
+#: lclstrconsts.rsappworkspacecolorcaption
+msgid "Application Workspace"
+msgstr "Delovna površina programa"
+
+#: lclstrconsts.rsaquacolorcaption
+msgid "Aqua"
+msgstr "Vodna"
+
+#: lclstrconsts.rsbackgroundcolorcaption
+msgid "Desktop"
+msgstr "Namizje"
+
+#: lclstrconsts.rsbackward
+msgid "Backward"
+msgstr "Nazaj"
+
+#: lclstrconsts.rsbitmaps
+msgid "Bitmaps"
+msgstr "Slike"
+
+#: lclstrconsts.rsblackcolorcaption
+msgid "Black"
+msgstr "Črna"
+
+#: lclstrconsts.rsblank
+msgid "Blank"
+msgstr "Prazno"
+
+#: lclstrconsts.rsbluecolorcaption
+msgid "Blue"
+msgstr "Modra"
+
+#: lclstrconsts.rsbtnfacecolorcaption
+msgid "Button Face"
+msgstr "Neizbran gumb"
+
+#: lclstrconsts.rsbtnhighlightcolorcaption
+msgid "Button Highlight"
+msgstr "Poudarjen gumb"
+
+#: lclstrconsts.rsbtnshadowcolorcaption
+msgid "Button Shadow"
+msgstr "Senca gumba"
+
+#: lclstrconsts.rsbtntextcolorcaption
+msgid "Button Text"
+msgstr "Besedilo gumba"
+
+#: lclstrconsts.rscalculator
+msgid "Calculator"
+msgstr "Računalo"
+
+#: lclstrconsts.rscancelrecordhint
+msgctxt "lclstrconsts.rscancelrecordhint"
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: lclstrconsts.rscannotfocus
+msgid "Can not focus"
+msgstr "Ni mogoče postaviti v žarišče"
+
+#: lclstrconsts.rscanvasdoesnotallowdrawing
+msgid "Canvas does not allow drawing"
+msgstr "Na platno ni mogoče risati"
+
+#: lclstrconsts.rscaptiontextcolorcaption
+msgid "Caption Text"
+msgstr "Besedilo naslova"
+
+#: lclstrconsts.rscasesensitive
+msgid "Case sensitive"
+msgstr "Razlikovanje velikosti črk"
+
+#: lclstrconsts.rscontrolclasscantcontainchildclass
+msgid "Control of class '%s' can't have control of class '%s' as a child"
+msgstr ""
+"Predmet razreda '%s' ne more imet hkrati tudi podrejenega predmeta razreda "
+"'%s'."
+
+#: lclstrconsts.rscontrolhasnoparentwindow
+msgid "Control '%s' has no parent window"
+msgstr "Nadzorno okno '%s' je brez nadrejenega okna"
+
+#: lclstrconsts.rscreamcolorcaption
+msgid "Cream"
+msgstr "Kremna"
+
+#: lclstrconsts.rscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr "Ustvarjanje napake predpomnjenja gdb:"
+
+#: lclstrconsts.rscursor
+msgid "Cursor"
+msgstr "Kazalka"
+
+#: lclstrconsts.rscustomcolorcaption
+msgid "Custom ..."
+msgstr "Po meri ..."
+
+#: lclstrconsts.rsdefaultcolorcaption
+msgid "Default"
+msgstr "Privzeto"
+
+#: lclstrconsts.rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr "dovoljenja uporabnik skupina velikost datum čas"
+
+#: lclstrconsts.rsdeleterecord
+msgid "Delete record?"
+msgstr "Ali naj se vpis izbriše?"
+
+#: lclstrconsts.rsdeleterecordhint
+msgctxt "lclstrconsts.rsdeleterecordhint"
+msgid "Delete"
+msgstr "Izbriši"
+
+#: lclstrconsts.rsdirection
+msgid "Direction"
+msgstr "Smer"
+
+#: lclstrconsts.rsdirectory
+msgid "&Directory"
+msgstr "&Mapa"
+
+#: lclstrconsts.rsdocking
+msgid "Docking"
+msgstr "Sidrišče"
+
+#: lclstrconsts.rsduplicateiconformat
+msgid "Duplicate icon format."
+msgstr "Podvojen zapis ikone."
+
+#: lclstrconsts.rseditrecordhint
+msgid "Edit"
+msgstr "Uredi"
+
+#: lclstrconsts.rsentirescope
+msgid "Search entire file"
+msgstr "Preišči celotno datoteko"
+
+#: lclstrconsts.rserror
+msgctxt "lclstrconsts.rserror"
+msgid "Error"
+msgstr "Napaka"
+
+#: lclstrconsts.rserrorcreatingdevicecontext
+msgid "Error creating device context for %s.%s"
+msgstr "Napaka med ustvarjanjem vsebine naprave za %s.%s"
+
+#: lclstrconsts.rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr "Napaka v LCL:"
+
+#: lclstrconsts.rserroroccurredinataddressframe
+msgid "Error occurred in %s at %sAddress %s%s Frame %s"
+msgstr "Prišlo je do napake v %s pri %s na naslovu %s%s v okvirju %s"
+
+#: lclstrconsts.rserrorreadingproperty
+msgid "Error reading %s%s%s: %s"
+msgstr "Napaka med branjem %s%s%s: %s"
+
+#: lclstrconsts.rserrorwhilesavingbitmap
+msgid "Error while saving bitmap."
+msgstr "Napaka med shranjevanjem bitne slike."
+
+#: lclstrconsts.rsexception
+msgid "Exception"
+msgstr "Izjema"
+
+#: lclstrconsts.rsfddirectorymustexist
+msgid "Directory must exist"
+msgstr "Mapa mora obstajati"
+
+#: lclstrconsts.rsfddirectorynotexist
+msgid "The directory \"%s\" does not exist."
+msgstr "Mapa \"%s\" ne obstaja!"
+
+#: lclstrconsts.rsfdfilealreadyexists
+msgid "The file \"%s\" already exists. Overwrite ?"
+msgstr "Datoteka \"%s\" že obstaja. Ali naj bo prepisana?"
+
+#: lclstrconsts.rsfdfilemustexist
+msgid "File must exist"
+msgstr "Datoteka mora obstajati"
+
+#: lclstrconsts.rsfdfilenotexist
+msgid "The file \"%s\" does not exist."
+msgstr "Datoteka \"%s\" ne obstaja."
+
+#: lclstrconsts.rsfdfilereadonly
+msgid "The file \"%s\" is not writable."
+msgstr "Datoteka \"%s\" ni zapisljiva."
+
+#: lclstrconsts.rsfdfilereadonlytitle
+msgid "File is not writable"
+msgstr "Datoteka ni zapisljiva"
+
+#: lclstrconsts.rsfdfilesaveas
+msgid "Save file as"
+msgstr "Shrani datoteko kot"
+
+#: lclstrconsts.rsfdopenfile
+msgid "Open existing file"
+msgstr "Odpri obstoječo datoteko"
+
+#: lclstrconsts.rsfdoverwritefile
+msgid "Overwrite file ?"
+msgstr "Ali naj bo datoteka prepisana?"
+
+#: lclstrconsts.rsfdpathmustexist
+msgid "Path must exist"
+msgstr "Pot mora obstajati"
+
+#: lclstrconsts.rsfdpathnoexist
+msgid "The path \"%s\" does not exist."
+msgstr "Pot \"%s\" ne obstaja."
+
+#: lclstrconsts.rsfdselectdirectory
+msgid "Select Directory"
+msgstr "Izbor mape"
+
+#: lclstrconsts.rsfileinfofilenotfound
+msgid "(file not found: \"%s\")"
+msgstr "(datoteke ni mogoče najti: \"%s\")"
+
+#: lclstrconsts.rsfileinformation
+msgid "File information"
+msgstr "Podrobnosti datoteke"
+
+#: lclstrconsts.rsfind
+msgid "Find"
+msgstr "Najdi"
+
+#: lclstrconsts.rsfindmore
+msgid "Find more"
+msgstr "Najdi več"
+
+#: lclstrconsts.rsfirstrecordhint
+msgid "First"
+msgstr "Prvi"
+
+#: lclstrconsts.rsfixedcolstoobig
+msgid "FixedCols can't be >= ColCount"
+msgstr "Predmet stalnega števila stolpcev ne more bi >= števcu stolpcev"
+
+#: lclstrconsts.rsfixedrowstoobig
+msgid "FixedRows can't be >= RowCount"
+msgstr "Predmet stalnega števila vrstic ne more bi >= števca vrstic"
+
+#: lclstrconsts.rsformcolorcaption
+msgid "Form"
+msgstr "Obrazec"
+
+#: lclstrconsts.rsformstreamingerror
+msgid "Form streaming \"%s\" error: %s"
+msgstr "Napaka pretakanja obrazca \"%s\": %s"
+
+#: lclstrconsts.rsforward
+msgid "Forward"
+msgstr "Posreduj"
+
+#: lclstrconsts.rsfuchsiacolorcaption
+msgid "Fuchsia"
+msgstr "Fuksija"
+
+#: lclstrconsts.rsgdkoptiondebug
+msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
+msgstr ""
+"--gdk-debug flags     Prikaži posebna sporočila sledenja in razhroščevanja "
+"GDK."
+
+#: lclstrconsts.rsgdkoptionnodebug
+msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
+msgstr ""
+"--gdk-no-debug flags  Skrij posebna sporočila sledenja in razhroščevanja GDK."
+
+#: lclstrconsts.rsgif
+msgid "Graphics Interchange Format"
+msgstr "Slikovni zapis GIF"
+
+#: lclstrconsts.rsgoptionfatalwarnings
+msgid ""
+"--g-fatal-warnings    Warnings and errors generated by Gtk+/GDK will halt "
+"the application."
+msgstr ""
+"--g-fatal-warnings    Opozorila in napake s strani Gtk+/GDK zaustavijo "
+"delovanje programa."
+
+#: lclstrconsts.rsgradientactivecaptioncolorcaption
+msgid "Gradient Active Caption"
+msgstr "Preliv naziva dejavnega okna"
+
+#: lclstrconsts.rsgradientinactivecaptioncolorcaption
+msgid "Gradient Inactive Caption"
+msgstr "Preliv naziva nedejavnega okna"
+
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr "Grafika"
+
+#: lclstrconsts.rsgraycolorcaption
+msgid "Gray"
+msgstr "Siva"
+
+#: lclstrconsts.rsgraytextcolorcaption
+msgid "Gray Text"
+msgstr "Sivo besedilo"
+
+#: lclstrconsts.rsgreencolorcaption
+msgid "Green"
+msgstr "Zelena"
+
+#: lclstrconsts.rsgridfiledoesnotexists
+msgid "Grid file doesn't exists"
+msgstr "Datoteka mreže ne obstaja."
+
+#: lclstrconsts.rsgridindexoutofrange
+msgid "Grid index out of range."
+msgstr "Določilo mreže je izven veljavnega obsega."
+
+#: lclstrconsts.rsgroupindexcannotbelessthanprevious
+msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
+msgstr ""
+"Vrednost predmeta GroupIndex ne more biti manjše od predhodne vrednosti "
+"istega predmeta"
+
+#: lclstrconsts.rsgtkfilter
+msgid "Filter:"
+msgstr "Filter:"
+
+#: lclstrconsts.rsgtkhistory
+msgid "History:"
+msgstr "Zgodovina:"
+
+#: lclstrconsts.rsgtkoptionclass
+msgid ""
+"--class classname     Following Xt conventions, the class of a program is "
+"the program name with the initial character capitalized. For example, the "
+"classname for gimp is \"Gimp\". If --class is specified, the class of the "
+"program will be set to \"classname\"."
+msgstr ""
+"--class Imerazreda     Po določilih Xt je razred programa ime programa z "
+"veliko začetnico. \"Gimp\" (pisan z veliko) je na primer ime razreda "
+"programa gimp. Če je navedena zastavica --class, bo razred programa "
+"nastavljen na \"Imerazreda\"."
+
+#: lclstrconsts.rsgtkoptiondebug
+msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
+msgstr ""
+"--gtk-debug zastavice     Omogoči posebna sporočila sledenja in "
+"razhroščevanja Gtk+."
+
+#: lclstrconsts.rsgtkoptiondisplay
+msgid ""
+"--display h:s:d       Connect to the specified X server, where \"h\" is the "
+"hostname, \"s\" is the server number (usually 0), and \"d\" is the display "
+"number (typically omitted). If --display is not specified, the DISPLAY "
+"environment variable is used."
+msgstr ""
+"--display h:s:d       Povezava z določenim strežnikom X, kjer je \"h\" ime "
+"gostitelja, \"s\" številka strežnika (običajno 0) in \"d\" številka zaslona "
+"(ta je običajno izpuščena). Če zastavica --display ni določena, je "
+"uporabljena spremenljivka okolja DISPLAY."
+
+#: lclstrconsts.rsgtkoptionmodule
+msgid "--gtk-module module   Load the specified module at startup."
+msgstr "--gtk-module modul    Naloži določen modul ob zagonu."
+
+#: lclstrconsts.rsgtkoptionname
+msgid ""
+"--name programe       Set program name to \"progname\". If not specified, "
+"program name will be set to ParamStrUTF8(0)."
+msgstr ""
+"--name imeprograma       Nastavi ime programa na \"imeprograma\". V kolikor "
+"to ime ni navedeno, je ime določeno kot ParamStrUTF8(0)."
+
+#: lclstrconsts.rsgtkoptionnodebug
+msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
+msgstr ""
+"--gtk-no-debug flags  Onemogoči posebna sporočila sledenja in razhroščevanja "
+"Gtk+."
+
+#: lclstrconsts.rsgtkoptionnotransient
+msgid "--lcl-no-transient    Do not set transient order for modal forms"
+msgstr ""
+"--lcl-no-transient : ne nastavi razvrstitve pogovornih oken modalnih obrazcev"
+
+#: lclstrconsts.rsgtkoptionnoxshm
+msgid "--no-xshm             Disable use of the X Shared Memory Extension."
+msgstr ""
+"--no-xshm             Onemogoči uporabo razširitve souporabe pomnilnika X."
+
+#: lclstrconsts.rsgtkoptionsync
+msgid ""
+"--sync                Call XSynchronize (display, True) after the Xserver "
+"connection has been established. This makes debugging X protocol errors "
+"easier, because X request buffering will be disabled and X errors will be "
+"received immediately after the protocol request that generated the error has "
+"been processed by the X server."
+msgstr ""
+"--sync                Zastavica izvede priklic programa XSynchronize "
+"(zaslon, PRAV) po vzpostavitvi povezave s strežnikom Xserver. S tem postane "
+"razhroščevanje protokolov X enostavnejše, saj je medpomnjenje zahtev "
+"strežnika X onemogočeno. Napake strežnika X so prejete ob dogodku ali "
+"zahtevi protokola, ki je napako sprožilo."
+
+#: lclstrconsts.rshelpalreadyregistered
+msgid "%s: Already registered"
+msgstr "%s: že vpisano"
+
+#: lclstrconsts.rshelpcontextnotfound
+msgid "Help Context not found"
+msgstr "Pomoči vsebine ni mogoče najti"
+
+#: lclstrconsts.rshelpdatabasenotfound
+msgid "Help Database not found"
+msgstr "Podatkovne zbirke pomoči ni mogoče najti"
+
+#: lclstrconsts.rshelperror
+msgid "Help Error"
+msgstr "Napaka prikazovanja pomoči"
+
+#: lclstrconsts.rshelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Pomoči vsebine %s ni mogoče najti."
+
+#: lclstrconsts.rshelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Pomoči vsebine %s v podatkovni zbirki %s%s%s ni mogoče najti."
+
+#: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+"Podatkovni zbirki %s%s%s ni mogoče pripisati pregledovalnika za pomoč vrste "
+"%s"
+
+#: lclstrconsts.rshelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "Podatkovne zbirke %s%s%s ni mogoče najti."
+
+#: lclstrconsts.rshelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr "Ključne besede pomoči %s%s%s ni mogoče najti."
+
+#: lclstrconsts.rshelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr ""
+"Ključne besede pomoči %s%s%s v podatkovni zbirki %s%s%s ni mogoče najti."
+
+#: lclstrconsts.rshelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr "Vozlišče pomoči %s%s%s je brez pripadajoče podatkovne zbirke pomoči"
+
+#: lclstrconsts.rshelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr "Pomoči za vrsto %d in stolpec %d od %s ni mogoče najti."
+
+#: lclstrconsts.rshelpnohelpnodesavailable
+msgid "No help nodes available"
+msgstr "Na voljo ni vozlišč pomoči"
+
+#: lclstrconsts.rshelpnotfound
+msgid "Help not found"
+msgstr "Pomoči ni mogoče najti"
+
+#: lclstrconsts.rshelpnotregistered
+msgid "%s: Not registered"
+msgstr "%s: ni vpisano"
+
+#: lclstrconsts.rshelpselectorerror
+msgid "Help Selector Error"
+msgstr "Napaka izbirnika pomoči"
+
+#: lclstrconsts.rshelpthereisnoviewerforhelptype
+msgid "There is no viewer for help type %s%s%s"
+msgstr "Ni pregledovalnika za vrsto pomoči %s%s%s"
+
+#: lclstrconsts.rshelpviewererror
+msgid "Help Viewer Error"
+msgstr "Napaka pregledovalnika pomoči"
+
+#: lclstrconsts.rshelpviewernotfound
+msgid "Help Viewer not found"
+msgstr "Pregledovalnika pomoči ni mogoče najti"
+
+#: lclstrconsts.rshighlightcolorcaption
+msgid "Highlight"
+msgstr "Poudarjeno"
+
+#: lclstrconsts.rshighlighttextcolorcaption
+msgid "Highlight Text"
+msgstr "Poudarjeno besedilo"
+
+#: lclstrconsts.rshotlightcolorcaption
+msgid "Hot Light"
+msgstr "Vroča svetloba"
+
+#: lclstrconsts.rsicns
+msgid "OSX Icon Resource"
+msgstr "Vir ikon OSX"
+
+#: lclstrconsts.rsicon
+msgid "Icon"
+msgstr "Ikona"
+
+#: lclstrconsts.rsiconimageempty
+msgid "Icon image cannot be empty"
+msgstr "Vrednost slike ikone ne more biti prazna"
+
+#: lclstrconsts.rsiconimageformat
+msgid "Icon image must have the same format"
+msgstr "Ikona mora biti v enakem zapisu"
+
+#: lclstrconsts.rsiconimageformatchange
+msgid "Cannot change format of icon image"
+msgstr "Ni mogoče spremeniti zapisa ikone"
+
+#: lclstrconsts.rsiconimagesize
+msgid "Icon image must have the same size"
+msgstr "Ikona mora biti enako velikost"
+
+#: lclstrconsts.rsiconimagesizechange
+msgid "Cannot change size of icon image"
+msgstr "Ni mogoče spremeniti velikosti ikone"
+
+#: lclstrconsts.rsiconnocurrent
+msgid "Icon has no current image"
+msgstr "Ikona nima trenutne slike"
+
+#: lclstrconsts.rsinactivebordercolorcaption
+msgid "Inactive Border"
+msgstr "Nedejavni okvir"
+
+#: lclstrconsts.rsinactivecaptioncolorcaption
+msgctxt "lclstrconsts.rsinactivecaptioncolorcaption"
+msgid "Inactive Caption"
+msgstr "Nedejaven napis"
+
+#: lclstrconsts.rsinactivecaptiontext
+msgctxt "lclstrconsts.rsinactivecaptiontext"
+msgid "Inactive Caption"
+msgstr "Nedejaven napis"
+
+#: lclstrconsts.rsindexoutofbounds
+msgid "%s Index %d out of bounds 0 .. %d"
+msgstr "%s. Določilo %d je izven veljavnih meja 0 - %d"
+
+#: lclstrconsts.rsindexoutofrange
+msgid "Index Out of range Cell[Col=%d Row=%d]"
+msgstr "Kazalo je izven obsega celice [Stolpec=%d Vrstica=%d]"
+
+#: lclstrconsts.rsinfobkcolorcaption
+msgid "Info Background"
+msgstr "Ozadje okna podrobnosti"
+
+#: lclstrconsts.rsinfotextcolorcaption
+msgid "Info Text"
+msgstr "Besedilo podrobnosti"
+
+#: lclstrconsts.rsinsertrecordhint
+msgctxt "lclstrconsts.rsinsertrecordhint"
+msgid "Insert"
+msgstr "Vstavi"
+
+#: lclstrconsts.rsinvaliddate
+msgid "Invalid Date : %s"
+msgstr "Neveljaven datum: %s"
+
+#: lclstrconsts.rsinvaliddaterangehint
+msgid "Invalid Date: %s. Must be between %s and %s"
+msgstr "Neveljaven datum: %s. Vrednost mora biti med %s in %s"
+
+#: lclstrconsts.rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr "Neveljaven pretok obrazca predmeta"
+
+#: lclstrconsts.rsinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr "Neveljavna vrednost lastnosti"
+
+#: lclstrconsts.rsinvalidstreamformat
+msgid "Invalid stream format"
+msgstr "Neveljaven zapis pretoka"
+
+#: lclstrconsts.rsisalreadyassociatedwith
+msgid "%s is already associated with %s"
+msgstr "Pripona %s je že programsko povezana z programom %s"
+
+#: lclstrconsts.rsjpeg
+msgid "Joint Picture Expert Group"
+msgstr "Slikovni zapis JPEG"
+
+#: lclstrconsts.rslastrecordhint
+msgid "Last"
+msgstr "Zadnji"
+
+#: lclstrconsts.rslimecolorcaption
+msgid "Lime"
+msgstr "Rumeno-zelena"
+
+#: lclstrconsts.rslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
+msgstr "Določilo seznama presega dovoljene meje (%d)"
+
+#: lclstrconsts.rslistmustbeempty
+msgid "List must be empty"
+msgstr "Seznam mora biti prazen"
+
+#: lclstrconsts.rsmarooncolorcaption
+msgid "Maroon"
+msgstr "Kostanjeva"
+
+#: lclstrconsts.rsmbabort
+msgid "Abort"
+msgstr "Prekini"
+
+#: lclstrconsts.rsmball
+msgid "&All"
+msgstr "&Vse"
+
+#: lclstrconsts.rsmbcancel
+msgctxt "lclstrconsts.rsmbcancel"
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: lclstrconsts.rsmbclose
+msgid "&Close"
+msgstr "&Zapri"
+
+#: lclstrconsts.rsmbhelp
+msgid "&Help"
+msgstr "Pomo&č"
+
+#: lclstrconsts.rsmbignore
+msgid "&Ignore"
+msgstr "&Prezri"
+
+#: lclstrconsts.rsmbno
+msgid "&No"
+msgstr "&Ne"
+
+#: lclstrconsts.rsmbnotoall
+msgid "No to all"
+msgstr "Ne za vse"
+
+#: lclstrconsts.rsmbok
+msgid "&OK"
+msgstr "V &redu"
+
+#: lclstrconsts.rsmbopen
+msgid "&Open"
+msgstr "&Odpri"
+
+#: lclstrconsts.rsmbretry
+msgid "&Retry"
+msgstr "Poskusi &znova"
+
+#: lclstrconsts.rsmbsave
+msgid "&Save"
+msgstr "&Shrani"
+
+#: lclstrconsts.rsmbunlock
+msgid "&Unlock"
+msgstr "&Odkleni"
+
+#: lclstrconsts.rsmbyes
+msgid "&Yes"
+msgstr "&Da"
+
+#: lclstrconsts.rsmbyestoall
+msgid "Yes to &All"
+msgstr "Da za &vse"
+
+#: lclstrconsts.rsmedgraycolorcaption
+msgid "Medium Gray"
+msgstr "Svetlosiva"
+
+#: lclstrconsts.rsmenubarcolorcaption
+msgid "Menu Bar"
+msgstr "Menijska vrstica"
+
+#: lclstrconsts.rsmenucolorcaption
+msgctxt "lclstrconsts.rsmenucolorcaption"
+msgid "Menu"
+msgstr "Meni"
+
+#: lclstrconsts.rsmenuhighlightcolorcaption
+msgid "Menu Highlight"
+msgstr "Poudarek v meniju"
+
+#: lclstrconsts.rsmenutextcolorcaption
+msgid "Menu Text"
+msgstr "Besedilo menija"
+
+#: lclstrconsts.rsmodified
+msgid "  modified "
+msgstr "  spremenjeno"
+
+#: lclstrconsts.rsmoneygreencolorcaption
+msgid "Money Green"
+msgstr "Zelena"
+
+#: lclstrconsts.rsmtauthentication
+msgid "Authentication"
+msgstr "Overitev"
+
+#: lclstrconsts.rsmtconfirmation
+msgid "Confirmation"
+msgstr "Potrditev"
+
+#: lclstrconsts.rsmtcustom
+msgid "Custom"
+msgstr "Po meri"
+
+#: lclstrconsts.rsmterror
+msgctxt "lclstrconsts.rsmterror"
+msgid "Error"
+msgstr "Napaka"
+
+#: lclstrconsts.rsmtinformation
+msgid "Information"
+msgstr "Podrobnosti"
+
+#: lclstrconsts.rsmtwarning
+msgid "Warning"
+msgstr "Opozorilo"
+
+#: lclstrconsts.rsnavycolorcaption
+msgid "Navy"
+msgstr "Mornarsko modra"
+
+#: lclstrconsts.rsnextrecordhint
+msgctxt "lclstrconsts.rsnextrecordhint"
+msgid "Next"
+msgstr "Naslednji"
+
+#: lclstrconsts.rsnonecolorcaption
+msgid "None"
+msgstr "Brez"
+
+#: lclstrconsts.rsnotavalidgridfile
+msgid "Not a valid grid file"
+msgstr "Neveljavna datoteka mreže"
+
+#: lclstrconsts.rsnowidgetset
+msgid ""
+"No widgetset object. Please check if the unit \"interfaces\" was added to "
+"the programs uses clause."
+msgstr ""
+"Ni naveden predmet nabora gradnikov. Preveriti je treba ali so enote "
+"\"vmesnikov\" dodane zahtevam programa."
+
+#: lclstrconsts.rsolivecolorcaption
+msgid "Olive"
+msgstr "Olivna"
+
+#: lclstrconsts.rspickdate
+msgid "Select a date"
+msgstr "Izbor datuma"
+
+#: lclstrconsts.rspixmap
+msgid "Pixmap"
+msgstr "Sličica"
+
+#: lclstrconsts.rsportablebitmap
+msgid "Portable BitMap"
+msgstr "Portable BitMap"
+
+#: lclstrconsts.rsportablegraymap
+msgid "Portable GrayMap"
+msgstr "Portable GrayMap"
+
+#: lclstrconsts.rsportablenetworkgraphic
+msgid "Portable Network Graphic"
+msgstr "Portable Network Graphic"
+
+#: lclstrconsts.rsportablepixmap
+msgid "Portable PixMap"
+msgstr "Portable PixMap"
+
+#: lclstrconsts.rspostrecordhint
+msgid "Post"
+msgstr "Po"
+
+#: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
+msgid ""
+"%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the "
+"program."
+msgstr ""
+"%s%sPritisnite gumb V redu, če želite napako prezreti in posledično morda "
+"izgubiti podatke..%sPritisnite gumb Prekliči za uničenje programa."
+
+#: lclstrconsts.rspriorrecordhint
+msgctxt "lclstrconsts.rspriorrecordhint"
+msgid "Prior"
+msgstr "Pred"
+
+#: lclstrconsts.rspropertydoesnotexist
+msgid "Property %s does not exist"
+msgstr "Lastnost %s ne obstaja"
+
+#: lclstrconsts.rspurplecolorcaption
+msgid "Purple"
+msgstr "Škrlatna"
+
+#: lclstrconsts.rsqtoptiondograb
+msgid ""
+"-dograb (only under X11), running under a debugger can cause an implicit -"
+"nograb, use -dograb to override. Need QT_DEBUG."
+msgstr ""
+"-dograb : (le v okolju X11), zagon z razhroščevanjem lahko povroči izrecno "
+"uporabo atributa -nograb. Z uporabo -dograb se možnost prepiše. Možnost "
+"zahteva nameščen paket QT_DEBUG."
+
+#: lclstrconsts.rsqtoptiongraphicsstyle
+msgid ""
+"-graphicssystem param, sets the backend to be used for on-screen widgets and "
+"QPixmaps. Available options are native, raster and opengl. OpenGL is still "
+"unstable."
+msgstr ""
+"-graphicssystem parameter : nastavi ozadnji program za uporabo z zaslonskimi "
+"gradniki in predmeti QPixmaps. Na voljo so možnosti native (programsko), "
+"raster (rastersko) in opengl (OpenGL). OpenGL je še vedno v razvoju in ni "
+"povsem stabilen."
+
+#: lclstrconsts.rsqtoptionnograb
+msgid ""
+"-nograb, tells Qt that it must never grab the mouse or the keyboard. Need "
+"QT_DEBUG."
+msgstr ""
+"-nograb : pove Qt, da ne sme prevzeti nadzora nad miško ali tipkovnico; "
+"zahteva QT_DEBUG."
+
+#: lclstrconsts.rsqtoptionreverse
+msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
+msgstr ""
+"-reverse : nastavi usmerjenost pisave programa na obratno vrednost Qt::"
+"RightToLeft."
+
+#: lclstrconsts.rsqtoptionsession
+msgid "-session session, restores the application from an earlier session."
+msgstr "-session <seja> : obnovi program predhodne seje."
+
+#: lclstrconsts.rsqtoptionstyle
+msgid ""
+"-style style or -style=style, sets the application GUI style. Possible "
+"values are motif, windows, and platinum. If you compiled Qt with additional "
+"styles or have additional styles as plugins these will be available to the -"
+"style  command line option. NOTE: Not all styles are available on all "
+"platforms. If style param does not exist Qt will start an application with "
+"default common style (windows)."
+msgstr ""
+"-style <slog> ali -style=<slog> nastavi slog uporabniškega vmesnika "
+"programa. Mogoče vrednosti so motif, windows in platinum. Pri izgradnji s Qt "
+"so na voljo tudi drugi slogi ali slogi kot vstavki. OPOMBA: vsi slogi niso "
+"na voljo v vseh okoljih. Kadar parametri sloga niso poseben določeni, se "
+"program zažene v slogu oken (Windows)."
+
+#: lclstrconsts.rsqtoptionstylesheet
+msgid ""
+"-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style "
+"Sheet. The value must be a path to a file that contains the Style Sheet. "
+"Note: Relative URLs in the Style Sheet file are relative to the Style Sheet "
+"file's path."
+msgstr ""
+"-stylesheet <slogovna predloga> ali pa -stylesheet=<slogovna predloga> : "
+"nastavi slogovno predlogo programa. Vrednost mora biti pot do datoteke s "
+"predlogo. Opomba: relativni naslovi URL v datoteki predloge so relativni na "
+"pot datoteke predloge."
+
+#: lclstrconsts.rsqtoptionsync
+msgid "-sync (only under X11), switches to synchronous mode for debugging."
+msgstr "-sync (le pod X11) : preklopi na usklajevalni način za razhroščevanje."
+
+#: lclstrconsts.rsqtoptionwidgetcount
+msgid ""
+"-widgetcount, prints debug message at the end about number of widgets left "
+"undestroyed and maximum number of widgets existed at the same time."
+msgstr ""
+"-widgetcount : na koncu odvoda izpiše sporočilo razhroščevanja o številu "
+"neuničenih gradnikov in največje število sočasno zagnanih gradnikov."
+
+#: lclstrconsts.rsqtoptionx11bgcolor
+msgid ""
+"-bg or -background color, sets the default background color and an "
+"application palette (light and dark shades are calculated)."
+msgstr ""
+"-bg ali -background <barva> : nastavi privzeto barvo ozadja in paleto "
+"programa (na osnovi barve so preračunane svetlejšie in temnejši odtenki)."
+
+#: lclstrconsts.rsqtoptionx11btncolor
+msgid "-btn or -button color, sets the default button color."
+msgstr "-btn ali -button <barva> : nastavi privzeto barvno gumba."
+
+#: lclstrconsts.rsqtoptionx11cmap
+msgid ""
+"-cmap, causes the application to install a private color map on an 8-bit "
+"display."
+msgstr "-cmap : vsili namestitev zasebne barvne palete na 8-bitnih zaslonih."
+
+#: lclstrconsts.rsqtoptionx11display
+msgid "-display display, sets the X display (default is $DISPLAY)."
+msgstr "-display <zaslon> : nastavi zaslon X (default is $DISPLAY)."
+
+#: lclstrconsts.rsqtoptionx11fgcolor
+msgid "-fg or -foreground color, sets the default foreground color."
+msgstr "-fg ali -foreground <barva> : nastavi privzeto barvo pisave."
+
+#: lclstrconsts.rsqtoptionx11font
+msgid ""
+"-fn or -font font, defines the application font. The font should be "
+"specified using an X logical font description."
+msgstr ""
+"-fn ali -font <pisava> : določa pisavo programa. Ta mora biti naveden kot "
+"logični opis pisave za X."
+
+#: lclstrconsts.rsqtoptionx11geometry
+msgid ""
+"-geometry geometry, sets the client geometry of the first window that is "
+"shown."
+msgstr ""
+"-geometry <geometrija> : nastavi geometrijo okna odjemalca prvega "
+"prikazanega okna."
+
+#: lclstrconsts.rsqtoptionx11im
+msgid ""
+"-im, sets the input method server (equivalent to setting the XMODIFIERS "
+"environment variable)."
+msgstr ""
+"-im : nastavi strežnik načina vhoda (možnost je enaka nastavitve okoljske "
+"spremenljivke XMODIFIERS)."
+
+#: lclstrconsts.rsqtoptionx11inputstyle
+msgid ""
+"-inputstyle, defines how the input is inserted into the given widget, e.g. "
+"onTheSpot makes the input appear directly in the widget, while overTheSpot "
+"makes the input appear in a box floating over the widget and is not inserted "
+"until the editing is done."
+msgstr ""
+
+#: lclstrconsts.rsqtoptionx11name
+msgid "-name name, sets the application name."
+msgstr "-name <ime> : nastavi ime programa."
+
+#: lclstrconsts.rsqtoptionx11ncols
+msgid ""
+"-ncols count, limits the number of colors allocated in the color cube on an "
+"8-bit display, if the application is using the QApplication::ManyColor color "
+"specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 "
+"levels of red, 6 of green, and 6 of blue); for other values, a cube "
+"approximately proportional to a 2x3x1 cube is used."
+msgstr ""
+"-ncols <števec> : omeji število barv, ki so dodeljene barvni kocki 8-bitnega "
+"zaslona, kadar program uporablja določilo QApplication::ManyColor. Če je "
+"števec enak 216, je uporabljena barvna kocka 6x6x6 (to je 6 ravni rdeče, 6 "
+"zelene in 6 modre); za druge vrednosti je uporabljena kocka približnih "
+"vrednosti razmerja 2x3x1."
+
+#: lclstrconsts.rsqtoptionx11title
+msgid "-title title, sets the application title."
+msgstr "-title <naziv> : nastavi naziv programa"
+
+#: lclstrconsts.rsqtoptionx11visual
+msgid ""
+"-visual TrueColor, forces the application to use a TrueColor visual on an 8-"
+"bit display."
+msgstr ""
+"-visual <TrueColor>  : vsili uporabo predočenja TrueColor tudi na 8-bitnih "
+"zaslonih."
+
+#: lclstrconsts.rsrasterimageendupdate
+msgid "Endupdate while no update in progress"
+msgstr ""
+"Prejeta je zahteva konca posodobitve, čeprav posodobitev sploh ni zagnana"
+
+#: lclstrconsts.rsrasterimagesaveinupdate
+msgid "Cannot save image while update in progress"
+msgstr "Ni mogoče shraniti slike med izvajanjem posodabljanja"
+
+#: lclstrconsts.rsrasterimageupdateall
+msgid "Cannot begin update all when canvas only update in progress"
+msgstr ""
+"Ni mogoče začeti posodabljanja vseh predmetov, ko je v teku posodabljanje "
+"platna. "
+
+#: lclstrconsts.rsredcolorcaption
+msgid "Red"
+msgstr "Rdeča"
+
+#: lclstrconsts.rsrefreshrecordshint
+msgid "Refresh"
+msgstr "Osveži"
+
+#: lclstrconsts.rsreplace
+msgid "Replace"
+msgstr "Zamenjaj"
+
+#: lclstrconsts.rsreplaceall
+msgid "Replace all"
+msgstr "Zamenjaj vse"
+
+#: lclstrconsts.rsresourcenotfound
+msgctxt "lclstrconsts.rsresourcenotfound"
+msgid "Resource %s not found"
+msgstr "Vira %s ni mogoče najti"
+
+#: lclstrconsts.rsscrollbarcolorcaption
+msgid "ScrollBar"
+msgstr "Drsnik"
+
+#: lclstrconsts.rsscrollbaroutofrange
+msgid "ScrollBar property out of range"
+msgstr "Lastnost drsnika je izven dovoljenega območja"
+
+#: lclstrconsts.rsselectcolortitle
+msgid "Select color"
+msgstr "Izbor barve"
+
+#: lclstrconsts.rsselectfonttitle
+msgid "Select a font"
+msgstr "Izbor pisave"
+
+#: lclstrconsts.rssilvercolorcaption
+msgid "Silver"
+msgstr "Srebrna"
+
+#: lclstrconsts.rssize
+msgid "  size "
+msgstr "  velikost"
+
+#: lclstrconsts.rsskybluecolorcaption
+msgid "Sky Blue"
+msgstr "Nebesno modra"
+
+#: lclstrconsts.rstealcolorcaption
+msgid "Teal"
+msgstr "Modrozelena"
+
+#: lclstrconsts.rstext
+msgid "Text"
+msgstr "Besedilo"
+
+#: lclstrconsts.rstiff
+msgid "Tagged Image File Format"
+msgstr "Tagged Image File Format"
+
+#: lclstrconsts.rsunabletoloaddefaultfont
+msgid "Unable to load default font"
+msgstr "Ni mogoče naložiti privzete pisave"
+
+#: lclstrconsts.rsunknownerrorpleasereportthisbug
+msgid "Unknown Error, please report this bug"
+msgstr "Prišlo je do neznane napake. Pošljite sporočilo."
+
+#: lclstrconsts.rsunknownpictureextension
+msgid "Unknown picture extension"
+msgstr "Neznana pripona slike"
+
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr "Neznan zapis slike"
+
+#: lclstrconsts.rsunsupportedbitmapformat
+msgid "Unsupported bitmap format."
+msgstr "Nepodprt zapis bitne slike"
+
+#: lclstrconsts.rsunsupportedclipboardformat
+msgid "Unsupported clipboard format: %s"
+msgstr "Nepodprta oblika odložišča: %s"
+
+#: lclstrconsts.rswarningunreleaseddcsdump
+msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
+msgstr ""
+" Opozorilo: obstaja neobljavljenih primerkov programa DCs; sledi podroben "
+"izpis dnevnika:"
+
+#: lclstrconsts.rswarningunreleasedgdiobjectsdump
+msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
+msgstr ""
+" Opozorilo: obstaja %d neobjavljenih predmetov GDIObjects; sledi podroben "
+"izpis dnevnika:"
+
+#: lclstrconsts.rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
+msgstr ""
+" Opozorilo: obstaja %d preostalih sporočil v vrsti, ki bodo nemudoma "
+"sproščena"
+
+#: lclstrconsts.rswarningunreleasedtimerinfos
+msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
+msgstr " Opozorilo: obstaja %d predmetov TimerInfo, ki bodo nemudoma sproščeni"
+
+#: lclstrconsts.rswarningunremovedpaintmessages
+msgid ""
+" WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
+msgstr ""
+" Opozorilo: obstaja %s neodstranjenih povezav sporočil LM_PAINT/LM_GtkPAINT."
+
+#: lclstrconsts.rswhitecolorcaption
+msgid "White"
+msgstr "Bela"
+
+#: lclstrconsts.rswholewordsonly
+msgid "Whole words only"
+msgstr "Le cele besede"
+
+#: lclstrconsts.rswin32error
+msgid "Error:"
+msgstr "Napaka:"
+
+#: lclstrconsts.rswin32warning
+msgid "Warning:"
+msgstr "Opozorilo:"
+
+#: lclstrconsts.rswindowcolorcaption
+msgid "Window"
+msgstr "Okno"
+
+#: lclstrconsts.rswindowframecolorcaption
+msgid "Window Frame"
+msgstr "Okvir okna"
+
+#: lclstrconsts.rswindowtextcolorcaption
+msgid "Window Text"
+msgstr "Besedilo okna"
+
+#: lclstrconsts.rsyellowcolorcaption
+msgid "Yellow"
+msgstr "Rumena"
+
+#: lclstrconsts.scannotfocus
+msgid "Cannot focus a disabled or invisible window"
+msgstr "Onemogočenega ali nevidnega okna ni mogoče postaviti v žarišče"
+
+#: lclstrconsts.sduplicatemenus
+msgid "Duplicate menus"
+msgstr "Podvojen meni"
+
+#: lclstrconsts.sinvalidactioncreation
+msgid "Invalid action creation"
+msgstr "Neveljavno ustvarjanje dejanja"
+
+#: lclstrconsts.sinvalidactionenumeration
+msgid "Invalid action enumeration"
+msgstr "Neveljavno oštevilčenje dejanja"
+
+#: lclstrconsts.sinvalidactionregistration
+msgid "Invalid action registration"
+msgstr "Neveljaven vpis dejanja"
+
+#: lclstrconsts.sinvalidactionunregistration
+msgid "Invalid action unregistration"
+msgstr "Neveljavno izpisovanje dejanja"
+
+#: lclstrconsts.sinvalidcharset
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr "Znakovni nabor v maski \"%s\" ni veljaven!"
+
+#: lclstrconsts.sinvalidimagesize
+msgid "Invalid image size"
+msgstr "Neveljavna velikost slike"
+
+#: lclstrconsts.sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr "Neveljavno kazalo seznama slik"
+
+#: lclstrconsts.smenuindexerror
+msgid "Menu index out of range"
+msgstr "Kazalo menija je izven veljavnega obsega"
+
+#: lclstrconsts.smenuitemisnil
+msgid "MenuItem is nil"
+msgstr "Predmet menija je prazno polje"
+
+#: lclstrconsts.smenunotfound
+msgid "Sub-menu is not in menu"
+msgstr "Podrejeni meni ni meni"
+
+#: lclstrconsts.smkcalt
+msgid "Alt+"
+msgstr "Alt+"
+
+#: lclstrconsts.smkcbksp
+msgid "BkSp"
+msgstr "Povratnica"
+
+#: lclstrconsts.smkcctrl
+msgid "Ctrl+"
+msgstr "Ctrl+"
+
+#: lclstrconsts.smkcdel
+msgid "Del"
+msgstr "Del"
+
+#: lclstrconsts.smkcdown
+msgctxt "lclstrconsts.smkcdown"
+msgid "Down"
+msgstr "Navzdol"
+
+#: lclstrconsts.smkcend
+msgctxt "lclstrconsts.smkcend"
+msgid "End"
+msgstr "End"
+
+#: lclstrconsts.smkcenter
+msgid "Enter"
+msgstr "Vnosna tipka"
+
+#: lclstrconsts.smkcesc
+msgid "Esc"
+msgstr "Esc"
+
+#: lclstrconsts.smkchome
+msgctxt "lclstrconsts.smkchome"
+msgid "Home"
+msgstr "Domov"
+
+#: lclstrconsts.smkcins
+msgid "Ins"
+msgstr "Vrivalka"
+
+#: lclstrconsts.smkcleft
+msgctxt "lclstrconsts.smkcleft"
+msgid "Left"
+msgstr "Levo"
+
+#: lclstrconsts.smkcmeta
+msgid "Meta+"
+msgstr "Meta+"
+
+#: lclstrconsts.smkcpgdn
+msgid "PgDn"
+msgstr "Stran dol"
+
+#: lclstrconsts.smkcpgup
+msgid "PgUp"
+msgstr "Stran gor"
+
+#: lclstrconsts.smkcright
+msgctxt "lclstrconsts.smkcright"
+msgid "Right"
+msgstr "Desno"
+
+#: lclstrconsts.smkcshift
+msgid "Shift+"
+msgstr "Dvigalka+"
+
+#: lclstrconsts.smkcspace
+msgid "Space"
+msgstr "Preslednica"
+
+#: lclstrconsts.smkctab
+msgctxt "lclstrconsts.smkctab"
+msgid "Tab"
+msgstr "Tabulator"
+
+#: lclstrconsts.smkcup
+msgctxt "lclstrconsts.smkcup"
+msgid "Up"
+msgstr "Gor"
+
+#: lclstrconsts.snomdiform
+msgid "No MDI form present."
+msgstr "Ni veljavne oblike MDI."
+
+#: lclstrconsts.snotimers
+msgid "No timers available"
+msgstr "Na voljo ni nobenega časomera."
+
+#: lclstrconsts.sparexpected
+msgid "Wrong token type: %s expected"
+msgstr "Neznana vrsta žetona: pričakovana je vrsta %s"
+
+#: lclstrconsts.sparinvalidfloat
+msgid "Invalid floating point number: %s"
+msgstr "Neveljavno število s plavajočo vejico: %s"
+
+#: lclstrconsts.sparinvalidinteger
+msgid "Invalid integer number: %s"
+msgstr "Neveljavna celoštevilčna vrednost: %s"
+
+#: lclstrconsts.sparlocinfo
+msgid " (at %d,%d, stream offset %.8x)"
+msgstr " (pri %d,%d, zamik pretoka %.8x)"
+
+#: lclstrconsts.sparunterminatedbinvalue
+msgid "Unterminated byte value"
+msgstr "Nekončana bitna vrednost"
+
+#: lclstrconsts.sparunterminatedstring
+msgid "Unterminated string"
+msgstr "Nekončan niz"
+
+#: lclstrconsts.sparwrongtokensymbol
+msgid "Wrong token symbol: %s expected but %s found"
+msgstr "Napačen simbol žetona: pričakovan je %s, prejet pa %s"
+
+#: lclstrconsts.sparwrongtokentype
+msgid "Wrong token type: %s expected but %s found"
+msgstr "Neznana vrsta žetona: pričakovana je vrsta %s; vrnjena pa je %s"

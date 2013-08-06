@@ -1,0 +1,48 @@
+object frmCheckSumVerify: TfrmCheckSumVerify
+  Left = 290
+  Height = 300
+  Top = 175
+  Width = 400
+  Caption = 'Verify check sum...'
+  ClientHeight = 300
+  ClientWidth = 400
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
+  OnClose = FormClose
+  Position = poScreenCenter
+  ShowInTaskBar = stAlways
+  LCLVersion = '1.0.1.3'
+  object mmCheckSumVerify: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = btnClose
+    Left = 10
+    Height = 240
+    Top = 10
+    Width = 380
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object btnClose: TBitBtn
+    AnchorSideLeft.Control = mmCheckSumVerify
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 163
+    Height = 30
+    Top = 260
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 10
+    Caption = '&Close'
+    Kind = bkClose
+    TabOrder = 1
+  end
+end

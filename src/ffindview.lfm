@@ -1,0 +1,81 @@
+inherited frmFindView: TfrmFindView
+  Left = 365
+  Height = 104
+  Top = 311
+  Width = 344
+  HorzScrollBar.Page = 343
+  HorzScrollBar.Range = 103
+  VertScrollBar.Page = 96
+  VertScrollBar.Range = 90
+  ActiveControl = cbDataToFind
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Find'
+  ClientHeight = 104
+  ClientWidth = 344
+  OnShow = FormShow
+  Position = poScreenCenter
+  object cbDataToFind: TComboBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 28
+    Top = 12
+    Width = 328
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 12
+    BorderSpacing.Right = 8
+    ItemHeight = 0
+    OnKeyUp = cbDataToFindKeyUp
+    TabOrder = 0
+  end
+  object btnFind: TBitBtn[1]
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = btnClose
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 150
+    Height = 32
+    Top = 68
+    Width = 90
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 4
+    Caption = '&Find'
+    Default = True
+    OnClick = btnFindClick
+    TabOrder = 2
+  end
+  object btnClose: TBitBtn[2]
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 246
+    Height = 32
+    Top = 68
+    Width = 90
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 8
+    BorderSpacing.Bottom = 4
+    Caption = '&Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object cbCaseSens: TCheckBox[3]
+    AnchorSideLeft.Control = cbDataToFind
+    AnchorSideTop.Control = cbDataToFind
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 23
+    Top = 46
+    Width = 115
+    BorderSpacing.Top = 6
+    Caption = 'C&ase sensitive'
+    TabOrder = 1
+  end
+end

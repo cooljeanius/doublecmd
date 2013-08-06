@@ -1,0 +1,7 @@
+*.cache
+Makefile
+*.log
+*.o
+*~
+*.a
+stamp-h*

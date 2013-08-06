@@ -1,0 +1,204 @@
+object frmEditHotkey: TfrmEditHotkey
+  Left = 337
+  Height = 465
+  Top = 120
+  Width = 458
+  BorderIcons = [biSystemMenu]
+  ClientHeight = 465
+  ClientWidth = 458
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 200
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object lblShortcuts: TLabel
+    AnchorSideLeft.Control = pnlShortcuts
+    AnchorSideTop.Control = Owner
+    Left = 8
+    Height = 13
+    Top = 6
+    Width = 50
+    BorderSpacing.Top = 6
+    Caption = 'Shortcuts:'
+    ParentColor = False
+  end
+  object pnlShortcuts: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnAddShortcut
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 1
+    Top = 28
+    Width = 442
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 8
+    BorderSpacing.Right = 8
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 0
+  end
+  object lblHotKeyConflict: TLabel
+    AnchorSideLeft.Control = pnlShortcuts
+    AnchorSideTop.Control = pnlShortcuts
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = pnlShortcuts
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 1
+    Top = 33
+    Width = 442
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 4
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+    Visible = False
+    WordWrap = True
+  end
+  object lblParameters: TLabel
+    AnchorSideLeft.Control = pnlShortcuts
+    AnchorSideTop.Control = lblHotKeyConflict
+    AnchorSideTop.Side = asrBottom
+    Left = 8
+    Height = 22
+    Top = 39
+    Width = 247
+    BorderSpacing.Top = 6
+    Caption = '&Parameters (each in a separate line):'
+    FocusControl = edtParameters
+    ParentColor = False
+  end
+  object edtParameters: TMemo
+    AnchorSideLeft.Control = pnlShortcuts
+    AnchorSideTop.Control = lblParameters
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = pnlShortcuts
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = btnShowCommandHelp
+    Left = 8
+    Height = 331
+    Top = 53
+    Width = 442
+    HelpType = htKeyword
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Bottom = 2
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    WordWrap = False
+  end
+  object btnShowCommandHelp: TButton
+    AnchorSideLeft.Control = pnlShortcuts
+    AnchorSideRight.Control = pnlShortcuts
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = cgHKControls
+    Left = 8
+    Height = 23
+    Top = 388
+    Width = 442
+    Anchors = [akLeft, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Top = 4
+    OnClick = btnShowCommandHelpClick
+    TabOrder = 2
+  end
+  object cgHKControls: TCheckGroup
+    AnchorSideLeft.Control = pnlShortcuts
+    AnchorSideRight.Control = pnlShortcuts
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = btnOK
+    Left = 8
+    Height = 4
+    Top = 411
+    Width = 442
+    Anchors = [akLeft, akRight, akBottom]
+    AutoFill = True
+    AutoSize = True
+    Caption = 'Only for these controls'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    OnItemClick = cgHKControlsItemClick
+    TabOrder = 3
+    Visible = False
+  end
+  object btnOK: TBitBtn
+    AnchorSideLeft.Control = pnlShortcuts
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 8
+    Height = 40
+    Top = 419
+    Width = 120
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 6
+    Caption = '&OK'
+    Constraints.MinHeight = 40
+    Constraints.MinWidth = 120
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 4
+  end
+  object btnCancel: TBitBtn
+    AnchorSideRight.Control = pnlShortcuts
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 330
+    Height = 40
+    Top = 419
+    Width = 120
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
+    Cancel = True
+    Caption = '&Cancel'
+    Constraints.MinHeight = 40
+    Constraints.MinWidth = 120
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 5
+  end
+  object btnAddShortcut: TSpeedButton
+    AnchorSideTop.Control = btnRemoveShortcut
+    AnchorSideRight.Control = btnRemoveShortcut
+    Left = 406
+    Height = 22
+    Hint = 'Add new shortcut to sequence'
+    Top = 6
+    Width = 22
+    Anchors = [akTop, akRight]
+    OnClick = btnAddShortcutClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object btnRemoveShortcut: TSpeedButton
+    AnchorSideTop.Control = lblShortcuts
+    AnchorSideRight.Control = pnlShortcuts
+    AnchorSideRight.Side = asrBottom
+    Left = 428
+    Height = 22
+    Hint = 'Remove last shortcut from sequence'
+    Top = 6
+    Width = 22
+    Anchors = [akTop, akRight]
+    OnClick = btnRemoveShortcutClick
+    ShowHint = True
+    ParentShowHint = False
+  end
+end

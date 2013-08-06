@@ -1,0 +1,200 @@
+inherited frmOptionsViewer: TfrmOptionsViewer
+  Height = 513
+  Width = 586
+  ClientHeight = 513
+  ClientWidth = 586
+  object gbViewerBookMode: TGroupBox[7]
+    AnchorSideLeft.Control = fneToolsPath
+    AnchorSideTop.Control = cbToolsKeepTerminalOpen
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = fneToolsPath
+    AnchorSideRight.Side = asrBottom
+    Left = 8
+    Height = 244
+    Top = 186
+    Width = 554
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 12
+    BorderSpacing.Bottom = 10
+    Caption = 'Viewer Book Mode'
+    ChildSizing.TopBottomSpacing = 6
+    ClientHeight = 226
+    ClientWidth = 550
+    TabOrder = 5
+    object lblBackgroundColorViewerBook: TLabel
+      AnchorSideTop.Control = cbBackgroundColorViewerBook
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = cbBackgroundColorViewerBook
+      Left = 8
+      Height = 13
+      Top = 13
+      Width = 154
+      Caption = '&Background color in book viewer'
+      FocusControl = cbBackgroundColorViewerBook
+      ParentColor = False
+    end
+    object seNumberColumnsViewer: TSpinEdit
+      AnchorSideLeft.Control = cbFontColorViewerBook
+      AnchorSideTop.Control = cbFontColorViewerBook
+      AnchorSideTop.Side = asrBottom
+      Left = 182
+      Height = 21
+      Top = 62
+      Width = 36
+      BorderSpacing.Top = 5
+      MaxValue = 3
+      MinValue = 1
+      OnChange = seNumberColumnsViewerChange
+      TabOrder = 5
+      Value = 1
+    end
+    object lblNumberColumnsViewer: TLabel
+      AnchorSideLeft.Control = lblBackgroundColorViewerBook
+      AnchorSideTop.Control = seNumberColumnsViewer
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 13
+      Top = 66
+      Width = 163
+      Caption = '&Number of columns in book viewer'
+      FocusControl = seNumberColumnsViewer
+      ParentColor = False
+    end
+    object gbViewerExample: TGroupBox
+      AnchorSideLeft.Control = gbViewerBookMode
+      AnchorSideTop.Control = lblNumberColumnsViewer
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbViewerBookMode
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = seNumberColumnsViewer
+      AnchorSideBottom.Side = asrBottom
+      Left = 8
+      Height = 133
+      Top = 87
+      Width = 534
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Around = 8
+      Caption = 'Example'
+      ClientHeight = 115
+      ClientWidth = 530
+      TabOrder = 4
+      object pbViewerBook: TPaintBox
+        Left = 5
+        Height = 105
+        Top = 5
+        Width = 520
+        Align = alClient
+        BorderSpacing.Around = 5
+        OnPaint = pbViewerBookPaint
+      end
+    end
+    object btnFontViewerColor: TButton
+      AnchorSideLeft.Control = cbFontColorViewerBook
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbFontColorViewerBook
+      AnchorSideRight.Control = btnBackViewerColor
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = cbFontColorViewerBook
+      AnchorSideBottom.Side = asrBottom
+      Left = 510
+      Height = 22
+      Top = 35
+      Width = 24
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Left = 4
+      Caption = '>>'
+      OnClick = btnFontViewerColorClick
+      TabOrder = 3
+    end
+    object btnBackViewerColor: TButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbBackgroundColorViewerBook
+      AnchorSideBottom.Control = cbBackgroundColorViewerBook
+      AnchorSideBottom.Side = asrBottom
+      Left = 510
+      Height = 22
+      Top = 8
+      Width = 24
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Left = 4
+      BorderSpacing.Right = 5
+      Caption = '>>'
+      OnClick = btnBackViewerColorClick
+      TabOrder = 1
+    end
+    object cbFontColorViewerBook: TColorBox
+      AnchorSideLeft.Control = cbBackgroundColorViewerBook
+      AnchorSideTop.Control = cbBackgroundColorViewerBook
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = cbBackgroundColorViewerBook
+      AnchorSideRight.Side = asrBottom
+      Left = 182
+      Height = 22
+      Top = 35
+      Width = 324
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 5
+      ItemHeight = 16
+      OnChange = cbColorBoxChange
+      TabOrder = 2
+    end
+    object lblFontColorViewerBook: TLabel
+      AnchorSideLeft.Control = lblBackgroundColorViewerBook
+      AnchorSideTop.Control = cbFontColorViewerBook
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 13
+      Top = 40
+      Width = 120
+      BorderSpacing.Top = 10
+      Caption = '&Font color in book viewer'
+      FocusControl = cbFontColorViewerBook
+      ParentColor = False
+    end
+    object cbBackgroundColorViewerBook: TColorBox
+      AnchorSideLeft.Control = lblBackgroundColorViewerBook
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideRight.Control = btnBackViewerColor
+      Left = 182
+      Height = 22
+      Top = 8
+      Width = 324
+      Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 20
+      ItemHeight = 16
+      OnChange = cbColorBoxChange
+      TabOrder = 0
+    end
+  end
+  object optColorDialog: TColorDialog[8]
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    left = 16
+    top = 128
+  end
+end

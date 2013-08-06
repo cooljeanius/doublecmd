@@ -1,0 +1,138 @@
+inherited frmOptionsColumnsView: TfrmOptionsColumnsView
+  Height = 344
+  Width = 659
+  ClientHeight = 344
+  ClientWidth = 659
+  DesignTop = 20
+  object grpAutosizeColumns: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = gbShowGrid
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 105
+    Top = 82
+    Width = 647
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'Auto-size columns'
+    ClientHeight = 87
+    ClientWidth = 643
+    TabOrder = 1
+    object chkAutoFillColumns: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 8
+      Height = 17
+      Top = 8
+      Width = 95
+      Caption = 'A&uto fill columns'
+      TabOrder = 0
+    end
+    object lblAutoSizeColumn: TLabel
+      AnchorSideLeft.Control = chkAutoFillColumns
+      AnchorSideTop.Control = cmbAutoSizeColumn
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 13
+      Top = 39
+      Width = 84
+      Caption = 'Auto si&ze column:'
+      FocusControl = cmbAutoSizeColumn
+      ParentColor = False
+    end
+    object cmbAutoSizeColumn: TComboBox
+      AnchorSideLeft.Control = lblAutoSizeColumn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = chkAutoFillColumns
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpAutosizeColumns
+      AnchorSideRight.Side = asrBottom
+      Left = 104
+      Height = 21
+      Top = 35
+      Width = 529
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 12
+      BorderSpacing.Top = 10
+      BorderSpacing.Right = 10
+      ItemHeight = 13
+      Items.Strings = (
+        'First'
+        'Last'
+      )
+      Style = csDropDownList
+      TabOrder = 1
+    end
+  end
+  object gbShowGrid: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 70
+    Top = 6
+    Width = 647
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Show grid'
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ClientHeight = 52
+    ClientWidth = 643
+    TabOrder = 0
+    object cbGridVertLine: TCheckBox
+      AnchorSideLeft.Control = gbShowGrid
+      AnchorSideTop.Control = gbShowGrid
+      Left = 12
+      Height = 17
+      Top = 6
+      Width = 77
+      Caption = '&Vertical lines'
+      TabOrder = 0
+    end
+    object cbGridHorzLine: TCheckBox
+      AnchorSideLeft.Control = gbShowGrid
+      AnchorSideTop.Control = cbGridVertLine
+      AnchorSideTop.Side = asrBottom
+      Left = 12
+      Height = 17
+      Top = 29
+      Width = 90
+      BorderSpacing.Top = 6
+      Caption = '&Horizontal lines'
+      TabOrder = 1
+    end
+  end
+  object grpMisc: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grpAutosizeColumns
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 47
+    Top = 193
+    Width = 647
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 29
+    ClientWidth = 643
+    TabOrder = 2
+    object cbCutTextToColWidth: TCheckBox
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 136
+      Caption = 'Cut &text to column width'
+      TabOrder = 0
+    end
+  end
+end

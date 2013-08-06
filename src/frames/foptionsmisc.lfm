@@ -1,0 +1,151 @@
+inherited frmOptionsMisc: TfrmOptionsMisc
+  Height = 263
+  Width = 719
+  ClientHeight = 263
+  ClientWidth = 719
+  DesignLeft = 460
+  DesignTop = 269
+  object gbExtended: TGroupBox[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 183
+    Top = 6
+    Width = 707
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    ChildSizing.LeftRightSpacing = 12
+    ChildSizing.TopBottomSpacing = 6
+    ClientHeight = 179
+    ClientWidth = 703
+    TabOrder = 0
+    object chkShowWarningMessages: TCheckBox
+      Left = 12
+      Height = 22
+      Top = 6
+      Width = 308
+      Caption = 'Show &warning messages ("OK" button only)'
+      TabOrder = 0
+    end
+    object chkThumbSave: TCheckBox
+      AnchorSideTop.Control = dblThumbnails
+      AnchorSideTop.Side = asrBottom
+      Left = 12
+      Height = 22
+      Top = 87
+      Width = 191
+      BorderSpacing.Top = 4
+      Caption = '&Save thumbnails in cache'
+      TabOrder = 2
+    end
+    object lblThumbSize: TLabel
+      AnchorSideTop.Control = speThumbWidth
+      AnchorSideTop.Side = asrCenter
+      Left = 12
+      Height = 16
+      Top = 119
+      Width = 104
+      Caption = '&Thumbnail size:'
+      FocusControl = speThumbWidth
+      ParentColor = False
+    end
+    object dblThumbnails: TDividerBevel
+      AnchorSideLeft.Control = gbExtended
+      AnchorSideTop.Control = chkGoToRoot
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbExtended
+      AnchorSideRight.Side = asrBottom
+      Left = 12
+      Height = 17
+      Top = 66
+      Width = 679
+      Caption = 'Thumbnails'
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 12
+      ParentFont = False
+    end
+    object speThumbWidth: TSpinEdit
+      AnchorSideLeft.Control = lblThumbSize
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = chkThumbSave
+      AnchorSideTop.Side = asrBottom
+      Left = 122
+      Height = 25
+      Top = 115
+      Width = 50
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      MaxValue = 512
+      MinValue = 16
+      TabOrder = 3
+      Value = 16
+    end
+    object speThumbHeight: TSpinEdit
+      AnchorSideLeft.Control = lblThumbSeparator
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = speThumbWidth
+      Left = 194
+      Height = 25
+      Top = 115
+      Width = 50
+      BorderSpacing.Left = 6
+      MaxValue = 512
+      MinValue = 16
+      TabOrder = 4
+      Value = 16
+    end
+    object lblThumbSeparator: TLabel
+      AnchorSideLeft.Control = speThumbWidth
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = speThumbWidth
+      AnchorSideTop.Side = asrCenter
+      Left = 178
+      Height = 16
+      Top = 119
+      Width = 10
+      BorderSpacing.Left = 6
+      Caption = 'X'
+      ParentColor = False
+    end
+    object lblThumbPixels: TLabel
+      AnchorSideLeft.Control = speThumbHeight
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = speThumbWidth
+      AnchorSideTop.Side = asrCenter
+      Left = 250
+      Height = 16
+      Top = 119
+      Width = 40
+      BorderSpacing.Left = 6
+      Caption = 'pixels'
+      ParentColor = False
+    end
+    object btnThumbCompactCache: TButton
+      AnchorSideTop.Control = speThumbWidth
+      AnchorSideTop.Side = asrBottom
+      Left = 12
+      Height = 27
+      Top = 146
+      Width = 316
+      AutoSize = True
+      BorderSpacing.Top = 6
+      Caption = '&Remove thumbnails for no longer existing files'
+      OnClick = btnThumbCompactCacheClick
+      TabOrder = 5
+    end
+    object chkGoToRoot: TCheckBox
+      AnchorSideTop.Control = chkShowWarningMessages
+      AnchorSideTop.Side = asrBottom
+      Left = 12
+      Height = 22
+      Top = 32
+      Width = 375
+      BorderSpacing.Top = 4
+      Caption = 'Always &go to the root of a drive when changing drives'
+      TabOrder = 1
+    end
+  end
+end
