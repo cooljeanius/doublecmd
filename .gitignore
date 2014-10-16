@@ -6,6 +6,9 @@ Makefile
 *~
 *.a
 stamp-h*
+plugins/wfx/gvfs/lib/gvfs.wfx
+po/Makefile.in
 po/Makevars
+po/POTFILES
 config.h
 *.status
