@@ -9,8 +9,10 @@ AC_DEFUN([AM_PATH_GLIB_2_0],[
 dnl#
 dnl# Get the cflags and libraries from pkg-config
 dnl#
-AC_ARG_ENABLE([glibtest], [  --disable-glibtest      do not try to compile and run a test GLIB program],
-		    [], [enable_glibtest=yes])
+AC_ARG_ENABLE([glibtest],
+              [AS_HELP_STRING([--disable-glibtest],
+                   [do not try to compile and run a test GLIB-2 program])],
+              [],[enable_glibtest=yes])dnl
 
   pkg_config_args=glib-2.0
   for module in . $4
@@ -84,7 +86,7 @@ dnl# Now check if the installed GLIB is sufficiently new. (Also sanity
 dnl# checks the results of pkg-config to some extent)
 dnl#
       rm -f conf.glibtest
-      AC_TRY_RUN([
+      AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -155,7 +157,7 @@ main ()
     }
   return 1;
 }
-],[],[no_glib=yes],[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+]])],[],[no_glib=yes],[echo $ac_n "cross compiling; assumed OK... $ac_c"])
        CFLAGS="$ac_save_CFLAGS"
        LIBS="$ac_save_LIBS"
      fi
@@ -177,10 +179,10 @@ main ()
           ac_save_LIBS="$LIBS"
           CFLAGS="$CFLAGS $GLIB_CFLAGS"
           LIBS="$LIBS $GLIB_LIBS"
-          AC_TRY_LINK([
+          AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <glib.h>
 #include <stdio.h>
-],      [ return ((glib_major_version) || (glib_minor_version) || (glib_micro_version)); ],
+]],[[return ((glib_major_version) || (glib_minor_version) || (glib_micro_version));]])],
         [ echo "*** The test program compiled, but did not run. This usually means"
           echo "*** that the run-time linker is not finding GLIB or finding the wrong"
           echo "*** version of GLIB. If it is not finding GLIB, you'll need to set your"

@@ -1,6 +1,7 @@
-# ===========================================================================
+# ax_check_gnu_make.m4                                     -*- Autoconf -*-
+#==========================================================================
 #     http://www.gnu.org/software/autoconf-archive/ax_check_gnu_make.html
-# ===========================================================================
+#==========================================================================
 #
 # SYNOPSIS
 #
@@ -12,8 +13,8 @@
 #   makefile variable `ifGNUmake' is set to the empty string, otherwise it
 #   is set to "#". This is useful for including a special features in a
 #   Makefile, which cannot be handled by other versions of make. The
-#   variable _cv_gnu_make_command is set to the command to invoke GNU make
-#   if it exists, the empty string otherwise.
+#   variable ax_cv_gnu_make_command is set to the command to invoke GNU
+#   make if it exists, the empty string otherwise.
 #
 #   Here is an example of its use:
 #
@@ -27,7 +28,7 @@
 #     @ifGNUmake@ include $(DEPEND)
 #     @ifGNUmake@ endif
 #
-#   Then configure.in would normally contain:
+#   Then configure.ac would normally contain:
 #
 #     AX_CHECK_GNU_MAKE()
 #     AC_OUTPUT(Makefile)
@@ -36,10 +37,10 @@
 #   something like this (note that GNU make always looks for GNUmakefile
 #   first):
 #
-#     if  ! test x$_cv_gnu_make_command = x ; then
+#     if  ! test "x${ax_cv_gnu_make_command}" = "x"; then
 #             mv Makefile GNUmakefile
 #             echo .DEFAULT: > Makefile ;
-#             echo \  $_cv_gnu_make_command \$@ >> Makefile;
+#             echo \  ${ax_cv_gnu_make_command} \$@ >> Makefile;
 #     fi
 #
 #   Then, if any (well almost any) other make is called, and GNU make also
@@ -49,30 +50,33 @@
 #
 #   Copyright (c) 2008 John Darrington <j.darrington@elvis.murdoch.edu.au>
 #
-#   Copying and distribution of this file, with or without modification, are
+#   Copying and distribution of this file, with/without modification, are
 #   permitted in any medium without royalty provided the copyright notice
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
-#serial 7
+#serial 8
 
-AC_DEFUN([AX_CHECK_GNU_MAKE], [ AC_CACHE_CHECK( for GNU make,_cv_gnu_make_command,
-                _cv_gnu_make_command='' ;
-dnl Search all the common names for GNU make
-                for a in "$MAKE" make gmake gnumake ; do
-                        if test -z "$a" ; then continue ; fi ;
-                        if  ( sh -c "$a --version" 2> /dev/null | grep GNU  2>&1 > /dev/null ) ;  then
-                                _cv_gnu_make_command=$a ;
+AC_DEFUN([AX_CHECK_GNU_MAKE],[
+        AC_REQUIRE([AC_PROG_GREP])dnl
+        AC_CACHE_CHECK([for GNU make],[ax_cv_gnu_make_command],[
+                ax_cv_gnu_make_command=''
+dnl# Search all the common names for GNU make (including remake):
+                for a in "${MAKE}" make gmake gnumake remake; do
+                        if test -z "${a}"; then continue; fi
+                        if (${SHELL} -c "${a} --version" 2>/dev/null | ${GREP} GNU  2>&1 > /dev/null); then
+                                ax_cv_gnu_make_command=${a};
                                 break;
                         fi
-                done ;
-        ) ;
-dnl If there was a GNU version, then set @ifGNUmake@ to the empty string, '#' otherwise
-        if test  "x$_cv_gnu_make_command" != "x"  ; then
-                ifGNUmake='' ;
+                done
+        ])
+dnl# If there was a GNU version, then set @ifGNUmake@ to the empty string,
+dnl# '#' otherwise:
+        if test "x${ax_cv_gnu_make_command}" != "x"; then
+                ifGNUmake=''
         else
-                ifGNUmake='#' ;
-                AC_MSG_RESULT("Not found");
+                ifGNUmake='#'
+                AC_MSG_RESULT([Not found])
         fi
-        AC_SUBST(ifGNUmake)
-] )
+        AC_SUBST([ifGNUmake])dnl
+])dnl

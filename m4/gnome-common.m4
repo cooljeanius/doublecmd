@@ -26,7 +26,7 @@ with AC_CONFIG_MACRO_DIR() in your configure.ac]])
 AC_DEFUN([GNOME_DEBUG_CHECK],
 [
 	AC_ARG_ENABLE([debug],
-                      [AC_HELP_STRING([--enable-debug],
+                      [AS_HELP_STRING([--enable-debug],
                                      [turn on debugging])],[],
                       [enable_debug=no])
 

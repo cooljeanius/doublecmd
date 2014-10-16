@@ -1,14 +1,20 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if building universal (internal helper macro) */
+/* #undef AC_APPLE_UNIVERSAL_BUILD */
+
 /* always defined to indicate that i18n is enabled */
-/* #undef ENABLE_NLS */
+#define ENABLE_NLS 1
+
+/* Define to the gettext package name */
+#define GETTEXT_PACKAGE "doublecmd"
 
 /* Enable additional debugging at the expense of performance and size */
 /* #undef GNOME_ENABLE_DEBUG */
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
-/* #undef HAVE_BIND_TEXTDOMAIN_CODESET */
+#define HAVE_BIND_TEXTDOMAIN_CODESET 1
 
 /* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
@@ -19,7 +25,7 @@
 #define HAVE_CFPREFERENCESCOPYAPPVALUE 1
 
 /* Define to 1 if you have the `dcgettext' function. */
-/* #undef HAVE_DCGETTEXT */
+#define HAVE_DCGETTEXT 1
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
@@ -27,14 +33,20 @@
 /* Define to 1 if you have the <float.h> header file. */
 #define HAVE_FLOAT_H 1
 
+/* Define to 1 if your system has a working POSIX `fnmatch' function. */
+#define HAVE_FNMATCH 1
+
 /* Define to 1 if you have the `getpagesize' function. */
 #define HAVE_GETPAGESIZE 1
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
-/* #undef HAVE_GETTEXT */
+#define HAVE_GETTEXT 1
 
 /* Define to 1 if you have the `getwd' function. */
 #define HAVE_GETWD 1
+
+/* Define to 1 if you have the <glib/glib.h> header file. */
+/* #undef HAVE_GLIB_GLIB_H */
 
 /* Define to 1 if you have the <glib.h> header file. */
 /* #undef HAVE_GLIB_H */
@@ -93,6 +105,9 @@
 /* Define to 1 if you have the <malloc.h> header file. */
 /* #undef HAVE_MALLOC_H */
 
+/* Define to 1 if you have the <malloc/malloc.h> header file. */
+#define HAVE_MALLOC_MALLOC_H 1
+
 /* Define to 1 if you have the `mblen' function. */
 #define HAVE_MBLEN 1
 
@@ -126,6 +141,13 @@
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
    and to 0 otherwise. */
 #define HAVE_REALLOC 1
+
+/* Define to 1 if `stat' has the bug that it succeeds when given the
+   zero-length file name argument. */
+/* #undef HAVE_STAT_EMPTY_STRING_BUG */
+
+/* Define to 1 if stdbool.h conforms to C99. */
+/* #undef HAVE_STDBOOL_H */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -208,6 +230,10 @@
 /* define if your compiler has __attribute__ */
 #define HAVE___ATTRIBUTE__ 1
 
+/* Define to 1 if `lstat' dereferences a symlink specified with a trailing
+   slash. */
+/* #undef LSTAT_FOLLOWS_SLASHED_SYMLINK */
+
 /* Name of package */
 #define PACKAGE "doublecmd"
 
@@ -228,6 +254,9 @@
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "0.5.6"
+
+/* Define to 1 if the C compiler supports function prototypes. */
+#define PROTOTYPES 1
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -257,6 +286,18 @@
 /* Version number of package */
 #define VERSION "0.5.6"
 
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+/* #  undef WORDS_BIGENDIAN */
+# endif
+#endif
+
 /* Define to 1 if on MINIX. */
 /* #undef _MINIX */
 
@@ -276,6 +317,12 @@
    <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 /* #undef _UINT8_T */
+
+/* Define like PROTOTYPES; this can be used by system headers. */
+#define __PROTOTYPES 1
+
+/* Define to empty if `const' does not conform to ANSI C. */
+/* #undef const */
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */

@@ -1,7 +1,13 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
+
+/* Define to the gettext package name */
+#undef GETTEXT_PACKAGE
 
 /* Enable additional debugging at the expense of performance and size */
 #undef GNOME_ENABLE_DEBUG
@@ -26,6 +32,9 @@
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
 
+/* Define to 1 if your system has a working POSIX `fnmatch' function. */
+#undef HAVE_FNMATCH
+
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 
@@ -34,6 +43,9 @@
 
 /* Define to 1 if you have the `getwd' function. */
 #undef HAVE_GETWD
+
+/* Define to 1 if you have the <glib/glib.h> header file. */
+#undef HAVE_GLIB_GLIB_H
 
 /* Define to 1 if you have the <glib.h> header file. */
 #undef HAVE_GLIB_H
@@ -92,6 +104,9 @@
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
+/* Define to 1 if you have the <malloc/malloc.h> header file. */
+#undef HAVE_MALLOC_MALLOC_H
+
 /* Define to 1 if you have the `mblen' function. */
 #undef HAVE_MBLEN
 
@@ -125,6 +140,13 @@
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
    and to 0 otherwise. */
 #undef HAVE_REALLOC
+
+/* Define to 1 if `stat' has the bug that it succeeds when given the
+   zero-length file name argument. */
+#undef HAVE_STAT_EMPTY_STRING_BUG
+
+/* Define to 1 if stdbool.h conforms to C99. */
+#undef HAVE_STDBOOL_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -207,6 +229,10 @@
 /* define if your compiler has __attribute__ */
 #undef HAVE___ATTRIBUTE__
 
+/* Define to 1 if `lstat' dereferences a symlink specified with a trailing
+   slash. */
+#undef LSTAT_FOLLOWS_SLASHED_SYMLINK
+
 /* Name of package */
 #undef PACKAGE
 
@@ -227,6 +253,9 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* Define to 1 if the C compiler supports function prototypes. */
+#undef PROTOTYPES
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
@@ -256,6 +285,18 @@
 /* Version number of package */
 #undef VERSION
 
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
+
 /* Define to 1 if on MINIX. */
 #undef _MINIX
 
@@ -275,6 +316,12 @@
    <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT8_T
+
+/* Define like PROTOTYPES; this can be used by system headers. */
+#undef __PROTOTYPES
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */

@@ -1,3 +1,4 @@
+## default cleanliness state should be that produced by `make distclean`
 *.cache
 Makefile
 *.log
@@ -5,3 +6,6 @@ Makefile
 *~
 *.a
 stamp-h*
+po/Makevars
+config.h
+*.status

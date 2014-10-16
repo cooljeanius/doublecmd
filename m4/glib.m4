@@ -13,8 +13,10 @@ AC_ARG_WITH([glib-prefix],[  --with-glib-prefix=PFX   Prefix where GLIB is insta
             [glib_config_prefix="$withval"], [glib_config_prefix=""])
 AC_ARG_WITH([glib-exec-prefix],[  --with-glib-exec-prefix=PFX Exec prefix where GLIB is installed (optional)],
             [glib_config_exec_prefix="$withval"], [glib_config_exec_prefix=""])
-AC_ARG_ENABLE([glibtest], [  --disable-glibtest       Do not try to compile and run a test GLIB program],
-		    [], [enable_glibtest=yes])
+AC_ARG_ENABLE([glibtest],
+              [AS_HELP_STRING([--disable-glib1test],
+                    [Do not try to compile and run a test GLIB program])],
+              [],[enable_glib1test=yes])dnl
 
   if test x$glib_config_exec_prefix != x ; then
      glib_config_args="$glib_config_args --exec-prefix=$glib_config_exec_prefix"
@@ -56,7 +58,7 @@ AC_ARG_ENABLE([glibtest], [  --disable-glibtest       Do not try to compile and 
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
     glib_config_micro_version=`$GLIB_CONFIG $glib_config_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test "x$enable_glibtest" = "xyes" ; then
+    if test "x${enable_glib1test}" = "xyes"; then
       ac_save_CFLAGS="$CFLAGS"
       ac_save_LIBS="$LIBS"
       CFLAGS="$CFLAGS $GLIB_CFLAGS"
@@ -66,7 +68,7 @@ dnl# Now check if the installed GLIB is sufficiently new. (Also sanity
 dnl# checks the results of glib-config to some extent
 dnl#
       rm -f conf.glibtest
-      AC_TRY_RUN([
+      AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -138,7 +140,7 @@ main ()
     }
   return 1;
 }
-],[],[no_glib=yes],[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+]])],[],[no_glib=yes],[echo $ac_n "cross compiling; assumed OK... $ac_c"])
        CFLAGS="$ac_save_CFLAGS"
        LIBS="$ac_save_LIBS"
      fi
@@ -160,10 +162,10 @@ main ()
           echo "*** Could not run GLIB test program, checking why..."
           CFLAGS="$CFLAGS $GLIB_CFLAGS"
           LIBS="$LIBS $GLIB_LIBS"
-          AC_TRY_LINK([
+          AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <glib.h>
 #include <stdio.h>
-],      [ return ((glib_major_version) || (glib_minor_version) || (glib_micro_version)); ],
+]],[[return ((glib_major_version) || (glib_minor_version) || (glib_micro_version));]])],
         [ echo "*** The test program compiled, but did not run. This usually means"
           echo "*** that the run-time linker is not finding GLIB or finding the wrong"
           echo "*** version of GLIB. If it is not finding GLIB, you'll need to set your"

@@ -1,4 +1,4 @@
-dnl  -*- Mode: M4 -*-
+dnl  -*- Mode: Autoconf -*-
 dnl --------------------------------------------------------------------
 dnl autoopts.m4 --- Configure paths for autoopts
 dnl
@@ -33,14 +33,14 @@ dnl      and AUTOOPTS_LIBS.
 dnl
 AC_DEFUN([AG_PATH_AUTOOPTS],
 [dnl Get the cflags and libraries from the autoopts-config script
-AC_ARG_WITH(opts-prefix,
+AC_ARG_WITH([opts-prefix],
 [  --with-opts-prefix=PFX  Prefix where autoopts is installed (optional)])
 
-AC_ARG_WITH(opts-exec-prefix,
+AC_ARG_WITH([opts-exec-prefix],
 [  --with-opts-exec-prefix=PFX
                           Exec prefix where autoopts is installed (optional)])
 
-AC_ARG_ENABLE(opts-test,
+AC_ARG_ENABLE([opts-test],
 [  --disable-opts-test     Do not try to run a test AutoOpts program])
 
   if test x$with_opts_exec_prefix != x ; then
@@ -79,8 +79,7 @@ AC_ARG_ENABLE(opts-test,
     aocfg_age=$3
     aocfg_currev=$1.$2
     if test "x$enable_opts_test" != "xno" ; then
-      AC_LANG_SAVE
-      AC_LANG_C
+      AC_LANG_PUSH([C])
       ac_save_CFLAGS="$CFLAGS"
       ac_save_LDFLAGS="$LDFLAGS"
       ac_save_LIBS="$LIBS"
@@ -92,7 +91,7 @@ AC_ARG_ENABLE(opts-test,
       dnl sanity checks the results of autoopts-config to some extent.
       dnl
       rm -f confopts.def conf.optstest
-      AC_TRY_RUN([
+      AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -151,11 +150,11 @@ main (int argc, char ** argv)
 
     return 0;
 }
-],, no_autoopts=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+]])],[],[no_autoopts=yes],[echo $ac_n "cross compiling; assumed OK... $ac_c"])
       CFLAGS="$ac_save_CFLAGS"
       LDFLAGS="$ac_save_LDFLAGS"
       LIBS="$ac_save_LIBS"
-      AC_LANG_RESTORE
+      AC_LANG_POP([])
     fi
   fi
 
@@ -178,13 +177,11 @@ main (int argc, char ** argv)
          echo "*** Could not run autoopts test program, checking why..."
          CFLAGS="$CFLAGS $AUTOOPTS_CFLAGS"
          LIBS="$LIBS $AUTOOPTS_LIBS"
-         AC_LANG_SAVE
-         AC_LANG_C
-         AC_TRY_LINK([
+         AC_LANG_PUSH([C])
+         AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <autoopts/options.h>
 #include <stdio.h>
-], [return strcmp("$aocfg_current:$aocfg_revision:$aocfg_age", optionVersion());],
-        [ cat << _EOF_
+]], [[return strcmp("$aocfg_current:$aocfg_revision:$aocfg_age", optionVersion());]])],[ cat << _EOF_
 *** The test program compiled, but did not run. This usually means that
 *** the run-time linker is not finding libopts or finding the wrong version
 *** of libopts. If it is not finding libopts, you'll need to set your
@@ -195,7 +192,7 @@ main (int argc, char ** argv)
 *** If you have an old version installed, it is best to remove it, although
 *** you may also be able to get things to work by modifying LD_LIBRARY_PATH
 _EOF_
-], [cat << _EOF_
+],[cat << _EOF_
 *** The test program failed to compile or link. See the file config.log for
 *** the exact error that occured. This usually means AutoGen was incorrectly
 *** installed or that you have moved libopts since it was installed. In the
@@ -205,7 +202,7 @@ _EOF_
 ])
           CFLAGS="$ac_save_CFLAGS"
           LIBS="$ac_save_LIBS"
-          AC_LANG_RESTORE
+          AC_LANG_POP([])
        fi
      fi
      AUTOGEN=:
