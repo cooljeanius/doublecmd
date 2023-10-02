@@ -1,6 +1,6 @@
 ---
-name: Standard template
-about: For redirecting people to the official place
+name: Directions to proper place
+about: Please use https://github.com/doublecmd/doublecmd/issues instead.
 title: I realize that I am reporting this to the wrong repo
 labels: ''
 assignees: ''
