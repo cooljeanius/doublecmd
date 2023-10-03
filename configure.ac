@@ -26,6 +26,8 @@ AC_PROG_MKDIR_P
 AC_PROG_RANLIB
 AC_PROG_YACC
 AX_CHECK_GNU_MAKE
+AC_PATH_PROG([FPC],[fpc],[fpc])
+AC_PATH_PROG([LAZBUILD],[lazbuild],[lazbuild])dnl
 
 # Checks for libraries.
 AM_PATH_GLIB
@@ -42,7 +44,7 @@ AC_SUBST([copyright_holder])dnl
 dnl# (no actual translations yet)
 export ALL_LINGUAS=""
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.19.2])
+AM_GNU_GETTEXT_VERSION([0.21.1])
 AM_GLIB_GNU_GETTEXT
 AC_SUBST([POMAKEFILEDEPS])dnl
 
@@ -59,6 +61,14 @@ dnl# keep autoscan happy:
 if test "x${ac_cv_header_libintl_h}" = "x"; then
   test -z "${ac_cv_header_libintl_h}"
   AC_CHECK_HEADERS([libintl.h])
+fi
+if test "x${ac_cv_header_stdint_h}" = "x"; then
+  test -z "${ac_cv_header_stdint_h}"
+  AC_CHECK_HEADERS([stdint.h])
+fi
+if test "x${ac_cv_header_unistd_h}" = "x"; then
+  test -z "${ac_cv_header_unistd_h}"
+  AC_CHECK_HEADERS([unistd.h])
 fi
 dnl# gvfs-specific ones:
 AC_CHECK_HEADERS([gvfs-client/gvfs/gvfsurimapper.h gvfs/gvfsurimapper.h \
@@ -94,7 +104,7 @@ AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify getwd \
 
 dnl# Output.
 AC_CONFIG_FILES([Makefile \
-                 po/Makefile \
+                 po/Makefile.in \
                  po/Makevars \
                  libraries/src/libmime/Makefile \
                  plugins/wfx/gvfs/src/Makefile])dnl

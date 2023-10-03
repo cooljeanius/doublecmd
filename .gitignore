@@ -11,4 +11,5 @@ po/Makefile.in
 po/Makevars
 po/POTFILES
 config.h
+conftest.*
 *.status

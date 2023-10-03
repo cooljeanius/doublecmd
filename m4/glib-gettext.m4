@@ -25,42 +25,45 @@
 #
 # Modified to require ngettext
 # Matthias Clasen <mclasen@redhat.com> 08/06/2004
-#
+
+# Increment this whenever this file is changed.
+#serial 1
+
 # We need this here as well, since someone might use autoconf-2.5x
 # to configure GLib then an older version to configure a package
 # using AM_GLIB_GNU_GETTEXT
-AC_PREREQ([2.53])
+AC_PREREQ(2.53)
 
-dnl#
-dnl# We go to great lengths to make sure that aclocal won't 
-dnl# try to pull in the installed version of these macros
-dnl# when running aclocal in the glib directory.
-dnl#
+dnl
+dnl We go to great lengths to make sure that aclocal won't 
+dnl try to pull in the installed version of these macros
+dnl when running aclocal in the glib directory.
+dnl
 m4_copy([AC_DEFUN],[glib_DEFUN])
 m4_copy([AC_REQUIRE],[glib_REQUIRE])
-dnl#
-dnl# At the end, if we're not within glib, we'll define the public
-dnl# definitions in terms of our private definitions.
-dnl#
+dnl
+dnl At the end, if we're not within glib, we'll define the public
+dnl definitions in terms of our private definitions.
+dnl
 
 # GLIB_LC_MESSAGES
 #--------------------
 glib_DEFUN([GLIB_LC_MESSAGES],
   [AC_CHECK_HEADERS([locale.h])
     if test $ac_cv_header_locale_h = yes; then
-    AC_CACHE_CHECK([for LC_MESSAGES], [am_cv_val_LC_MESSAGES],
-      [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <locale.h>]],[[return LC_MESSAGES]])],
-       [am_cv_val_LC_MESSAGES=yes],[am_cv_val_LC_MESSAGES=no])])
+    AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
+      [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
+       am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
     if test $am_cv_val_LC_MESSAGES = yes; then
-      AC_DEFINE([HAVE_LC_MESSAGES], [1],
+      AC_DEFINE(HAVE_LC_MESSAGES, 1,
         [Define if your <locale.h> file defines LC_MESSAGES.])
     fi
   fi])
 
 # GLIB_PATH_PROG_WITH_TEST
 #----------------------------
-dnl# GLIB_PATH_PROG_WITH_TEST([VARIABLE], [PROG-TO-CHECK-FOR],
-dnl#   [TEST-PERFORMED-ON-FOUND_PROGRAM], [VALUE-IF-NOT-FOUND], [PATH])
+dnl GLIB_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
+dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
 glib_DEFUN([GLIB_PATH_PROG_WITH_TEST],
 [# Extract the first word of "$2", so it can be a program name with args.
 set dummy $2; ac_word=[$]2
@@ -82,9 +85,9 @@ AC_CACHE_VAL(ac_cv_path_$1,
     fi
   done
   IFS="$ac_save_ifs"
-dnl# If no 4th arg is given, leave the cache variable unset,
-dnl# so AC_PATH_PROGS will keep looking.
-ifelse([$4],[],[],[  test -z "[$]ac_cv_path_$1" && ac_cv_path_$1="$4"
+dnl If no 4th arg is given, leave the cache variable unset,
+dnl so AC_PATH_PROGS will keep looking.
+ifelse([$4], , , [  test -z "[$]ac_cv_path_$1" && ac_cv_path_$1="$4"
 ])dnl
   ;;
 esac])dnl
@@ -92,9 +95,54 @@ $1="$ac_cv_path_$1"
 if test ifelse([$4], , [-n "[$]$1"], ["[$]$1" != "$4"]); then
   AC_MSG_RESULT([$]$1)
 else
-  AC_MSG_RESULT([no])
+  AC_MSG_RESULT(no)
 fi
-AC_SUBST([$1])dnl
+AC_SUBST($1)dnl
+])
+
+dnl Checks for special options needed on Mac OS X.
+dnl Defines INTL_MACOSX_LIBS.
+dnl
+dnl Copied from intlmacosx.m4 in gettext, GPL.
+dnl Copyright (C) 2004-2013 Free Software Foundation, Inc.
+glib_DEFUN([glib_gt_INTL_MACOSX],
+[
+  dnl Check for API introduced in Mac OS X 10.2.
+  AC_CACHE_CHECK([for CFPreferencesCopyAppValue],
+    [gt_cv_func_CFPreferencesCopyAppValue],
+    [gt_save_LIBS="$LIBS"
+     LIBS="$LIBS -Wl,-framework -Wl,CoreFoundation"
+     AC_LINK_IFELSE(
+       [AC_LANG_PROGRAM(
+          [[#include <CoreFoundation/CFPreferences.h>]],
+          [[CFPreferencesCopyAppValue(NULL, NULL)]])],
+       [gt_cv_func_CFPreferencesCopyAppValue=yes],
+       [gt_cv_func_CFPreferencesCopyAppValue=no])
+     LIBS="$gt_save_LIBS"])
+  if test $gt_cv_func_CFPreferencesCopyAppValue = yes; then
+    AC_DEFINE([HAVE_CFPREFERENCESCOPYAPPVALUE], [1],
+      [Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in the CoreFoundation framework.])
+  fi
+  dnl Check for API introduced in Mac OS X 10.3.
+  AC_CACHE_CHECK([for CFLocaleCopyCurrent], [gt_cv_func_CFLocaleCopyCurrent],
+    [gt_save_LIBS="$LIBS"
+     LIBS="$LIBS -Wl,-framework -Wl,CoreFoundation"
+     AC_LINK_IFELSE(
+       [AC_LANG_PROGRAM(
+          [[#include <CoreFoundation/CFLocale.h>]],
+          [[CFLocaleCopyCurrent();]])],
+       [gt_cv_func_CFLocaleCopyCurrent=yes],
+       [gt_cv_func_CFLocaleCopyCurrent=no])
+     LIBS="$gt_save_LIBS"])
+  if test $gt_cv_func_CFLocaleCopyCurrent = yes; then
+    AC_DEFINE([HAVE_CFLOCALECOPYCURRENT], [1],
+      [Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the CoreFoundation framework.])
+  fi
+  INTL_MACOSX_LIBS=
+  if test $gt_cv_func_CFPreferencesCopyAppValue = yes || test $gt_cv_func_CFLocaleCopyCurrent = yes; then
+    INTL_MACOSX_LIBS="-Wl,-framework -Wl,CoreFoundation"
+  fi
+  AC_SUBST([INTL_MACOSX_LIBS])
 ])
 
 # GLIB_WITH_NLS
@@ -110,6 +158,8 @@ glib_DEFUN([GLIB_WITH_NLS],
     XGETTEXT=:
     INTLLIBS=
 
+    glib_gt_INTL_MACOSX
+
     AC_CHECK_HEADER(libintl.h,
      [gt_cv_func_dgettext_libintl="no"
       libintl_extra_libs=""
@@ -118,25 +168,27 @@ glib_DEFUN([GLIB_WITH_NLS],
       # First check in libc
       #
       AC_CACHE_CHECK([for ngettext in libc], gt_cv_func_ngettext_libc,
-        [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        [AC_TRY_LINK([
 #include <libintl.h>
-]],[[return !ngettext ("","", 1)]])],
-	  [gt_cv_func_ngettext_libc=yes],
-          [gt_cv_func_ngettext_libc=no])
+],
+         [return !ngettext ("","", 1)],
+	  gt_cv_func_ngettext_libc=yes,
+          gt_cv_func_ngettext_libc=no)
         ])
   
       if test "$gt_cv_func_ngettext_libc" = "yes" ; then
 	      AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
-        	[AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        	[AC_TRY_LINK([
 #include <libintl.h>
-]],[[return !dgettext ("","")]])],
-		  [gt_cv_func_dgettext_libc=yes],
-	          [gt_cv_func_dgettext_libc=no])
+],
+	          [return !dgettext ("","")],
+		  gt_cv_func_dgettext_libc=yes,
+	          gt_cv_func_dgettext_libc=no)
         	])
       fi
   
       if test "$gt_cv_func_ngettext_libc" = "yes" ; then
-        AC_CHECK_FUNCS([bind_textdomain_codeset])
+        AC_CHECK_FUNCS(bind_textdomain_codeset)
       fi
 
       #
@@ -146,20 +198,20 @@ glib_DEFUN([GLIB_WITH_NLS],
 	 || test "$gt_cv_func_ngettext_libc" != "yes" \
          || test "$ac_cv_func_bind_textdomain_codeset" != "yes" ; then
         
-        AC_CHECK_LIB([intl], [bindtextdomain],
-	    [AC_CHECK_LIB([intl], [ngettext],
-		    [AC_CHECK_LIB([intl], [dgettext],
-			          [gt_cv_func_dgettext_libintl=yes])])])
+        AC_CHECK_LIB(intl, bindtextdomain,
+	    [AC_CHECK_LIB(intl, ngettext,
+		    [AC_CHECK_LIB(intl, dgettext,
+			          gt_cv_func_dgettext_libintl=yes)])])
 
 	if test "$gt_cv_func_dgettext_libintl" != "yes" ; then
 	  AC_MSG_CHECKING([if -liconv is needed to use gettext])
 	  AC_MSG_RESULT([])
-  	  AC_CHECK_LIB([intl], [ngettext],
-          	[AC_CHECK_LIB([intl], [dcgettext],
+  	  AC_CHECK_LIB(intl, ngettext,
+          	[AC_CHECK_LIB(intl, dcgettext,
 		       [gt_cv_func_dgettext_libintl=yes
 			libintl_extra_libs=-liconv],
-			[:],[-liconv])],
-		[:],[-liconv])
+			:,-liconv)],
+		:,-liconv)
         fi
 
         #
@@ -191,18 +243,18 @@ glib_DEFUN([GLIB_WITH_NLS],
       fi
   
       if test "$gt_cv_func_dgettext_libintl" = "yes"; then
-        INTLLIBS="-lintl $libintl_extra_libs"
+        INTLLIBS="-lintl $libintl_extra_libs $INTL_MACOSX_LIBS"
       fi
   
       if test "$gt_cv_have_gettext" = "yes"; then
-	AC_DEFINE([HAVE_GETTEXT],[1],
+	AC_DEFINE(HAVE_GETTEXT,1,
 	  [Define if the GNU gettext() function is already present or preinstalled.])
-	GLIB_PATH_PROG_WITH_TEST([MSGFMT], [msgfmt],
+	GLIB_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
 	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)dnl
 	if test "$MSGFMT" != "no"; then
           glib_save_LIBS="$LIBS"
           LIBS="$LIBS $INTLLIBS"
-	  AC_CHECK_FUNCS([dcgettext])
+	  AC_CHECK_FUNCS(dcgettext)
 	  MSGFMT_OPTS=
 	  AC_MSG_CHECKING([if msgfmt accepts -c])
 	  GLIB_RUN_PROG([$MSGFMT -c -o /dev/null],[
@@ -220,17 +272,17 @@ msgstr ""
 	  AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
 	  GLIB_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
 	    [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
-	  AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],[[extern int _nl_msg_cat_cntr;
-			 return _nl_msg_cat_cntr]])],
+	  AC_TRY_LINK(, [extern int _nl_msg_cat_cntr;
+			 return _nl_msg_cat_cntr],
 	    [CATOBJEXT=.gmo 
              DATADIRNAME=share],
 	    [case $host in
 	    *-*-solaris*)
-	    dnl# On Solaris, if bind_textdomain_codeset is in libc,
-	    dnl# GNU format message catalog is always supported,
-            dnl# since both are added to the libc all together.
-	    dnl# Hence, we'd like to go with DATADIRNAME=share and
-	    dnl# and CATOBJEXT=.gmo in this case.
+	    dnl On Solaris, if bind_textdomain_codeset is in libc,
+	    dnl GNU format message catalog is always supported,
+            dnl since both are added to the libc all together.
+	    dnl Hence, we'd like to go with DATADIRNAME=share and
+	    dnl and CATOBJEXT=.gmo in this case.
             AC_CHECK_FUNC(bind_textdomain_codeset,
 	      [CATOBJEXT=.gmo 
                DATADIRNAME=share],
@@ -255,18 +307,19 @@ msgstr ""
     ])
 
     if test "$gt_cv_have_gettext" = "yes" ; then
-      AC_DEFINE([ENABLE_NLS], [1],
+      AC_DEFINE(ENABLE_NLS, 1,
         [always defined to indicate that i18n is enabled])
     fi
 
-    dnl# Test whether we really found GNU xgettext.
+    dnl Test whether we really found GNU xgettext.
     if test "$XGETTEXT" != ":"; then
-      dnl# If it is not GNU xgettext we define it as : so that the
-      dnl# Makefiles still can work.
+      dnl If it is not GNU xgettext we define it as : so that the
+      dnl Makefiles still can work.
       if $XGETTEXT --omit-header /dev/null 2> /dev/null; then
         : ;
       else
-        AC_MSG_RESULT([found xgettext program is not GNU xgettext; ignore it])
+        AC_MSG_RESULT(
+	  [found xgettext program is not GNU xgettext; ignore it])
         XGETTEXT=":"
       fi
     fi
@@ -274,30 +327,30 @@ msgstr ""
     # We need to process the po/ directory.
     POSUB=po
 
-    AC_CONFIG_COMMANDS([default-1],[[
-      case "$CONFIG_FILES" in *po/Makefile.in*)
+    AC_OUTPUT_COMMANDS(
+      [case "$CONFIG_FILES" in *po/Makefile.in*)
         sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile
-      esac]],[[]])
+      esac])
 
-    dnl# These rules are solely for the distribution goal. While doing this
-    dnl# we only have to keep exactly one list of the available catalogs
-    dnl# in configure.ac.
+    dnl These rules are solely for the distribution goal.  While doing this
+    dnl we only have to keep exactly one list of the available catalogs
+    dnl in configure.ac.
     for lang in $ALL_LINGUAS; do
       GMOFILES="$GMOFILES $lang.gmo"
       POFILES="$POFILES $lang.po"
     done
 
-    dnl# Make all variables we use known to autoconf.
-    AC_SUBST([CATALOGS])
-    AC_SUBST([CATOBJEXT])
-    AC_SUBST([DATADIRNAME])
-    AC_SUBST([GMOFILES])
-    AC_SUBST([INSTOBJEXT])
-    AC_SUBST([INTLLIBS])
-    AC_SUBST([PO_IN_DATADIR_TRUE])
-    AC_SUBST([PO_IN_DATADIR_FALSE])
-    AC_SUBST([POFILES])
-    AC_SUBST([POSUB])
+    dnl Make all variables we use known to autoconf.
+    AC_SUBST(CATALOGS)
+    AC_SUBST(CATOBJEXT)
+    AC_SUBST(DATADIRNAME)
+    AC_SUBST(GMOFILES)
+    AC_SUBST(INSTOBJEXT)
+    AC_SUBST(INTLLIBS)
+    AC_SUBST(PO_IN_DATADIR_TRUE)
+    AC_SUBST(PO_IN_DATADIR_FALSE)
+    AC_SUBST(POFILES)
+    AC_SUBST(POSUB)
   ])
 
 # AM_GLIB_GNU_GETTEXT
@@ -309,10 +362,9 @@ msgstr ""
 # gt_cv_have_gettext will be set to "yes".) It will also call AC_SUBST()
 # on various variables needed by the Makefile.in.in installed by 
 # glib-gettextize.
-dnl#
-glib_DEFUN([GLIB_GNU_GETTEXT],
+dnl
+AU_DEFUN([GLIB_GNU_GETTEXT],
   [AC_REQUIRE([AC_PROG_CC])dnl
-   AC_REQUIRE([AC_HEADER_STDC])dnl
    
    GLIB_LC_MESSAGES
    GLIB_WITH_NLS
@@ -321,7 +373,7 @@ glib_DEFUN([GLIB_GNU_GETTEXT],
      if test "x$ALL_LINGUAS" = "x"; then
        LINGUAS=
      else
-       AC_MSG_CHECKING([for catalogs to be installed])
+       AC_MSG_CHECKING(for catalogs to be installed)
        NEW_LINGUAS=
        for presentlang in $ALL_LINGUAS; do
          useit=no
@@ -345,18 +397,18 @@ glib_DEFUN([GLIB_GNU_GETTEXT],
          fi
        done
        LINGUAS=$NEW_LINGUAS
-       AC_MSG_RESULT([$LINGUAS])
+       AC_MSG_RESULT($LINGUAS)
      fi
 
-     dnl# Construct list of names of catalog files to be constructed.
+     dnl Construct list of names of catalog files to be constructed.
      if test -n "$LINGUAS"; then
        for lang in $LINGUAS; do CATALOGS="$CATALOGS $lang$CATOBJEXT"; done
      fi
    fi
 
-   dnl# If the AC_CONFIG_AUX_DIR macro for autoconf is used we possibly
-   dnl# find the mkinstalldirs script in another subdir but ($top_srcdir).
-   dnl# Try to locate is.
+   dnl If the AC_CONFIG_AUX_DIR macro for autoconf is used we possibly
+   dnl find the mkinstalldirs script in another subdir but ($top_srcdir).
+   dnl Try to locate is.
    MKINSTALLDIRS=
    if test -n "$ac_aux_dir"; then
      MKINSTALLDIRS="$ac_aux_dir/mkinstalldirs"
@@ -366,8 +418,8 @@ glib_DEFUN([GLIB_GNU_GETTEXT],
    fi
    AC_SUBST(MKINSTALLDIRS)
 
-   dnl# Generate list of files to be processed by xgettext which will
-   dnl# be included in po/Makefile.
+   dnl Generate list of files to be processed by xgettext which will
+   dnl be included in po/Makefile.
    test -d po || mkdir po
    if test "x$srcdir" != "x."; then
      if test "x`echo $srcdir | sed 's@/.*@@'`" = "x"; then
@@ -381,9 +433,10 @@ glib_DEFUN([GLIB_GNU_GETTEXT],
    rm -f po/POTFILES
    sed -e "/^#/d" -e "/^\$/d" -e "s,.*,	$posrcprefix& \\\\," -e "\$s/\(.*\) \\\\/\1/" \
 	< $srcdir/po/POTFILES.in > po/POTFILES
-  ])
+  ],
+  [[$0: This macro is deprecated. You should use upstream gettext instead.]])
 
-# AM_GLIB_DEFINE_LOCALEDIR([VARIABLE])
+# AM_GLIB_DEFINE_LOCALEDIR(VARIABLE)
 # -------------------------------
 # Define VARIABLE to the location where catalog files will
 # be installed by po/Makefile.
@@ -403,19 +456,19 @@ fi
 prefix="$glib_save_prefix"
 exec_prefix="$glib_save_exec_prefix"
 datarootdir="$glib_save_datarootdir"
-AC_DEFINE_UNQUOTED([$1], ["$localedir"],
+AC_DEFINE_UNQUOTED($1, "$localedir",
   [Define the location where the catalogs will be installed])
 ])
 
-dnl#
-dnl# Now the definitions that aclocal will find
-dnl#
-ifdef([glib_configure_ac],[],[
+dnl
+dnl Now the definitions that aclocal will find
+dnl
+ifdef(glib_configure_ac,[],[
 AC_DEFUN([AM_GLIB_GNU_GETTEXT],[GLIB_GNU_GETTEXT($@)])
 AC_DEFUN([AM_GLIB_DEFINE_LOCALEDIR],[GLIB_DEFINE_LOCALEDIR($@)])
 ])dnl
 
-# GLIB_RUN_PROG([PROGRAM], [TEST-FILE], [ACTION-IF-PASS], [ACTION-IF-FAIL])
+# GLIB_RUN_PROG(PROGRAM, TEST-FILE, [ACTION-IF-PASS], [ACTION-IF-FAIL])
 # 
 # Create a temporary file with TEST-FILE as its contents and pass the
 # file name to PROGRAM.  Perform ACTION-IF-PASS if PROGRAM exits with

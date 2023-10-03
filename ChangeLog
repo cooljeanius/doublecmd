@@ -1,0 +1,4 @@
+2023-10-02  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* configure.ac (AM_GNU_GETTEXT_VERSION): Bump to 0.21.1.
+
